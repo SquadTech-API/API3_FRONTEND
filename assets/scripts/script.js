@@ -1,17 +1,18 @@
 // ─── ELEMENTOS ───────────────────────────────────────────────────────────────
-const form          = document.getElementById("loginForm");
-const toggleBtn     = document.getElementById("togglePassword");
+const form = document.getElementById("loginForm");
+const toggleBtn = document.getElementById("togglePassword");
 const passwordInput = document.getElementById("password");
-const eyeIcon       = document.getElementById("eye-icon");
-const forgotBtn     = document.getElementById("forgotBtn");
+const eyeIcon = document.getElementById("eye-icon");
+const forgotBtn = document.getElementById("forgotBtn");
 
 // ─── URL BASE DA API ──────────────────────────────────────────────────────────
 const API_URL = "http://localhost:8080/usuarios/login";
 
-// ─── MAPA DE REDIRECIONAMENTO POR CARGO ──────────────────────────────────────
-const ROTAS_POR_CARGO = {
-  "ADM":    "dashboard.html",
-  "TECNICO":  "./vewiculos.html"
+// ─── MAPA DE REDIRECIONAMENTO POR TIPO ───────────────────────────────────────
+const ROTAS_POR_TIPO = {
+  adm: "./tela_veiculos.html",
+  tecnico: "./tela_veiculos.html",
+  default: "./erro.html",
 };
 
 // ─── TOGGLE SENHA ─────────────────────────────────────────────────────────────
@@ -30,11 +31,11 @@ toggleBtn.addEventListener("click", () => {
   const isPassword = passwordInput.type === "password";
   if (isPassword) {
     passwordInput.type = "text";
-    eyeIcon.innerHTML  = SVG_EYE_OPEN;
+    eyeIcon.innerHTML = SVG_EYE_OPEN;
     toggleBtn.setAttribute("aria-label", "Ocultar senha");
   } else {
     passwordInput.type = "password";
-    eyeIcon.innerHTML  = SVG_EYE_CLOSED;
+    eyeIcon.innerHTML = SVG_EYE_CLOSED;
     toggleBtn.setAttribute("aria-label", "Mostrar senha");
   }
 });
@@ -52,14 +53,14 @@ form.addEventListener("submit", async (event) => {
   }
 
   const btnEntrar = form.querySelector(".btn-entrar");
-  btnEntrar.disabled    = true;
+  btnEntrar.disabled = true;
   btnEntrar.textContent = "Entrando...";
 
   try {
     const response = await fetch(API_URL, {
-      method:  "POST",
+      method: "POST",
       headers: { "Content-Type": "application/json" },
-      body:    JSON.stringify({ email, senha })
+      body: JSON.stringify({ email, senha }),
     });
 
     if (!response.ok) {
@@ -68,21 +69,24 @@ form.addEventListener("submit", async (event) => {
     }
 
     const usuario = await response.json();
-    // { matricula, nomeCompleto, cargo, email }
 
-    // Salva os dados para usar nas próximas páginas
+    // Salva sessão
     sessionStorage.setItem("usuario", JSON.stringify(usuario));
 
-    // Redireciona conforme o cargo
-    const cargoUpper = (usuario.cargo || "").toUpperCase();
-    const destino    = ROTAS_POR_CARGO[cargoUpper] ?? ROTAS_POR_CARGO["DEFAULT"];
-    window.location.href = destino;
+    const tipoUsuario = (usuario.tipoUsuario || "").toLowerCase().trim();
 
+    const destino = ROTAS_POR_TIPO[tipoUsuario] || ROTAS_POR_TIPO.default;
+
+    console.log("Tipo usuário:", tipoUsuario);
+    console.log("Destino:", destino);
+
+    // 🚀 REDIRECIONAMENTO
+    window.location.href = destino;
   } catch (erro) {
     console.error("Erro ao conectar com o servidor:", erro);
     alert("Não foi possível conectar ao servidor. Tente novamente.");
   } finally {
-    btnEntrar.disabled    = false;
+    btnEntrar.disabled = false;
     btnEntrar.textContent = "Entrar";
   }
 });
