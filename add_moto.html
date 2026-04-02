@@ -1,0 +1,158 @@
+<!doctype html>
+<html lang="PT-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ipem</title>
+    <link rel="stylesheet" href="assets/styles/addmoto.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo_ipem.png" alt="Logo Ipem" />
+      </div>
+
+      <button class="btn_menu">
+        <img src="assets/images/icon_menu.png" alt="Menu" />
+      </button>
+
+      <nav class="nav">
+        <ul class="menu">
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Veículos <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="#">Novo Veículo</a></li>
+              <li><a href="#">Gerenciamento</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Motoristas <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="#">Novo Motorista</a></li>
+              <li><a href="#">Gerenciamento</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Relatórios <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="#">Ver Relatórios</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="nav_btn">
+          <a href="#">
+            <img src="assets/images/icon_perfil.png" alt="Perfil" />
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <!-- div com titulo e botão-->
+      <div class="header_titulo">
+        <h2>Adicionar um Motorista</h2>
+        <a href="#">
+          <img src="assets/images/icons_cancel.png" alt="Cancelar" />
+        </a>
+      </div>
+
+      <section class="card">
+        <!--card-->
+        <div class="card_body">
+          <!--cabeçalho azul-->
+          <div class="card_titulo">
+            <img src="assets/images/icon_perfil.png" alt="logo" />
+            <h3>Preencha os dados:</h3>
+          </div>
+
+          <!-- Formulário -->
+          <form class="form" id="form_motorista">
+            <div class="form-group">
+              <div class="linha">
+                <label for="txf_nome_add_motorista">Nome:</label>
+                <input id="txf_nome_add_motorista" name="txf_nome_add_motorista" type="text" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="linha">
+                <label for="txf_data_add_motorista">Data Nascimento:</label>
+                <input id="txf_data_add_motorista" name="txf_data_add_motorista" type="date" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="linha">
+                <label for="txf_cpf_add_motorista">CPF:</label>
+                <input id="txf_cpf_add_motorista" name="txf_cpf_add_motorista" type="text" placeholder="000.000.000-00" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="linha">
+                <label for="txf_registro_add_motorista">Habilitação (N. Registro):</label>
+                <input id="txf_registro_add_motorista" name="txf_registro_add_motorista" type="text" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="linha">
+                <label for="ddl_carteira_add_motorista">Categoria:</label>
+
+                <select id="ddl_carteira_add_motorista" name="ddl_carteira_add_motorista">
+                  <option value="">Selecione...</option>
+                  <option value="A">A</option>
+                  <option value="AB">AB</option>
+                  <option value="B">B</option>
+                  <option value="C">C</option>
+                  <option value="D">D</option>
+                  <option value="E">E</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="linha">
+                <label for="pwd_senha_add_motorista">Senha:</label>
+                <input id="pwd_senha_add_motorista" name="pwd_senha_add_motorista" type="password" />
+              </div>
+            </div>
+
+            <div class="form-group">
+              <div class="linha">
+                <label for="pwd_conf_senha_add_motorista">Confirme a senha:</label>
+                <input id="pwd_conf_senha_add_motorista" name="pwd_conf_senha_add_motorista"  type="password" />
+              </div>
+            </div>
+
+            <!--botão salvar-->
+            <div class="form-actions">
+              <button id="btn_salvar_add_motorista" name="btn_salvar_add_motorista" type="submit" class="btn-save">Salvar</button>
+            </div>
+          </form>
+        </div>
+      </section>
+    </main>
+
+    <script src="assets/scripts/addmoto.js"></script>
+  </body>
+</html>
