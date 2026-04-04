@@ -1,25 +1,28 @@
-
-const API_BASE_URL = 'http://localhost:8080/api'; // Ajuste conforme seu back-end
+// =============================================
+// CONFIGURAÇÃO
+// =============================================
+const API_BASE_URL = 'http://localhost:8080';
 
 // =============================================
-// ESTADO GLOBAL DA PÁGINA
+// ESTADO GLOBAL
 // =============================================
-let nfFotoBase64   = null;  // Foto da nota fiscal em base64 (opcional)
-let nfFotoMimeType = null;  // MIME type da foto
+let nfArquivo      = null; // File object para enviar como multipart
+let _saidaAtiva    = null; // RegistroSaida da saída em andamento do usuário
 
 // =============================================
 // INICIALIZAÇÃO
 // =============================================
-document.addEventListener('DOMContentLoaded', () => {
+document.addEventListener('DOMContentLoaded', async () => {
   initDateTimeDefaults();
   carregarDadosUsuario();
-  carregarDadosVeiculo();
-  aplicarLayoutDesktop();
+
+  // Verifica saída ativa ANTES de liberar o formulário
+  await verificarSaidaAtiva();
 });
 
-/**
- * Preenche data e hora atuais como padrão
- */
+// =============================================
+// DATA E HORA AUTOMÁTICAS
+// =============================================
 function initDateTimeDefaults() {
   const now  = new Date();
   const yyyy = now.getFullYear();
@@ -28,124 +31,172 @@ function initDateTimeDefaults() {
   const hh   = String(now.getHours()).padStart(2, '0');
   const min  = String(now.getMinutes()).padStart(2, '0');
 
-  document.getElementById('Label_data_abastecer').value = `${yyyy}-${mm}-${dd}`;
-  document.getElementById('Label_hora_abastecer').value = `${hh}:${min}`;
+  const dataEl = document.getElementById('Label_data_abastecer');
+  const horaEl = document.getElementById('Label_hora_abastecer');
+  if (dataEl) dataEl.value = `${yyyy}-${mm}-${dd}`;
+  if (horaEl) horaEl.value = `${hh}:${min}`;
 }
 
 // =============================================
-// CARREGAR DADOS DO USUÁRIO LOGADO
+// USUÁRIO LOGADO
 // =============================================
-/**
- * Busca o usuário logado no back-end (sessão/token JWT)
- * e preenche o campo de motorista.
- */
 async function carregarDadosUsuario() {
   try {
-    const headers = getAuthHeaders();
-    const response = await fetch(`${API_BASE_URL}/auth/me`, { headers });
+    const resp = await fetch(`${API_BASE_URL}/auth/me`, { headers: getAuthHeaders() });
+    if (!resp.ok) throw new Error('Não autenticado');
+    const usuario = await resp.json();
+    preencherMotorista(usuario);
+  } catch {
+    const local = getLocalJson('usuario');
+    if (local) preencherMotorista(local);
+  }
+}
 
-    if (!response.ok) throw new Error('Usuário não autenticado.');
+function preencherMotorista(usuario) {
+  const el = document.getElementById('Label_motorista_abastecer');
+  if (el) el.textContent = usuario.nomeCompleto || usuario.nome || 'Motorista';
+}
 
-    const usuario = await response.json();
+// =============================================
+// VERIFICAR SAÍDA ATIVA DO USUÁRIO
+// =============================================
+async function verificarSaidaAtiva() {
+  const matricula = getMatriculaUsuario();
 
-    // Exibe nome do motorista logado
-    const el = document.getElementById('Label_motorista_abastecer');
-    if (el) el.textContent = usuario.nome || usuario.name || 'Motorista';
-
-  } catch (err) {
-    console.error('[carregarDadosUsuario]', err);
-    // Tenta fallback no localStorage (caso SPA que persiste dados locais)
-    const usuarioLocal = getUsuarioLocal();
-    if (usuarioLocal) {
-      const el = document.getElementById('Label_motorista_abastecer');
-      if (el) el.textContent = usuarioLocal.nome || 'Motorista';
+  // ── Estratégia 1: por matrícula ──────────────────────────────────────────
+  if (matricula) {
+    try {
+      const resp = await fetch(
+        `${API_BASE_URL}/registro-saidas/ativo-usuario?matricula=${matricula}`,
+        { headers: getAuthHeaders() }
+      );
+      if (resp.ok) {
+        const saida = await resp.json();
+        if (saida && saida.status === 'em_andamento') {
+          _saidaAtiva = saida;
+          // Persiste para consistência com outras telas
+          sessionStorage.setItem('idSaida',              saida.idSaida);
+          sessionStorage.setItem('veiculoSelecionadoId', saida.veiculo?.idVeiculo);
+          sessionStorage.setItem('veiculoSelecionado',   JSON.stringify(saida.veiculo || {}));
+          localStorage.setItem('idSaida',                saida.idSaida);
+          localStorage.setItem('veiculoSelecionadoId',   saida.veiculo?.idVeiculo);
+          preencherComSaida(saida);
+          liberarFormulario();
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('[verificarSaidaAtiva] Estratégia 1 falhou:', err.message);
     }
   }
-}
 
-/**
- * Tenta recuperar o usuário logado do localStorage/sessionStorage
- */
-function getUsuarioLocal() {
-  try {
-    const raw = sessionStorage.getItem('usuario') || localStorage.getItem('usuario');
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
-}
+  // ── Estratégia 2: por veiculoId na sessão ────────────────────────────────
+  const veiculoId = sessionStorage.getItem('veiculoSelecionadoId')
+                 || localStorage.getItem('veiculoSelecionadoId');
 
-// =============================================
-// CARREGAR DADOS DO VEÍCULO SELECIONADO
-// =============================================
-/**
- * Busca o veículo que foi previamente selecionado pelo usuário.
- * Espera-se que o id do veículo esteja em sessionStorage/localStorage
- * sob a chave 'veiculoSelecionadoId'.
- */
-async function carregarDadosVeiculo() {
-  const veiculoId = getVeiculoSelecionadoId();
-
-  if (!veiculoId) {
-    console.warn('[carregarDadosVeiculo] Nenhum veículo selecionado.');
-    return;
+  if (veiculoId) {
+    try {
+      const resp = await fetch(
+        `${API_BASE_URL}/registro-saidas/ativo?veiculoId=${veiculoId}`,
+        { headers: getAuthHeaders() }
+      );
+      if (resp.ok) {
+        const saida = await resp.json();
+        if (saida && saida.status === 'em_andamento') {
+          _saidaAtiva = saida;
+          sessionStorage.setItem('idSaida', saida.idSaida);
+          localStorage.setItem('idSaida',   saida.idSaida);
+          preencherComSaida(saida);
+          liberarFormulario();
+          return;
+        }
+      }
+    } catch (err) {
+      console.warn('[verificarSaidaAtiva] Estratégia 2 falhou:', err.message);
+    }
   }
 
-  try {
-    const headers = getAuthHeaders();
-    const response = await fetch(`${API_BASE_URL}/veiculos/${veiculoId}`, { headers });
+  // ── Sem saída ativa: bloqueia o formulário ───────────────────────────────
+  bloquearFormulario();
+}
 
-    if (!response.ok) throw new Error('Erro ao buscar veículo.');
+// =============================================
+// PRÉ-PREENCHER CAMPOS COM DADOS DA SAÍDA
+// =============================================
+function preencherComSaida(saida) {
+  // Veículo
+  if (saida.veiculo) {
+    const prefix = document.getElementById('Label_prefix_abastecer');
+    const modelo = document.getElementById('Label_modelo_abastecer');
+    if (prefix) prefix.textContent = saida.veiculo.prefixo || saida.veiculo.placa || 'Viatura';
+    if (modelo) modelo.textContent = saida.veiculo.modelo  || '—';
 
-    const veiculo = await response.json();
-    preencherDadosVeiculo(veiculo);
+    // Pré-preenche odômetro com o km atual do veículo como sugestão mínima
+    const kmEl = document.getElementById('Txf_km_abastecer');
+    if (kmEl && saida.veiculo.kmAtual != null) {
+      kmEl.min         = saida.veiculo.kmAtual;
+      kmEl.placeholder = `Mín: ${saida.veiculo.kmAtual}`;
+    }
 
-  } catch (err) {
-    console.error('[carregarDadosVeiculo]', err);
-    // Fallback: tenta carregar do localStorage
-    const veiculoLocal = getVeiculoLocal();
-    if (veiculoLocal) preencherDadosVeiculo(veiculoLocal);
+    // Pré-preenche tipo de combustível se o veículo tiver definido
+    if (saida.veiculo.tipoCombustivel) {
+      const sel = document.getElementById('sel_combustivel');
+      if (sel) {
+        // Tenta selecionar a opção cujo value bate com o tipo do veículo
+        const opcao = [...sel.options].find(
+          o => o.value.toLowerCase() === saida.veiculo.tipoCombustivel.toLowerCase()
+        );
+        if (opcao) sel.value = opcao.value;
+      }
+    }
+  }
+
+  // Serviço em andamento 
+  const servicoEl = document.getElementById('Label_servico_abastecer');
+  if (servicoEl) {
+    servicoEl.value = saida.tipoServico?.nomeServico || '—';
   }
 }
 
-/**
- * Preenche os campos visuais do veículo
- * @param {Object} veiculo
- */
-function preencherDadosVeiculo(veiculo) {
-  const prefix = document.getElementById('Label_prefix_abastecer');
-  const modelo = document.getElementById('Label_modelo_abastecer');
+// =============================================
+// LIBERAR / BLOQUEAR FORMULÁRIO
+// =============================================
+function liberarFormulario() {
+  const aviso = document.getElementById('aviso-sem-saida');
+  if (aviso) aviso.style.display = 'none';
 
-  if (prefix) prefix.textContent = veiculo.prefixo || veiculo.placa || 'Viatura';
-  if (modelo) modelo.textContent = veiculo.modelo  || '';
+  const btnSalvar = document.getElementById('Btn_salvar_abastecer');
+  if (btnSalvar) btnSalvar.disabled = false;
+
+  // Habilita todos os inputs e selects do formulário
+  document.querySelectorAll(
+    '#form-abastecer input:not([readonly]), #form-abastecer select, #form-abastecer textarea'
+  ).forEach(el => { el.disabled = false; });
 }
 
-function getVeiculoSelecionadoId() {
-  return sessionStorage.getItem('veiculoSelecionadoId')
-      || localStorage.getItem('veiculoSelecionadoId')
-      || null;
-}
+function bloquearFormulario() {
+  // Mostra aviso
+  const aviso = document.getElementById('aviso-sem-saida');
+  if (aviso) {
+    aviso.style.display = 'block';
+    aviso.textContent   = 'Você não possui uma saída em andamento. Registre uma saída antes de abastecer.';
+  } else {
+    // Fallback se o elemento não existir no HTML
+    showToast('Sem saída ativa. Registre uma saída antes de abastecer.', 'error');
+  }
 
-function getVeiculoLocal() {
-  try {
-    const raw = sessionStorage.getItem('veiculoSelecionado') || localStorage.getItem('veiculoSelecionado');
-    return raw ? JSON.parse(raw) : null;
-  } catch { return null; }
+  // Desabilita botão salvar
+  const btnSalvar = document.getElementById('Btn_salvar_abastecer');
+  if (btnSalvar) btnSalvar.disabled = true;
+
+  // Desabilita todos os inputs editáveis
+  document.querySelectorAll(
+    '#form-abastecer input:not([readonly]), #form-abastecer select, #form-abastecer textarea'
+  ).forEach(el => { el.disabled = true; });
 }
 
 // =============================================
-// HEADERS DE AUTENTICAÇÃO
-// =============================================
-/**
- * Monta os headers incluindo JWT Bearer token, se disponível
- */
-function getAuthHeaders() {
-  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
-  const headers = { 'Content-Type': 'application/json' };
-  if (token) headers['Authorization'] = `Bearer ${token}`;
-  return headers;
-}
-
-// =============================================
-// UPLOAD DA NOTA FISCAL (FOTO)
+// UPLOAD NOTA FISCAL
 // =============================================
 function triggerNfUpload() {
   document.getElementById('nf_file_input').click();
@@ -155,34 +206,63 @@ function handleNfFile(event) {
   const file = event.target.files[0];
   if (!file) return;
 
-  const maxSize = 5 * 1024 * 1024; // 5 MB
-  if (file.size > maxSize) {
+  if (file.size > 5 * 1024 * 1024) {
     showToast('Arquivo muito grande. Máximo 5 MB.', 'error');
     return;
   }
 
-  nfFotoMimeType = file.type;
-
-  const reader = new FileReader();
-  reader.onload = (e) => {
-    // Armazena apenas a parte base64 (sem o prefixo data:...;base64,)
-    nfFotoBase64 = e.target.result.split(',')[1];
-    const label = document.getElementById('nf_filename_label');
-    if (label) label.textContent = file.name;
-    showToast('Foto da NF anexada com sucesso!', 'success');
-  };
-  reader.onerror = () => showToast('Erro ao ler o arquivo.', 'error');
-  reader.readAsDataURL(file);
+  nfArquivo = file;
+  const label = document.getElementById('nf_filename_label');
+  if (label) label.textContent = file.name;
+  showToast('Foto da NF selecionada!', 'success');
 }
 
 // =============================================
-// VALIDAÇÃO DO FORMULÁRIO
+// ENVIAR FOTO — POST /uploads (multipart/form-data)
 // =============================================
-/**
- * Valida os campos obrigatórios.
- * @returns {Object|null} payload válido ou null se inválido
- */
+async function enviarFotoNF() {
+  if (!nfArquivo) return null;
+
+  try {
+    const formData = new FormData();
+    formData.append('foto', nfArquivo);
+
+    const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+    const headers = {};
+    if (token) headers['Authorization'] = `Bearer ${token}`;
+    // NÃO define Content-Type — o browser define automaticamente com boundary
+
+    const resp = await fetch(`${API_BASE_URL}/uploads`, {
+      method: 'POST',
+      headers,
+      body: formData,
+    });
+
+    if (!resp.ok) {
+      console.warn('[enviarFotoNF] Falha no upload:', resp.status);
+      showToast('Aviso: falha ao enviar foto da NF. Abastecimento será salvo sem foto.', 'error');
+      return null;
+    }
+
+    // UploadController retorna o caminho como texto puro: "/uploads/NF/timestamp_nome.jpg"
+    return await resp.text();
+
+  } catch (err) {
+    console.warn('[enviarFotoNF]', err.message);
+    showToast('Aviso: erro ao enviar foto da NF. Abastecimento será salvo sem foto.', 'error');
+    return null;
+  }
+}
+
+// =============================================
+// VALIDAÇÃO
+// =============================================
 function validarFormulario() {
+  if (!_saidaAtiva) {
+    showToast('Sem saída ativa. Registre uma saída antes de abastecer.', 'error');
+    return null;
+  }
+
   const erros = [];
 
   const dataVal     = document.getElementById('Label_data_abastecer').value;
@@ -191,213 +271,157 @@ function validarFormulario() {
   const litros      = parseFloat(document.getElementById('Txf_litros_abastecer').value);
   const preco       = parseFloat(document.getElementById('Txf_preco_abastecer').value);
   const km          = parseFloat(document.getElementById('Txf_km_abastecer').value);
-  const completo    = document.getElementById('Btn_completo_abastecer').checked;
-  const nnf         = document.getElementById('Txf_nnf_abastecer').value.trim();
-  const postoNome   = document.getElementById('txf_posto_nome').value.trim();
-  const postoCidade = document.getElementById('txf_posto_cidade').value.trim();
+  const postoNome   = document.getElementById('txf_posto_nome')?.value.trim()   || '';
+  const postoCidade = document.getElementById('txf_posto_cidade')?.value.trim() || '';
+  const nnf         = document.getElementById('Txf_nnf_abastecer')?.value.trim() || '';
 
-  if (!dataVal)          erros.push('Data é obrigatória.');
-  if (!horaVal)          erros.push('Hora é obrigatória.');
-  if (!combustivel)      erros.push('Selecione o tipo de combustível.');
+  if (!dataVal)                     erros.push('Data é obrigatória.');
+  if (!horaVal)                     erros.push('Hora é obrigatória.');
+  if (!combustivel)                 erros.push('Selecione o tipo de combustível.');
   if (isNaN(litros) || litros <= 0) erros.push('Quantidade de litros inválida (deve ser > 0).');
   if (isNaN(preco)  || preco  <= 0) erros.push('Preço total inválido (deve ser > 0).');
   if (isNaN(km)     || km     <  0) erros.push('Odômetro inválido.');
+
+  // Odômetro não pode ser menor que o km da saída
+  if (_saidaAtiva.kmInicial && !isNaN(km) && km < _saidaAtiva.kmInicial) {
+    erros.push(`Odômetro (${km}) não pode ser menor que o KM de saída (${_saidaAtiva.kmInicial}).`);
+  }
 
   if (erros.length > 0) {
     showToast(erros.join('\n'), 'error');
     return null;
   }
 
-  // Monta data_hora no formato ISO 8601 para o Spring Boot
-  const dataHora = `${dataVal}T${horaVal}:00`;
-
-  // ID da saída: deve estar em sessão, vindo da tela anterior
-  const idSaida = parseInt(
-    sessionStorage.getItem('idSaida') || localStorage.getItem('idSaida') || '0', 10
-  );
-
-  if (!idSaida || idSaida === 0) {
-    showToast('ID de saída não encontrado. Volte e selecione uma saída.', 'error');
-    return null;
-  }
-
   return {
-    nota_fiscal:           nnf         || null,
-    foto:                  nfFotoBase64 ? `data:${nfFotoMimeType};base64,${nfFotoBase64}` : null,
-    abast_tipo_combustivel: combustivel,
-    data_hora:             dataHora,
-    km_abastecimento:      km,
-    quantidade_litros:     litros,
-    valor_total:           preco,
-    posto_nome:            postoNome   || null,
-    posto_cidade:          postoCidade || null,
-    id_saida:              idSaida,
-    abastecimento_completo: completo,  // campo extra p/ lógica de negócio
+    dataVal, horaVal, combustivel, litros, preco, km, postoNome, postoCidade, nnf,
+    idSaida: _saidaAtiva.idSaida,
   };
 }
 
 // =============================================
-// SALVAR ABASTECIMENTO — POST no Spring Boot
+// SALVAR ABASTECIMENTO
+// 1. Valida formulário
+// 2. Envia foto (se houver) → recebe caminho
+// 3. POST /abastecimento com payload completo
+// 4. Redireciona para tela_veiculos.html
 // =============================================
-/**
- * Envia o payload para o endpoint REST do Spring Boot.
- * POST /api/abastecimentos
- */
 async function salvarAbastecimento() {
-  const payload = validarFormulario();
-  if (!payload) return;
+  const campos = validarFormulario();
+  if (!campos) return;
 
   const btnSalvar = document.getElementById('Btn_salvar_abastecer');
   const overlay   = document.getElementById('loadingOverlay');
 
   try {
-    // Bloqueia UI
     btnSalvar.disabled = true;
-    overlay.classList.add('active');
+    if (overlay) overlay.classList.add('active');
 
-    const response = await fetch(`${API_BASE_URL}/abastecimentos`, {
+    // Passo 1: upload da foto (pode retornar null)
+    const fotoCaminho = await enviarFotoNF();
+
+    // Passo 2: monta payload — bate com AbastecimentoDTO.java
+    const payload = {
+      idSaida:          campos.idSaida,
+      dataHora:         `${campos.dataVal}T${campos.horaVal}:00`,
+      tipoCombustivel:  campos.combustivel,
+      quantidadeLitros: campos.litros,
+      valorTotal:       campos.preco,
+      kmAbastecimento:  campos.km,
+      postoNome:        campos.postoNome   || null,
+      postoCidade:      campos.postoCidade || null,
+      notaFiscal:       campos.nnf         || null,
+      foto:             fotoCaminho        || null,
+    };
+
+    // Passo 3: POST /abastecimento
+    const resp = await fetch(`${API_BASE_URL}/abastecimento`, {
       method:  'POST',
       headers: getAuthHeaders(),
       body:    JSON.stringify(payload),
     });
 
-    const data = await tryParseJson(response);
+    const data = await tryParseJson(resp);
 
-    if (response.ok || response.status === 201) {
+    if (resp.ok || resp.status === 201) {
       showToast('✔ Abastecimento salvo com sucesso!', 'success');
-      setTimeout(() => {
-        window.location.href = 'index.html';
-      }, 1800);
+      setTimeout(() => { window.location.href = 'tela_veiculos.html'; }, 1800);
     } else {
-      // Trata erros da API Spring Boot
-      const mensagem = extrairMensagemErro(data, response.status);
-      showToast(mensagem, 'error');
+      showToast(extrairMensagemErro(data, resp.status), 'error');
     }
 
   } catch (err) {
     console.error('[salvarAbastecimento]', err);
-    const msg = err.message?.includes('Failed to fetch')
-      ? 'Sem conexão com o servidor. Verifique a rede.'
-      : `Erro inesperado: ${err.message}`;
-    showToast(msg, 'error');
-
+    showToast(
+      err.message?.includes('Failed to fetch')
+        ? 'Sem conexão com o servidor.'
+        : `Erro inesperado: ${err.message}`,
+      'error'
+    );
   } finally {
     btnSalvar.disabled = false;
-    overlay.classList.remove('active');
+    if (overlay) overlay.classList.remove('active');
   }
 }
 
 // =============================================
 // HELPERS
 // =============================================
-
-/**
- * Tenta parsear JSON da response, sem lançar exceção
- */
-async function tryParseJson(response) {
-  try {
-    return await response.json();
-  } catch {
-    return null;
-  }
+function getAuthHeaders() {
+  const token = sessionStorage.getItem('token') || localStorage.getItem('token');
+  const h = { 'Content-Type': 'application/json' };
+  if (token) h['Authorization'] = `Bearer ${token}`;
+  return h;
 }
 
-/**
- * Extrai mensagem de erro da resposta do Spring Boot
- * Suporta os formatos: { message }, { error }, { errors: [] }
- */
+function getMatriculaUsuario() {
+  const raw = sessionStorage.getItem('matricula') || localStorage.getItem('matricula');
+  if (raw) return parseInt(raw, 10);
+  const usuario = getLocalJson('usuario');
+  return usuario?.matricula || null;
+}
+
+function getLocalJson(key) {
+  try {
+    const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
+    return raw ? JSON.parse(raw) : null;
+  } catch { return null; }
+}
+
+async function tryParseJson(resp) {
+  try { return await resp.json(); } catch { return null; }
+}
+
 function extrairMensagemErro(data, status) {
   if (!data) return `Erro ${status}: Resposta inesperada do servidor.`;
-
   if (typeof data === 'string') return data;
-
   if (data.message) return `Erro: ${data.message}`;
+  if (data.erro)    return `Erro: ${data.erro}`;
   if (data.error)   return `Erro: ${data.error}`;
-
-  // Spring Validation errors (MethodArgumentNotValidException)
-  if (data.errors && Array.isArray(data.errors)) {
+  if (Array.isArray(data.errors))
     return data.errors.map(e => e.defaultMessage || e.field).join('; ');
-  }
-
-  // Spring fieldErrors
-  if (data.fieldErrors && Array.isArray(data.fieldErrors)) {
-    return data.fieldErrors.map(e => `${e.field}: ${e.message}`).join('; ');
-  }
-
   return `Erro ${status}: Falha ao salvar abastecimento.`;
 }
 
 // =============================================
-// TOAST NOTIFICATION
+// TOAST
 // =============================================
-let toastTimer = null;
+let _toastTimer = null;
 
-/**
- * Exibe um toast com mensagem de sucesso ou erro
- * @param {string} msg
- * @param {'success'|'error'} tipo
- */
 function showToast(msg, tipo = 'success') {
-  // Remove toast anterior se existir
-  const antigo = document.getElementById('globalToast');
+  const antigo = document.getElementById('_toast');
   if (antigo) antigo.remove();
-  if (toastTimer) clearTimeout(toastTimer);
+  if (_toastTimer) clearTimeout(_toastTimer);
 
-  const toast = document.createElement('div');
-  toast.id        = 'globalToast';
-  toast.className = `toast ${tipo}`;
-  toast.textContent = msg;
+  const t = document.createElement('div');
+  t.id = '_toast';
+  t.className = `toast ${tipo}`;
+  t.textContent = msg;
+  document.body.appendChild(t);
 
-  document.body.appendChild(toast);
+  requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
 
-  // Força reflow para disparar transição CSS
-  requestAnimationFrame(() => {
-    requestAnimationFrame(() => toast.classList.add('show'));
-  });
-
-  const duracao = tipo === 'error' ? 4500 : 3000;
-  toastTimer = setTimeout(() => {
-    toast.classList.remove('show');
-    setTimeout(() => toast.remove(), 400);
-  }, duracao);
+  _toastTimer = setTimeout(() => {
+    t.classList.remove('show');
+    setTimeout(() => t.remove(), 400);
+  }, tipo === 'error' ? 4500 : 3000);
 }
-
-// =============================================
-// LAYOUT DESKTOP — reestrutura o form-card
-// =============================================
-/**
- * Em telas ≥ 768px, envolve as field-rows em um grid de 2 colunas.
- * As linhas especiais (datetime, toggle, nf) ficam com largura total.
- */
-function aplicarLayoutDesktop() {
-  if (window.innerWidth < 768) return;
-
-  const formCard = document.querySelector('.form-card');
-  if (!formCard || formCard.querySelector('.form-grid')) return;
-
-  const rows     = Array.from(formCard.querySelectorAll('.field-row:not(.datetime-row):not(.toggle-row)'));
-  const dividers = Array.from(formCard.querySelectorAll('.divider'));
-
-  const grid = document.createElement('div');
-  grid.className = 'form-grid';
-
-  // Inserir o grid antes do primeiro field-row simples
-  const firstSimpleRow = rows[0];
-  if (!firstSimpleRow) return;
-  formCard.insertBefore(grid, firstSimpleRow);
-
-  // Move os rows simples para dentro do grid (exceto datetime, toggle, nf)
-  rows.forEach(row => grid.appendChild(row));
-
-  // Move os dividers intermediários para o grid também
-  dividers.forEach(d => {
-    // Apenas os que estão dentro do grid range
-    if (grid.contains(d.nextSibling) || grid.contains(d.previousSibling)) {
-      grid.appendChild(d);
-    }
-  });
-}
-
-window.addEventListener('resize', () => {
-  aplicarLayoutDesktop();
-});

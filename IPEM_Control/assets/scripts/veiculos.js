@@ -3,95 +3,109 @@ const API_BASE = "http://localhost:8080";
 
 // ─── ESTADO ───────────────────────────────────────────────────────────────────
 let todosVeiculos = [];
-let filtroAtual = "todas";
-let buscaAtual = "";
+let filtroAtual   = "todas";
+let buscaAtual    = "";
 
 // ─── ELEMENTOS ────────────────────────────────────────────────────────────────
-const container   = document.getElementById("cards-container");
-const loading     = document.getElementById("loading");
-const emptyState  = document.getElementById("empty-state");
-
-const searchAdm    = document.getElementById("txf-search-adm");
-const searchMobile = document.getElementById("txf-search-mobile");
-const btnSearchAdm    = document.getElementById("btn-search-adm");
-const btnSearchMobile = document.getElementById("btn-search-mobile");
-
-const btnTodas = document.getElementById("btn-todos-adm");
-const btnDisp  = document.getElementById("btn-disp-adm");
-const btnUso   = document.getElementById("btn-uso-adm");
-
-const btnTodasMobile = document.getElementById("btn-todos-mobile");
-const btnDispMobile  = document.getElementById("btn-disp-mobile");
-const btnUsoMobile   = document.getElementById("btn-uso-mobile");
-
+const container          = document.getElementById("cards-container");
+const loading            = document.getElementById("loading");
+const emptyState         = document.getElementById("empty-state");
+const searchAdm          = document.getElementById("txf-search-adm");
+const searchMobile       = document.getElementById("txf-search-mobile");
+const btnSearchAdm       = document.getElementById("btn-search-adm");
+const btnSearchMobile    = document.getElementById("btn-search-mobile");
+const btnTodas           = document.getElementById("btn-todos-adm");
+const btnDisp            = document.getElementById("btn-disp-adm");
+const btnUso             = document.getElementById("btn-uso-adm");
+const btnTodasMobile     = document.getElementById("btn-todos-mobile");
+const btnDispMobile      = document.getElementById("btn-disp-mobile");
+const btnUsoMobile       = document.getElementById("btn-uso-mobile");
 const btnAbastecerMobile = document.getElementById("btn-abastecer-mobile");
 const btnSaidasMobile    = document.getElementById("btn-saidas-mobile");
 const btnLogoutMobile    = document.getElementById("btn-logout-mobile");
 const btnPerfilAdm       = document.getElementById("btn-perfil-adm");
 
 // ─── VERIFICAÇÃO DE SESSÃO ────────────────────────────────────────────────────
-const usuario = JSON.parse(sessionStorage.getItem("usuario"));
-if (!usuario) window.location.href = "./index.html";
+const usuarioLogado = JSON.parse(sessionStorage.getItem("usuario"));
+if (!usuarioLogado) window.location.href = "./index.html";
 
-// ─── FORMATAR DATA ────────────────────────────────────────────────────────────
-// Converte "2026-03-10" ou "2026-03-10T14:32:00" → "10/03/26"
-// Trata datas sem horário como locais para evitar erro de fuso UTC
-function formatarData(dataIso) {
-  if (!dataIso) return null;
+// ─── HEADERS ─────────────────────────────────────────────────────────────────
+function getAuthHeaders() {
+  const token = sessionStorage.getItem("token") || localStorage.getItem("token");
+  const h = { "Content-Type": "application/json" };
+  if (token) h["Authorization"] = `Bearer ${token}`;
+  return h;
+}
+
+function getMatriculaUsuario() {
+  const raw = sessionStorage.getItem("matricula") || localStorage.getItem("matricula");
+  if (raw) return parseInt(raw, 10);
+  return usuarioLogado?.matricula || null;
+}
+
+// ─── VERIFICAR SAÍDA ATIVA ────────────────────────────────────────────────────
+// Lógica:
+//   - Se o flag "permiteNavegar" estiver setado → o usuário veio intencionalmente
+//     de nova_entrada (clicou Voltar ou Descartar). Consome o flag e NÃO redireciona.
+//   - Se não tiver o flag e o usuário tiver saída ativa → redireciona para nova_entrada.
+//   - Se não tiver saída ativa → fluxo normal.
+//
+// O flag é gravado pela função sairDaTela() em nova_entrada.js e é de uso único.
+async function verificarSaidaAtivaDoUsuario() {
+  const matricula = getMatriculaUsuario();
+  if (!matricula) return;
+
+  
+  const permiteNavegar = sessionStorage.getItem("permiteNavegar") === "true";
+  sessionStorage.removeItem("permiteNavegar");
+
+  if (permiteNavegar) {
+    return;
+  }
+
   try {
-    const soData = String(dataIso).split("T")[0];
-    const [ano, mes, dia] = soData.split("-");
-    if (!ano || !mes || !dia) return null;
-    return `${dia}/${mes}/${String(ano).slice(-2)}`;
-  } catch {
-    return null;
+    const resp = await fetch(
+      `${API_BASE}/registro-saidas/ativo-usuario?matricula=${matricula}`,
+      { headers: getAuthHeaders() }
+    );
+
+    if (resp.status === 404) return; // sem saída ativa → fluxo normal
+
+    if (!resp.ok) {
+      console.warn("[verificarSaidaAtivaDoUsuario] status:", resp.status);
+      return;
+    }
+
+    const saida = await resp.json();
+    if (!saida || saida.status !== "em_andamento") return;
+
+    // Salva dados da saída para nova_entrada.js
+    const idVeiculo = saida.veiculo?.idVeiculo ?? null;
+    sessionStorage.setItem("idSaida",              saida.idSaida);
+    sessionStorage.setItem("veiculoSelecionadoId", idVeiculo);
+    sessionStorage.setItem("veiculoSelecionado",   JSON.stringify(saida.veiculo || {}));
+    localStorage.setItem("idSaida",                saida.idSaida);
+    localStorage.setItem("veiculoSelecionadoId",   idVeiculo);
+
+    window.location.href = "./nova_entrada.html";
+
+  } catch (err) {
+    console.warn("[verificarSaidaAtivaDoUsuario] erro de rede:", err.message);
   }
 }
 
-// ─── NORMALIZAR VEÍCULO ───────────────────────────────────────────────────────
-// O DTO retorna: id_veiculo, modelo, prefixo, ultimoUso (dd/mm/aa),
-// ultimoAbastecimento, km (string), status ("disponivel" | "em_uso")
-function normalizarVeiculo(v) {
-  const status = v.status || (v.disponivel ? "disponivel" : "em_uso");
-
-  const km = v.km && v.km !== "—"
-    ? v.km
-    : v.km_atual != null
-      ? Number(v.km_atual).toLocaleString("pt-BR")
-      : "—";
-
-  const ultimoUso = v.ultimoUso
-    || formatarData(v.data_hora_saida)
-    || formatarData(v.updated_at)
-    || "—";
-
-  const ultimoAbastecimento = v.ultimoAbastecimento
-    || formatarData(v.ultimo_abastecimento)
-    || "—";
-
-  return { ...v, status, km, ultimoUso, ultimoAbastecimento };
-}
-
-// ─── BUSCAR VEÍCULOS DA API ───────────────────────────────────────────────────
+// ─── BUSCAR VEÍCULOS ──────────────────────────────────────────────────────────
 async function carregarVeiculos() {
   mostrarLoading(true);
   try {
-    const token = sessionStorage.getItem("token") || localStorage.getItem("token");
-    const headers = { "Content-Type": "application/json" };
-    if (token) headers["Authorization"] = `Bearer ${token}`;
-
-    const response = await fetch(`${API_BASE}/veiculos`, { headers });
-    if (!response.ok) throw new Error(`Erro ${response.status} ao buscar veículos`);
-
+    const response = await fetch(`${API_BASE}/veiculos`, { headers: getAuthHeaders() });
+    if (!response.ok) throw new Error(`Erro ${response.status}`);
     const dados = await response.json();
-    const lista = Array.isArray(dados) ? dados : dados.content || [];
-
-    todosVeiculos = lista.map(normalizarVeiculo);
+    todosVeiculos = Array.isArray(dados) ? dados : (dados.content || []);
     renderizarCards();
   } catch (erro) {
     console.error("Erro ao carregar veículos:", erro);
-    todosVeiculos = mockVeiculos();
-    renderizarCards();
+    container.innerHTML = '<p style="padding:1rem;color:#888;">Erro ao carregar veículos. Verifique a conexão.</p>';
   } finally {
     mostrarLoading(false);
   }
@@ -99,24 +113,20 @@ async function carregarVeiculos() {
 
 // ─── RENDERIZAR CARDS ─────────────────────────────────────────────────────────
 function renderizarCards() {
-  container.querySelectorAll(".veiculo-card").forEach((c) => c.remove());
-
+  container.querySelectorAll(".veiculo-card").forEach(c => c.remove());
   const filtrados = filtrarVeiculos();
 
   if (filtrados.length === 0) {
     emptyState.style.display = "flex";
     return;
   }
-
   emptyState.style.display = "none";
-  filtrados.forEach((veiculo, index) => {
-    container.appendChild(criarCard(veiculo, index));
-  });
+  filtrados.forEach((veiculo, index) => container.appendChild(criarCard(veiculo, index)));
 }
 
 // ─── FILTRAR ──────────────────────────────────────────────────────────────────
 function filtrarVeiculos() {
-  return todosVeiculos.filter((v) => {
+  return todosVeiculos.filter(v => {
     const matchFiltro = filtroAtual === "todas" || v.status === filtroAtual;
     const matchBusca  = buscaAtual === ""
       || (v.modelo  || "").toLowerCase().includes(buscaAtual.toLowerCase())
@@ -154,22 +164,20 @@ function criarCard(veiculo, index) {
         </div>
       </div>
     </div>
-
     <div class="card-body">
       <div class="card-info-row">
         <span class="card-info-label">Último uso em:</span>
-        <span class="card-info-value">${veiculo.ultimoUso}</span>
+        <span class="card-info-value">${veiculo.ultimoUso || "—"}</span>
       </div>
       <div class="card-info-row">
         <span class="card-info-label">Último abastecimento:</span>
-        <span class="card-info-value">${veiculo.ultimoAbastecimento}</span>
+        <span class="card-info-value">${veiculo.ultimoAbastecimento || "—"}</span>
       </div>
       <div class="card-info-row">
         <span class="card-info-label">KM:</span>
-        <span class="card-info-value">${veiculo.km}</span>
+        <span class="card-info-value">${veiculo.km || "—"}</span>
       </div>
     </div>
-
     <div class="card-footer">
       <div class="card-status ${eEmUso ? "em_uso" : "disponivel"}">
         <span class="status-dot ${eEmUso ? "em_uso" : "disponivel"}"></span>
@@ -180,8 +188,8 @@ function criarCard(veiculo, index) {
   `;
 
   if (!eEmUso) {
-    card.addEventListener("click", () => selecionarVeiculo(veiculo));
-    card.addEventListener("keydown", (e) => {
+    card.addEventListener("click",   () => selecionarVeiculo(veiculo));
+    card.addEventListener("keydown", e => {
       if (e.key === "Enter" || e.key === " ") selecionarVeiculo(veiculo);
     });
   }
@@ -191,8 +199,10 @@ function criarCard(veiculo, index) {
 
 // ─── SELECIONAR VEÍCULO ───────────────────────────────────────────────────────
 function selecionarVeiculo(veiculo) {
-  sessionStorage.setItem("veiculoSelecionado", JSON.stringify(veiculo));
-  sessionStorage.setItem("veiculoSelecionadoId", veiculo.id_veiculo || veiculo.id || "");
+  sessionStorage.setItem("veiculoSelecionado",   JSON.stringify(veiculo));
+  sessionStorage.setItem("veiculoSelecionadoId", veiculo.idVeiculo);
+  sessionStorage.removeItem("idSaida");
+  localStorage.removeItem("idSaida");
   window.location.href = "./nova_saida.html";
 }
 
@@ -204,9 +214,8 @@ function mostrarLoading(show) {
 // ─── FILTROS ──────────────────────────────────────────────────────────────────
 function setFiltro(filtro) {
   filtroAtual = filtro;
-
   [btnTodas, btnDisp, btnUso, btnTodasMobile, btnDispMobile, btnUsoMobile]
-    .forEach((b) => b?.classList.remove("active"));
+    .forEach(b => b?.classList.remove("active"));
 
   if (filtro === "todas")      { btnTodas?.classList.add("active"); btnTodasMobile?.classList.add("active"); }
   if (filtro === "disponivel") { btnDisp?.classList.add("active");  btnDispMobile?.classList.add("active");  }
@@ -215,10 +224,9 @@ function setFiltro(filtro) {
   renderizarCards();
 }
 
-btnTodas?.addEventListener("click", () => setFiltro("todas"));
-btnDisp?.addEventListener("click",  () => setFiltro("disponivel"));
-btnUso?.addEventListener("click",   () => setFiltro("em_uso"));
-
+btnTodas?.addEventListener("click",       () => setFiltro("todas"));
+btnDisp?.addEventListener("click",        () => setFiltro("disponivel"));
+btnUso?.addEventListener("click",         () => setFiltro("em_uso"));
 btnTodasMobile?.addEventListener("click", () => setFiltro("todas"));
 btnDispMobile?.addEventListener("click",  () => setFiltro("disponivel"));
 btnUsoMobile?.addEventListener("click",   () => setFiltro("em_uso"));
@@ -229,58 +237,44 @@ function executarBusca(valor) {
   renderizarCards();
 }
 
-btnSearchAdm?.addEventListener("click", () => executarBusca(searchAdm.value));
+btnSearchAdm?.addEventListener("click",    () => executarBusca(searchAdm.value));
 btnSearchMobile?.addEventListener("click", () => executarBusca(searchMobile.value));
-
-searchAdm?.addEventListener("keyup", (e) => {
-  if (e.key === "Enter" || searchAdm.value === "") executarBusca(searchAdm.value);
-});
-searchMobile?.addEventListener("keyup", (e) => {
-  if (e.key === "Enter" || searchMobile.value === "") executarBusca(searchMobile.value);
-});
+searchAdm?.addEventListener("keyup",    e => { if (e.key === "Enter" || !searchAdm.value)    executarBusca(searchAdm.value); });
+searchMobile?.addEventListener("keyup", e => { if (e.key === "Enter" || !searchMobile.value) executarBusca(searchMobile.value); });
 
 // ─── BOTTOM NAV MOBILE ────────────────────────────────────────────────────────
-btnAbastecerMobile?.addEventListener("click", () => { window.location.href = "./abastecer.html"; });
-btnSaidasMobile?.addEventListener("click",    () => { window.location.href = "./saidas.html"; });
+btnAbastecerMobile?.addEventListener("click", () => {
+  // Grava o flag para não redirecionar ao voltar desta tela
+  sessionStorage.setItem("permiteNavegar", "true");
+  window.location.href = "./abastecer.html";
+});
+btnSaidasMobile?.addEventListener("click", () => { window.location.href = "./saidas.html"; });
 
 // ─── LOGOUT / PERFIL ──────────────────────────────────────────────────────────
-btnLogoutMobile?.addEventListener("click", () => {
-  sessionStorage.clear();
-  window.location.href = "./index.html";
-});
+btnLogoutMobile?.addEventListener("click", () => { sessionStorage.clear(); window.location.href = "./index.html"; });
+btnPerfilAdm?.addEventListener("click", e => { e.preventDefault(); sessionStorage.clear(); window.location.href = "./index.html"; });
 
-btnPerfilAdm?.addEventListener("click", (e) => {
-  e.preventDefault();
-  sessionStorage.clear();
-  window.location.href = "./index.html";
-});
-
-// ─── DROPDOWN MENU (desktop) ──────────────────────────────────────────────────
-document.querySelectorAll(".dropdown").forEach((dropdown) => {
+// ─── DROPDOWN DESKTOP ─────────────────────────────────────────────────────────
+document.querySelectorAll(".dropdown").forEach(dropdown => {
   const btn     = dropdown.querySelector(".dropdown-btn");
   const submenu = dropdown.querySelector(".submenu");
   const arrow   = btn.querySelector(".arrow");
 
-  btn.addEventListener("click", (e) => {
+  btn.addEventListener("click", e => {
     e.stopPropagation();
-    const estaAberto = submenu.classList.contains("open");
-
-    document.querySelectorAll(".submenu").forEach((s) => s.classList.remove("open"));
-    document.querySelectorAll(".dropdown-btn .arrow").forEach((a) => a.classList.remove("rotate"));
-
-    if (!estaAberto) {
-      submenu.classList.add("open");
-      arrow.classList.add("rotate");
-    }
+    const aberto = submenu.classList.contains("open");
+    document.querySelectorAll(".submenu").forEach(s => s.classList.remove("open"));
+    document.querySelectorAll(".dropdown-btn .arrow").forEach(a => a.classList.remove("rotate"));
+    if (!aberto) { submenu.classList.add("open"); arrow.classList.add("rotate"); }
   });
 });
 
 document.addEventListener("click", () => {
-  document.querySelectorAll(".submenu").forEach((s) => s.classList.remove("open"));
-  document.querySelectorAll(".dropdown-btn .arrow").forEach((a) => a.classList.remove("rotate"));
+  document.querySelectorAll(".submenu").forEach(s => s.classList.remove("open"));
+  document.querySelectorAll(".dropdown-btn .arrow").forEach(a => a.classList.remove("rotate"));
 });
 
-// ─── HAMBURGER / MOBILE NAV ───────────────────────────────────────────────────
+// ─── HAMBURGER MOBILE ─────────────────────────────────────────────────────────
 const hamburger = document.getElementById("hamburger");
 const mobileNav = document.getElementById("mobile-nav");
 
@@ -289,14 +283,17 @@ hamburger?.addEventListener("click", () => {
   mobileNav.classList.toggle("open");
 });
 
-document.querySelectorAll(".mobile-section-title").forEach((title) => {
+document.querySelectorAll(".mobile-section-title").forEach(title => {
   title.addEventListener("click", () => {
     const sub   = document.getElementById(title.dataset.target);
     const arrow = title.querySelector(".arrow");
-    sub.classList.toggle("open");
-    arrow.classList.toggle("rotate");
+    sub?.classList.toggle("open");
+    arrow?.classList.toggle("rotate");
   });
 });
 
 // ─── INIT ─────────────────────────────────────────────────────────────────────
-carregarVeiculos();
+(async () => {
+  await verificarSaidaAtivaDoUsuario();
+  carregarVeiculos();
+})();

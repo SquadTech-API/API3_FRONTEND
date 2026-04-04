@@ -1,24 +1,8 @@
-/**
- * nova_entrada.js
- * Tela: Registrar Retorno
- * Integração completa com Spring Boot
- * Operação: PATCH /api/registro-saidas/{id}/retorno
- *
- * Campos automáticos (vindos da última saída do veículo):
- *   - Data e hora de retorno → agora (preenchido ao carregar)
- *   - Serviço → saida.tipoServico.nome_servico
- *   - Destino → saida.local_destino
- *   - Data/hora da saída → saida.data_hora_saida (formatada)
- *
- * Único campo que o usuário preenche: Odômetro final
- */
-
 // =============================================
 // CONFIGURAÇÃO
 // =============================================
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://localhost:8080';
 
-// Dados da saída ativa (usados na validação)
 let _saidaAtual = null;
 
 // =============================================
@@ -29,11 +13,19 @@ document.addEventListener('DOMContentLoaded', () => {
   carregarDadosUsuario();
   carregarDadosVeiculo();
   carregarDadosSaida();
-  // REMOVIDO: aplicarLayoutDesktop() — grid já está estático no HTML
 });
 
 // =============================================
-// DATA E HORA DE RETORNO = AGORA (automático)
+// SAIR DA TELA — 
+// =============================================
+
+function sairDaTela() {
+  sessionStorage.setItem('permiteNavegar', 'true');
+  window.location.href = 'tela_veiculos.html';
+}
+
+// =============================================
+// DATA E HORA DE RETORNO = AGORA
 // =============================================
 function initDateTimeRetorno() {
   const now  = new Date();
@@ -53,20 +45,20 @@ function initDateTimeRetorno() {
 // USUÁRIO LOGADO
 // =============================================
 async function carregarDadosUsuario() {
+  const local = getLocalJson('usuario');
+  if (local) { preencherMotorista(local); return; }
   try {
     const resp = await fetch(`${API_BASE_URL}/auth/me`, { headers: getAuthHeaders() });
-    if (!resp.ok) throw new Error('Não autenticado');
-    const usuario = await resp.json();
-    preencherMotorista(usuario);
+    if (!resp.ok) throw new Error();
+    preencherMotorista(await resp.json());
   } catch {
-    const local = getLocalJson('usuario');
-    if (local) preencherMotorista(local);
+    preencherMotorista({ nomeCompleto: 'Motorista' });
   }
 }
 
-function preencherMotorista(usuario) {
+function preencherMotorista(u) {
   const el = document.getElementById('Label_motorista_saida');
-  if (el) el.textContent = usuario.nome || usuario.name || 'Motorista';
+  if (el) el.textContent = u.nomeCompleto || u.nome || 'Motorista';
 }
 
 // =============================================
@@ -75,18 +67,15 @@ function preencherMotorista(usuario) {
 async function carregarDadosVeiculo() {
   const veiculoId = sessionStorage.getItem('veiculoSelecionadoId')
                  || localStorage.getItem('veiculoSelecionadoId');
-
   if (!veiculoId) {
     const local = getLocalJson('veiculoSelecionado');
     if (local) preencherVeiculo(local);
     return;
   }
-
   try {
     const resp = await fetch(`${API_BASE_URL}/veiculos/${veiculoId}`, { headers: getAuthHeaders() });
-    if (!resp.ok) throw new Error('Erro ao carregar veículo');
-    const veiculo = await resp.json();
-    preencherVeiculo(veiculo);
+    if (!resp.ok) throw new Error();
+    preencherVeiculo(await resp.json());
   } catch {
     const local = getLocalJson('veiculoSelecionado');
     if (local) preencherVeiculo(local);
@@ -96,76 +85,62 @@ async function carregarDadosVeiculo() {
 function preencherVeiculo(v) {
   const prefix = document.getElementById('Label_prefix_retorno');
   const modelo = document.getElementById('Label_modelo_retorno');
-  if (prefix) prefix.textContent = v.prefixo || v.placa || 'Viatura';
-  if (modelo) modelo.textContent = v.modelo  || '—';
+  if (prefix) prefix.textContent = `Viatura ${v.prefixo || v.placa || '—'}`;
+  if (modelo) modelo.textContent = v.modelo || '—';
 }
 
 // =============================================
 // CARREGAR DADOS DA SAÍDA ATIVA
-// Preenche automaticamente: serviço, destino e data/hora da saída
 // =============================================
 async function carregarDadosSaida() {
-  let idSaida = parseInt(
+  const idSaida = parseInt(
     sessionStorage.getItem('idSaida') || localStorage.getItem('idSaida') || '0', 10
   );
 
-  // Fallback: busca saída ativa do veículo pela API
   if (!idSaida) {
-    const veiculoId = sessionStorage.getItem('veiculoSelecionadoId')
-                   || localStorage.getItem('veiculoSelecionadoId');
-    if (veiculoId) {
-      idSaida = await buscarSaidaAtivaPorVeiculo(veiculoId);
-    }
-  }
-
-  if (!idSaida) {
-    preencherCamposSaida(null);
+    const matricula = getMatriculaUsuario();
+    if (matricula) await buscarSaidaAtivaPorUsuario(matricula);
+    else preencherCamposSaida(null);
     return;
   }
 
   try {
-    const resp = await fetch(`${API_BASE_URL}/registro-saidas/${idSaida}`, {
-      headers: getAuthHeaders(),
-    });
-    if (!resp.ok) throw new Error('Registro de saída não encontrado');
+    const resp = await fetch(`${API_BASE_URL}/registro-saidas/${idSaida}`, { headers: getAuthHeaders() });
+    if (!resp.ok) throw new Error();
     const saida = await resp.json();
     _saidaAtual = saida;
     preencherCamposSaida(saida);
-  } catch (err) {
-    console.warn('[carregarDadosSaida]', err.message);
+  } catch {
     preencherCamposSaida(null);
   }
 }
 
-async function buscarSaidaAtivaPorVeiculo(veiculoId) {
+async function buscarSaidaAtivaPorUsuario(matricula) {
   try {
     const resp = await fetch(
-      `${API_BASE_URL}/registro-saidas/ativo?veiculoId=${veiculoId}`,
+      `${API_BASE_URL}/registro-saidas/ativo-usuario?matricula=${matricula}`,
       { headers: getAuthHeaders() }
     );
-    if (!resp.ok) return 0;
-    const data = await resp.json();
-    const id = data?.id_saida || data?.id || 0;
-    if (id) {
-      sessionStorage.setItem('idSaida', id);
-      localStorage.setItem('idSaida', id);
+    if (!resp.ok) { preencherCamposSaida(null); return; }
+    const saida = await resp.json();
+    if (saida?.status === 'em_andamento') {
+      _saidaAtual = saida;
+      sessionStorage.setItem('idSaida', saida.idSaida);
+      localStorage.setItem('idSaida',   saida.idSaida);
+      preencherCamposSaida(saida);
+    } else {
+      preencherCamposSaida(null);
     }
-    return id;
-  } catch { return 0; }
+  } catch {
+    preencherCamposSaida(null);
+  }
 }
 
-/**
- * Preenche os campos readonly com os dados da saída ativa:
- *   - Serviço realizado
- *   - Destino / local
- *   - Data e hora da saída (formatada em pt-BR)
- * e define o valor mínimo do odômetro final.
- */
 function preencherCamposSaida(saida) {
-  const servicoEl  = document.getElementById('Label_servico_retorno');
-  const destinoEl  = document.getElementById('Label_destino_retorno');
+  const servicoEl   = document.getElementById('Label_servico_retorno');
+  const destinoEl   = document.getElementById('Label_destino_retorno');
   const dataSaidaEl = document.getElementById('Label_datasaida_retorno');
-  const kmEl       = document.getElementById('Txf_km_retorno');
+  const kmEl        = document.getElementById('Txf_km_retorno');
 
   if (!saida) {
     if (servicoEl)   servicoEl.value   = 'Não encontrado';
@@ -174,32 +149,22 @@ function preencherCamposSaida(saida) {
     return;
   }
 
-  // Serviço
-  const nomeServico = saida.tipoServico?.nome_servico
-                   || saida.tipo_servico?.nome_servico
-                   || saida.nome_servico
-                   || `Serviço #${saida.id_tipo_servico || '—'}`;
-  if (servicoEl) servicoEl.value = nomeServico;
+  if (servicoEl)
+    servicoEl.value = saida.tipoServico?.nomeServico || saida.tipoServico?.nome_servico || '—';
 
-  // Destino
-  if (destinoEl) destinoEl.value = saida.local_destino || '—';
+  if (destinoEl)
+    destinoEl.value = saida.localDestino || '—';
 
-  // Data/hora da saída formatada
-  if (dataSaidaEl && saida.data_hora_saida) {
-    const dt = new Date(saida.data_hora_saida);
-    dataSaidaEl.value = dt.toLocaleString('pt-BR', {
-      day:    '2-digit',
-      month:  '2-digit',
-      year:   'numeric',
-      hour:   '2-digit',
-      minute: '2-digit',
+  if (dataSaidaEl && saida.dataHoraSaida) {
+    dataSaidaEl.value = new Date(saida.dataHoraSaida).toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
     });
   }
 
-  // Define km_inicial como mínimo do odômetro de retorno
-  if (saida.km_inicial && kmEl) {
-    kmEl.min = saida.km_inicial;
-    kmEl.placeholder = `Mín: ${saida.km_inicial}`;
+  if (saida.kmInicial != null && kmEl) {
+    kmEl.min         = saida.kmInicial;
+    kmEl.placeholder = `Mín: ${saida.kmInicial}`;
   }
 }
 
@@ -208,7 +173,6 @@ function preencherCamposSaida(saida) {
 // =============================================
 function validarFormulario() {
   const erros = [];
-
   const dataVal = document.getElementById('Label_data_retorno').value;
   const horaVal = document.getElementById('Label_hora_retorno').value;
   const km      = parseFloat(document.getElementById('Txf_km_retorno').value);
@@ -217,42 +181,26 @@ function validarFormulario() {
   if (!horaVal)             erros.push('Hora de retorno é obrigatória.');
   if (isNaN(km) || km < 0) erros.push('Odômetro final inválido.');
 
-  // km_final >= km_inicial
-  if (_saidaAtual?.km_inicial && !isNaN(km) && km < _saidaAtual.km_inicial) {
-    erros.push(
-      `Odômetro final (${km}) não pode ser menor que o odômetro de saída (${_saidaAtual.km_inicial}).`
-    );
-  }
+  if (_saidaAtual?.kmInicial != null && !isNaN(km) && km < _saidaAtual.kmInicial)
+    erros.push(`Odômetro final (${km}) não pode ser menor que o de saída (${_saidaAtual.kmInicial}).`);
 
   const idSaida = parseInt(
     sessionStorage.getItem('idSaida') || localStorage.getItem('idSaida') || '0', 10
   );
-  if (!idSaida) erros.push('ID de saída não encontrado. Volte e inicie uma saída.');
+  if (!idSaida) erros.push('ID de saída não encontrado.');
 
-  // data_retorno >= data_hora_saida
-  if (_saidaAtual?.data_hora_saida && dataVal && horaVal) {
-    const dtRetorno = new Date(`${dataVal}T${horaVal}:00`);
-    const dtSaida   = new Date(_saidaAtual.data_hora_saida);
-    if (dtRetorno < dtSaida) {
-      erros.push('Data/hora de retorno não pode ser anterior à data/hora de saída.');
-    }
+  if (_saidaAtual?.dataHoraSaida && dataVal && horaVal) {
+    if (new Date(`${dataVal}T${horaVal}:00`) < new Date(_saidaAtual.dataHoraSaida))
+      erros.push('Data/hora de retorno não pode ser anterior à saída.');
   }
 
-  if (erros.length > 0) {
-    showToast(erros.join('\n'), 'error');
-    return null;
-  }
+  if (erros.length > 0) { showToast(erros.join('\n'), 'error'); return null; }
 
-  return {
-    data_retorno: `${dataVal}T${horaVal}:00`,
-    km_final:     km,
-    status:       'concluido',
-    id_saida:     idSaida,
-  };
+  return { kmFinal: km, dataRetorno: `${dataVal}T${horaVal}:00`, id_saida: idSaida };
 }
 
 // =============================================
-// SALVAR RETORNO — PATCH /api/registro-saidas/{id}/retorno
+// SALVAR RETORNO
 // =============================================
 async function salvarRetorno() {
   const payload = validarFormulario();
@@ -268,34 +216,33 @@ async function salvarRetorno() {
     const resp = await fetch(
       `${API_BASE_URL}/registro-saidas/${payload.id_saida}/retorno`,
       {
-        method:  'PATCH',
+        method: 'PATCH',
         headers: getAuthHeaders(),
-        body: JSON.stringify({
-          data_retorno: payload.data_retorno,
-          km_final:     payload.km_final,
-          status:       payload.status,
-        }),
+        body: JSON.stringify({ kmFinal: payload.kmFinal, dataRetorno: payload.dataRetorno }),
       }
     );
 
     const data = await tryParseJson(resp);
 
     if (resp.ok || resp.status === 200) {
+      // Limpa tudo relacionado à saída
       sessionStorage.removeItem('idSaida');
+      sessionStorage.removeItem('veiculoSelecionadoId');
+      sessionStorage.removeItem('veiculoSelecionado');
+      sessionStorage.removeItem('permiteNavegar');
       localStorage.removeItem('idSaida');
+      localStorage.removeItem('veiculoSelecionadoId');
 
       showToast('✔ Retorno registrado com sucesso!', 'success');
-      setTimeout(() => { window.location.href = 'index.html'; }, 1800);
+      setTimeout(() => { window.location.href = 'tela_veiculos.html'; }, 1800);
     } else {
       showToast(extrairMensagemErro(data, resp.status), 'error');
     }
-
   } catch (err) {
-    console.error('[salvarRetorno]', err);
-    const msg = err.message?.includes('Failed to fetch')
-      ? 'Sem conexão com o servidor.'
-      : `Erro inesperado: ${err.message}`;
-    showToast(msg, 'error');
+    showToast(
+      err.message?.includes('Failed to fetch') ? 'Sem conexão com o servidor.' : `Erro: ${err.message}`,
+      'error'
+    );
   } finally {
     btnSalvar.disabled = false;
     overlay.classList.remove('active');
@@ -312,6 +259,12 @@ function getAuthHeaders() {
   return h;
 }
 
+function getMatriculaUsuario() {
+  const raw = sessionStorage.getItem('matricula') || localStorage.getItem('matricula');
+  if (raw) return parseInt(raw, 10);
+  return getLocalJson('usuario')?.matricula || null;
+}
+
 function getLocalJson(key) {
   try {
     const raw = sessionStorage.getItem(key) || localStorage.getItem(key);
@@ -324,14 +277,12 @@ async function tryParseJson(resp) {
 }
 
 function extrairMensagemErro(data, status) {
-  if (!data) return `Erro ${status}: Resposta inesperada.`;
+  if (!data) return `Erro ${status}.`;
   if (typeof data === 'string') return data;
   if (data.message) return `Erro: ${data.message}`;
+  if (data.erro)    return `Erro: ${data.erro}`;
   if (data.error)   return `Erro: ${data.error}`;
-  if (Array.isArray(data.errors))
-    return data.errors.map(e => e.defaultMessage || e.field).join('; ');
-  if (Array.isArray(data.fieldErrors))
-    return data.fieldErrors.map(e => `${e.field}: ${e.message}`).join('; ');
+  if (Array.isArray(data.errors)) return data.errors.map(e => e.defaultMessage || e.field).join('; ');
   return `Erro ${status}: Falha ao registrar retorno.`;
 }
 
@@ -352,7 +303,6 @@ function showToast(msg, tipo = 'success') {
   document.body.appendChild(t);
 
   requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
-
   _toastTimer = setTimeout(() => {
     t.classList.remove('show');
     setTimeout(() => t.remove(), 400);

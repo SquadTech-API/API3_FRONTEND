@@ -1,7 +1,7 @@
 // =============================================
 // CONFIGURAÇÃO
 // =============================================
-const API_BASE_URL = 'http://localhost:8080/api';
+const API_BASE_URL = 'http://localhost:8080';
 
 // =============================================
 // INICIALIZAÇÃO
@@ -11,6 +11,7 @@ document.addEventListener('DOMContentLoaded', () => {
   carregarDadosUsuario();
   carregarDadosVeiculo();
   carregarServicos();
+  verificarSaidaAtivaDoUsuario(); // bloqueia o form se já houver saída em aberto
 });
 
 // =============================================
@@ -31,23 +32,121 @@ function initDateTimeDefaults() {
 }
 
 // =============================================
+// VERIFICAR SAÍDA ATIVA DO USUÁRIO
+// Se já tiver uma saída em andamento:
+//   - Exibe aviso no topo do formulário
+//   - Desabilita o botão Salvar
+//   - Exibe botão para ir direto ao retorno
+// =============================================
+async function verificarSaidaAtivaDoUsuario() {
+  const matricula = getMatriculaUsuario();
+  if (!matricula) return;
+
+  try {
+    const resp = await fetch(
+      `${API_BASE_URL}/registro-saidas/ativo-usuario?matricula=${matricula}`,
+      { headers: getAuthHeaders() }
+    );
+
+    if (resp.status === 404) return; // sem saída ativa — tudo certo
+
+    if (!resp.ok) return;
+
+    const saida = await resp.json();
+    if (!saida || saida.status !== 'em_andamento') return;
+
+    // Saída ativa encontrada — bloqueia o formulário
+    bloquearFormularioPorSaidaAtiva(saida);
+
+  } catch {
+    // Falha de rede: não bloqueia (deixa o backend rejeitar se necessário)
+  }
+}
+
+// Bloqueia visualmente o formulário e exibe aviso claro para o usuário
+function bloquearFormularioPorSaidaAtiva(saida) {
+  // Desabilita o botão Salvar
+  const btnSalvar = document.getElementById('Btn_salvar_saida');
+  if (btnSalvar) {
+    btnSalvar.disabled = true;
+    btnSalvar.style.opacity = '0.5';
+    btnSalvar.style.cursor  = 'not-allowed';
+  }
+
+  // Cria o banner de aviso acima do form-card
+  const formCard = document.querySelector('.form-card');
+  if (!formCard) return;
+
+  const banner = document.createElement('div');
+  banner.id = 'aviso-saida-ativa';
+  banner.style.cssText = `
+    background: #fff3cd;
+    border: 1.5px solid #ffc107;
+    border-radius: 10px;
+    padding: 14px 16px;
+    margin-bottom: 12px;
+    font-size: 13px;
+    color: #7d5a00;
+    line-height: 1.5;
+  `;
+
+  // Formata a data da saída para exibição
+  let dataSaidaFormatada = '—';
+  if (saida.dataHoraSaida) {
+    dataSaidaFormatada = new Date(saida.dataHoraSaida).toLocaleString('pt-BR', {
+      day: '2-digit', month: '2-digit', year: 'numeric',
+      hour: '2-digit', minute: '2-digit',
+    });
+  }
+
+  const nomeServico = saida.tipoServico?.nomeServico
+                   || saida.tipoServico?.nome_servico
+                   || '—';
+
+  banner.innerHTML = `
+    <strong>⚠ Você já possui uma saída em andamento</strong><br>
+    Serviço: <strong>${nomeServico}</strong><br>
+    Saída em: <strong>${dataSaidaFormatada}</strong><br>
+    Registre o retorno antes de iniciar uma nova saída.
+    <br><br>
+    <button
+      onclick="irParaRetorno()"
+      style="
+        background:#ffc107; border:none; border-radius:6px;
+        padding:8px 16px; font-weight:600; cursor:pointer;
+        color:#7d5a00; font-size:13px;
+      "
+    >
+      → Registrar retorno agora
+    </button>
+  `;
+
+  formCard.parentNode.insertBefore(banner, formCard);
+}
+
+// Redireciona para nova_entrada.html salvando os dados da saída ativa na sessão
+function irParaRetorno() {
+  window.location.href = './nova_entrada.html';
+}
+
+// =============================================
 // USUÁRIO LOGADO
 // =============================================
 async function carregarDadosUsuario() {
+  const local = getLocalJson('usuario');
+  if (local) { preencherMotorista(local); return; }
   try {
     const resp = await fetch(`${API_BASE_URL}/auth/me`, { headers: getAuthHeaders() });
-    if (!resp.ok) throw new Error('Não autenticado');
-    const usuario = await resp.json();
-    preencherMotorista(usuario);
+    if (!resp.ok) throw new Error();
+    preencherMotorista(await resp.json());
   } catch {
-    const local = getLocalJson('usuario');
-    if (local) preencherMotorista(local);
+    preencherMotorista({ nomeCompleto: 'Motorista' });
   }
 }
 
 function preencherMotorista(usuario) {
   const el = document.getElementById('Label_motorista_saida');
-  if (el) el.textContent = usuario.nome || usuario.name || 'Motorista';
+  if (el) el.textContent = usuario.nomeCompleto || usuario.nome || 'Motorista';
 }
 
 // =============================================
@@ -65,14 +164,14 @@ async function carregarDadosVeiculo() {
 
   try {
     const resp = await fetch(`${API_BASE_URL}/veiculos/${veiculoId}`, { headers: getAuthHeaders() });
-    if (!resp.ok) throw new Error('Erro ao carregar veículo');
+    if (!resp.ok) throw new Error();
     const veiculo = await resp.json();
+    sessionStorage.setItem('veiculoSelecionado', JSON.stringify(veiculo));
     preencherVeiculo(veiculo);
 
-    // Salva km atual como sugestão para o odômetro
-    if (veiculo.km_atual) {
+    if (veiculo.kmAtual != null) {
       const kmInput = document.getElementById('Txf_km_saida');
-      if (kmInput && !kmInput.value) kmInput.value = veiculo.km_atual;
+      if (kmInput && !kmInput.value) kmInput.value = veiculo.kmAtual;
     }
   } catch {
     const local = getLocalJson('veiculoSelecionado');
@@ -83,35 +182,27 @@ async function carregarDadosVeiculo() {
 function preencherVeiculo(v) {
   const prefix = document.getElementById('Label_prefix_saida');
   const modelo = document.getElementById('Label_modelo_saida');
-  if (prefix) prefix.textContent = v.prefixo || v.placa || 'Viatura';
-  if (modelo) modelo.textContent = v.modelo  || '—';
+  if (prefix) prefix.textContent = `Viatura ${v.prefixo || v.placa || '—'}`;
+  if (modelo) modelo.textContent = v.modelo || '—';
 }
+
 // =============================================
-// CARREGAR SERVIÇOS (tipo_servico)
+// CARREGAR SERVIÇOS — GET /tipo-servicos
 // =============================================
 async function carregarServicos() {
   const select = document.getElementById('Ddl_servico_saida');
   if (!select) return;
 
-  const veiculoId = sessionStorage.getItem('veiculoSelecionadoId')
-                 || localStorage.getItem('veiculoSelecionadoId');
-
-  const endpoint = veiculoId
-    ? `${API_BASE_URL}/veiculos/${veiculoId}/servicos`
-    : `${API_BASE_URL}/tipo-servicos`;
-
   try {
-    const resp = await fetch(endpoint, { headers: getAuthHeaders() });
-    if (!resp.ok) throw new Error('Erro ao carregar serviços');
-    const data = await resp.json();
-
+    const resp = await fetch(`${API_BASE_URL}/tipo-servicos`, { headers: getAuthHeaders() });
+    if (!resp.ok) throw new Error();
+    const data  = await resp.json();
     const lista = Array.isArray(data) ? data : (data.content || []);
 
     select.innerHTML = '<option value="">SELECIONE</option>';
-
     lista.forEach(item => {
-      const id   = item.id_tipo_servico || item.tipoServico?.id_tipo_servico || item.id;
-      const nome = item.nome_servico    || item.tipoServico?.nome_servico    || item.nome || '—';
+      const id   = item.idTipoServico;
+      const nome = item.nomeServico || '—';
       if (id) {
         const opt = document.createElement('option');
         opt.value       = id;
@@ -119,9 +210,9 @@ async function carregarServicos() {
         select.appendChild(opt);
       }
     });
-
   } catch (err) {
     console.warn('[carregarServicos]', err.message);
+    showToast('Erro ao carregar tipos de serviço.', 'error');
   }
 }
 
@@ -137,11 +228,11 @@ function validarFormulario() {
   const servico  = document.getElementById('Ddl_servico_saida').value;
   const endereco = document.getElementById('Txf_end_saida').value.trim();
 
-  if (!dataVal)              erros.push('Data de saída é obrigatória.');
-  if (!horaVal)              erros.push('Hora de saída é obrigatória.');
-  if (isNaN(km) || km < 0)  erros.push('Odômetro inválido.');
-  if (!servico)              erros.push('Selecione o tipo de serviço.');
-  if (!endereco)             erros.push('Endereço / local de destino é obrigatório.');
+  if (!dataVal)             erros.push('Data de saída é obrigatória.');
+  if (!horaVal)             erros.push('Hora de saída é obrigatória.');
+  if (isNaN(km) || km < 0) erros.push('Odômetro inválido.');
+  if (!servico)             erros.push('Selecione o tipo de serviço.');
+  if (!endereco)            erros.push('Endereço / local de destino é obrigatório.');
 
   const veiculoId = parseInt(
     sessionStorage.getItem('veiculoSelecionadoId') ||
@@ -161,21 +252,26 @@ function validarFormulario() {
   const localDestino = complemento ? `${endereco} — ${complemento}` : endereco;
 
   return {
-    local_destino:     localDestino,
-    id_tipo_servico:   parseInt(servico, 10),
-    status:            'em_andamento',
-    observacoes:       complemento || null,
-    data_hora_saida:   `${dataVal}T${horaVal}:00`,
-    km_inicial:        km,
-    id_veiculo:        veiculoId,
-    matricula_usuario: matricula,
+    idVeiculo:        veiculoId,
+    matriculaUsuario: matricula,
+    idTipoServico:    parseInt(servico, 10),
+    localDestino:     localDestino,
+    observacoes:      complemento || null,
+    dataHoraSaida:    `${dataVal}T${horaVal}:00`,
+    kmInicial:        km,
   };
 }
 
 // =============================================
-// SALVAR SAÍDA —
+// SALVAR SAÍDA — POST /registro-saidas
 // =============================================
 async function salvarSaida() {
+  // Checagem extra: se o banner de bloqueio estiver visível, impede o envio
+  if (document.getElementById('aviso-saida-ativa')) {
+    showToast('Você já possui uma saída em andamento. Registre o retorno primeiro.', 'error');
+    return;
+  }
+
   const payload = validarFormulario();
   if (!payload) return;
 
@@ -195,31 +291,38 @@ async function salvarSaida() {
     const data = await tryParseJson(resp);
 
     if (resp.ok || resp.status === 201) {
-      const idSaida = data?.id_saida || data?.id || null;
+      const idSaida = data?.idSaida || null;
       if (idSaida) {
         sessionStorage.setItem('idSaida', idSaida);
-        localStorage.setItem('idSaida', idSaida);
+        localStorage.setItem('idSaida',   idSaida);
       }
-
       showToast('✔ Saída registrada com sucesso!', 'success');
       setTimeout(() => { window.location.href = 'index.html'; }, 1800);
     } else {
-      showToast(extrairMensagemErro(data, resp.status), 'error');
-    }
+      // Trata o erro do backend (incluindo "já possui saída em andamento")
+      const msg = extrairMensagemErro(data, resp.status);
+      showToast(msg, 'error');
 
+      // Se o backend rejeitou por saída ativa, busca e bloqueia o form também
+      if (resp.status === 400 && msg.toLowerCase().includes('andamento')) {
+        await verificarSaidaAtivaDoUsuario();
+      }
+    }
   } catch (err) {
-    console.error('[salvarSaida]', err);
-    const msg = err.message?.includes('Failed to fetch')
-      ? 'Sem conexão com o servidor.'
-      : `Erro inesperado: ${err.message}`;
-    showToast(msg, 'error');
+    showToast(
+      err.message?.includes('Failed to fetch')
+        ? 'Sem conexão com o servidor.'
+        : `Erro inesperado: ${err.message}`,
+      'error'
+    );
   } finally {
     btnSalvar.disabled = false;
     overlay.classList.remove('active');
   }
 }
+
 // =============================================
-// HELPERS AUTH / LOCAL STORAGE
+// HELPERS
 // =============================================
 function getAuthHeaders() {
   const token = sessionStorage.getItem('token') || localStorage.getItem('token');
@@ -231,8 +334,7 @@ function getAuthHeaders() {
 function getMatriculaUsuario() {
   const raw = sessionStorage.getItem('matricula') || localStorage.getItem('matricula');
   if (raw) return parseInt(raw, 10);
-  const usuario = getLocalJson('usuario');
-  return usuario?.matricula || null;
+  return getLocalJson('usuario')?.matricula || null;
 }
 
 function getLocalJson(key) {
@@ -242,25 +344,18 @@ function getLocalJson(key) {
   } catch { return null; }
 }
 
-// =============================================
-// PARSE JSON SEGURO
-// =============================================
 async function tryParseJson(resp) {
   try { return await resp.json(); } catch { return null; }
 }
 
-// =============================================
-// EXTRAÇÃO DE ERRO DO SPRING BOOT
-// =============================================
 function extrairMensagemErro(data, status) {
   if (!data) return `Erro ${status}: Resposta inesperada.`;
   if (typeof data === 'string') return data;
   if (data.message) return `Erro: ${data.message}`;
+  if (data.erro)    return `Erro: ${data.erro}`;
   if (data.error)   return `Erro: ${data.error}`;
   if (Array.isArray(data.errors))
     return data.errors.map(e => e.defaultMessage || e.field).join('; ');
-  if (Array.isArray(data.fieldErrors))
-    return data.fieldErrors.map(e => `${e.field}: ${e.message}`).join('; ');
   return `Erro ${status}: Falha ao registrar saída.`;
 }
 
@@ -281,7 +376,6 @@ function showToast(msg, tipo = 'success') {
   document.body.appendChild(t);
 
   requestAnimationFrame(() => requestAnimationFrame(() => t.classList.add('show')));
-
   _toastTimer = setTimeout(() => {
     t.classList.remove('show');
     setTimeout(() => t.remove(), 400);

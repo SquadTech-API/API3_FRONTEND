@@ -15,7 +15,7 @@
 
     <!-- HEADER -->
     <header class="page-header">
-      <button class="back-btn" onclick="window.location.href='index.html'" title="Voltar">
+      <button class="back-btn" onclick="sairDaTela()" title="Voltar">
         <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
           <polyline points="15 18 9 12 15 6" />
         </svg>
@@ -48,7 +48,7 @@
     <div class="form-card">
       <div class="form-grid">
 
-        <!-- DATA E HORA DE RETORNO (automático = agora) -->
+        <!-- DATA E HORA DE RETORNO -->
         <div class="field-row datetime-row">
           <div class="date-group">
             <span class="dt-icon">
@@ -69,13 +69,13 @@
 
         <div class="divider"></div>
 
-        <!-- ODÔMETRO FINAL (único campo editável) -->
+        <!-- ODÔMETRO FINAL -->
         <div class="field-row col-left">
           <label class="field-label-text" for="Txf_km_retorno">Odômetro(km):</label>
           <input type="number" id="Txf_km_retorno" class="field-input" placeholder="000.000" step="0.01" min="0" />
         </div>
 
-        <!-- SERVIÇO (readonly — vem da saída) -->
+        <!-- SERVIÇO (readonly) -->
         <div class="field-row col-right">
           <label class="field-label-text">Serviço:</label>
           <input type="text" id="Label_servico_retorno" class="field-input field-readonly" readonly placeholder="—" />
@@ -83,7 +83,7 @@
 
         <div class="divider"></div>
 
-        <!-- DESTINO (readonly — vem da saída) -->
+        <!-- DESTINO (readonly) -->
         <div class="field-col">
           <label class="field-label-text field-label-col">Destino:</label>
           <textarea id="Label_destino_retorno" class="field-textarea field-readonly" readonly placeholder="—" rows="3"></textarea>
@@ -91,18 +91,18 @@
 
         <div class="divider"></div>
 
-        <!-- DATA E HORA DA SAÍDA (readonly — vem da saída) -->
+        <!-- DATA E HORA DA SAÍDA (readonly) -->
         <div class="field-col">
           <label class="field-label-text field-label-col">Data/hora saída:</label>
           <input type="text" id="Label_datasaida_retorno" class="field-input field-readonly" readonly placeholder="—" style="width:100%; text-align:left;" />
         </div>
 
-      </div><!-- /form-grid -->
-    </div><!-- /form-card -->
+      </div>
+    </div>
 
     <!-- ACTIONS -->
     <div class="actions-row">
-      <button class="btn btn-descartar" id="Btn_descartar_retorno" onclick="window.location.href='index.html'">
+      <button class="btn btn-descartar" id="Btn_descartar_retorno" onclick="sairDaTela()">
         Descartar
       </button>
       <button class="btn btn-salvar" id="Btn_salvar_retorno" onclick="salvarRetorno()">
@@ -116,7 +116,7 @@
       <span>Registrando retorno...</span>
     </div>
 
-  </div><!-- /page-wrapper -->
+  </div>
 
   <script src="./assets/scripts/nova_entrada.js" defer></script>
 </body>
