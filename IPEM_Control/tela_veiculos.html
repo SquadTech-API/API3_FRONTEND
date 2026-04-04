@@ -1,0 +1,185 @@
+<!doctype html>
+<html lang="PT-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Ipem - Gerenciamento de Veículos</title>
+  <link rel="stylesheet" href="./assets/styles/veiculos.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════
+         HEADER
+    ════════════════════════════════════════════ -->
+  <header>
+    <div class="logo">
+      <img src="assets/images/logo_ipem.png" alt="Logo Ipem" />
+    </div>
+
+    <!-- Nav desktop -->
+    <nav class="nav">
+      <ul class="menu">
+        <li class="dropdown">
+          <div class="dropdown-btn">Veículos <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="#">Novo Veículo</a></li>
+            <li><a href="gerenciamento_veiculos.html">Gerenciamento</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Motoristas <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="#">Novo Motorista</a></li>
+            <li><a href="#">Gerenciamento</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Relatórios <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="#">Ver Relatórios</a></li>
+          </ul>
+        </li>
+      </ul>
+
+      <div class="nav_btn">
+        <a href="#" id="btn-perfil-adm">
+          <img src="assets/images/icon_perfil.png" alt="Perfil" />
+        </a>
+      </div>
+    </nav>
+
+    <!-- Hamburguer mobile -->
+    <button class="hamburger" id="hamburger" aria-label="Abrir menu">
+      <span></span>
+      <span></span>
+      <span></span>
+    </button>
+  </header>
+
+  <!-- Nav mobile (overlay) -->
+  <div class="mobile-nav" id="mobile-nav">
+    <div class="mobile-section">
+      <div class="mobile-section-title" data-target="sub-veiculos">
+        Veículos <span class="arrow">▼</span>
+      </div>
+      <div class="mobile-sub" id="sub-veiculos">
+        <a href="#">Novo Veículo</a>
+        <a href="gerenciamento_veiculos.html">Gerenciamento</a>
+      </div>
+    </div>
+    <div class="mobile-section">
+      <div class="mobile-section-title" data-target="sub-motoristas">
+        Motoristas <span class="arrow">▼</span>
+      </div>
+      <div class="mobile-sub" id="sub-motoristas">
+        <a href="#">Novo Motorista</a>
+        <a href="#">Gerenciamento</a>
+      </div>
+    </div>
+    <div class="mobile-section">
+      <div class="mobile-section-title" data-target="sub-relatorios">
+        Relatórios <span class="arrow">▼</span>
+      </div>
+      <div class="mobile-sub" id="sub-relatorios">
+        <a href="#">Ver Relatórios</a>
+      </div>
+    </div>
+    <div class="mobile-perfil">
+      <button class="btn-logout-mobile" id="btn-logout-mobile">✕ Sair</button>
+    </div>
+  </div>
+
+
+  <!-- ═══════════════════════════════════════════
+         MAIN — DESKTOP
+    ════════════════════════════════════════════ -->
+  <main class="container">
+    <h2 class="page-title">Gerenciamento de Veículos</h2>
+
+    <!-- Toolbar desktop -->
+    <div class="toolbar" id="toolbar-adm">
+      <div class="search-box">
+        <input type="text" id="txf-search-adm" placeholder="Procure uma viatura:" />
+        <button id="btn-search-adm" aria-label="Buscar">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.71 20.29l-5.01-5.01A8 8 0 1 0 15.7 16.7l5 5.01a1 1 0 0 0 1.41-1.42zM11 17a6 6 0 1 1 0-12 6 6 0 0 1 0 12z" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="filter-btns">
+        <button class="filter-btn active" id="btn-todos-adm">Todas</button>
+        <button class="filter-btn" id="btn-disp-adm">Disponível</button>
+        <button class="filter-btn" id="btn-uso-adm">Em uso</button>
+      </div>
+    </div>
+
+    <!-- Toolbar mobile (search) -->
+    <div class="toolbar-mobile">
+      <div class="search-box">
+        <input type="text" id="txf-search-mobile" placeholder="Procure uma viatura:" />
+        <button id="btn-search-mobile" aria-label="Buscar">
+          <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <path d="M21.71 20.29l-5.01-5.01A8 8 0 1 0 15.7 16.7l5 5.01a1 1 0 0 0 1.41-1.42zM11 17a6 6 0 1 1 0-12 6 6 0 0 1 0 12z" />
+          </svg>
+        </button>
+      </div>
+
+      <div class="filter-btns">
+        <button class="filter-btn active" id="btn-todos-mobile">Todas</button>
+        <button class="filter-btn" id="btn-disp-mobile">Disponível</button>
+        <button class="filter-btn" id="btn-uso-mobile">Em uso</button>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="cards-grid" id="cards-container">
+
+      <!-- Loading -->
+      <div class="loading-state" id="loading">
+        <div class="spinner"></div>
+        <span>Carregando veículos...</span>
+      </div>
+
+      <!-- Estado vazio -->
+      <div class="empty-state" id="empty-state" style="display:none;">
+        Nenhum veículo encontrado.
+      </div>
+
+    </div>
+  </main>
+
+
+  <!-- ═══════════════════════════════════════════
+         BOTTOM NAV (mobile)
+    ════════════════════════════════════════════ -->
+  <nav class="bottom-nav">
+    <button class="bottom-nav-item active" id="btn-veiculos-mobile">
+      <svg viewBox="0 0 24 24">
+        <path d="M18.92 6.01L17.5 2H6.5L5.08 6.01 3 8v2h1v9h1v1h3v-1h8v1h3v-1h1V10H20V8l-2.08-1.99zM12 17.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5zM5 8l1.5-4.5h11L19 8H5z" />
+      </svg>
+      Veículos
+    </button>
+    <button class="bottom-nav-item" id="btn-abastecer-mobile">
+      <svg viewBox="0 0 24 24">
+        <path d="M19 2H5a2 2 0 0 0-2 2v16l4-4h12a2 2 0 0 0 2-2V4a2 2 0 0 0-2-2z" />
+      </svg>
+      Abastecer
+    </button>
+    <button class="bottom-nav-item" id="btn-saidas-mobile">
+      <svg viewBox="0 0 24 24">
+        <path d="M3 3v18h18V3H3zm16 16H5V5h14v14zM7 7h2v10H7zm4 4h2v6h-2zm4-7h2v13h-2z" />
+      </svg>
+      Saídas
+    </button>
+  </nav>
+
+  <script src="./assets/scripts/veiculos.js" defer></script>
+</body>
+
+</html>
