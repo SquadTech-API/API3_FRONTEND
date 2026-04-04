@@ -1,0 +1,177 @@
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+:root {
+  --ipem-navy: #0a2e6e;
+  --ipem-blue: #1a3a8f;
+  --ipem-dark: #0d1f4c;
+  --card-bg: #c8cfe0;
+  --bg: #e8eaf0;
+  --input-bg: #ffffff;
+  --input-border: #b0b8d0;
+  --btn-bg: #1a3a8f;
+  --btn-hover: #0d2a6e;
+  --text-main: #1a1a2e;
+  --text-muted: #4a5580;
+  --radius: 6px;
+  --shadow: 0 4px 24px rgba(10, 46, 110, 0.13);
+  --font: "Roboto", sans-serif;
+}
+
+body {
+  min-height: 100vh;
+  background: var(--bg);
+  font-family: var(--font);
+  color: var(--text-main);
+}
+
+.page {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  min-height: 100vh;
+}
+
+.container {
+  width: 100%;
+  max-width: 400px;
+}
+
+.logo-wrap {
+  text-align: center;
+  margin-bottom: 20px;
+}
+
+.logo-text {
+  font-size: 48px;
+  font-weight: 700;
+  color: var(--ipem-navy);
+}
+
+.card {
+  background: var(--card-bg);
+  border-radius: 12px;
+  padding: 30px;
+  box-shadow: var(--shadow);
+}
+
+.field {
+  margin-bottom: 16px;
+}
+
+.field label {
+  display: block;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text-muted);
+  margin-bottom: 5px;
+}
+
+.field input {
+  width: 100%;
+  height: 44px;
+  border: 1.5px solid var(--input-border);
+  border-radius: var(--radius);
+  padding: 0 12px;
+  background: var(--input-bg);
+  font-family: var(--font);
+  font-size: 14px;
+  color: var(--text-main);
+}
+
+.field input:focus {
+  border-color: var(--ipem-blue);
+  outline: none;
+}
+
+/* Remove o ícone nativo de senha do Chrome, Edge e IE */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear {
+  display: none;
+}
+input::-webkit-credentials-auto-fill-button,
+input[type="password"]::-webkit-textfield-decoration-container {
+  display: none !important;
+  visibility: hidden;
+  pointer-events: none;
+}
+
+/* input-wrap: flex para que input e botão fiquem na mesma linha, mesma altura */
+.input-wrap {
+  display: flex;
+  align-items: center;
+}
+
+.input-wrap input {
+  flex: 1;
+  padding-right: 44px;
+}
+
+/* botão posicionado via flex, não absolute — sem top/margin tricks */
+.eye-btn {
+  flex-shrink: 0;
+  width: 44px;
+  height: 44px;
+  margin-left: -44px; /* sobrepõe o espaço reservado no padding do input */
+  border: none;
+  background: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--text-muted);
+}
+
+.eye-btn:hover {
+  color: var(--ipem-blue);
+}
+
+#eye-icon {
+  width: 20px;
+  height: 20px;
+  display: block;
+  pointer-events: none;
+}
+
+.btn-entrar {
+  width: 100%;
+  height: 45px;
+  background: var(--btn-bg);
+  color: white;
+  border: none;
+  border-radius: var(--radius);
+  cursor: pointer;
+  margin-top: 10px;
+  font-family: var(--font);
+  font-size: 15px;
+  font-weight: 500;
+  transition: background 0.2s ease;
+}
+
+.btn-entrar:hover {
+  background: var(--btn-hover);
+}
+
+.btn_centralizar {
+  text-align: center;
+}
+
+.forgot {
+  margin-top: 12px;
+  background: none;
+  border: none;
+  color: var(--ipem-blue);
+  cursor: pointer;
+  text-decoration: underline;
+  font-family: var(--font);
+  font-size: 13px;
+}
+
+.forgot:hover {
+  color: var(--ipem-dark);
+}
