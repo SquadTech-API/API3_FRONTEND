@@ -29,10 +29,10 @@
             <div class="dropdown-btn">
               Veículos <span class="arrow">▼</span>
             </div>
-
             <ul class="submenu">
               <li><a href="./add_veic.html">Novo Veículo</a></li>
               <li><a href="./ver_veiculos.html">Gerenciamento</a></li>
+              <li><a href="./abastecimento.html">Abastecer</a></li>
             </ul>
           </li>
 
@@ -40,7 +40,6 @@
             <div class="dropdown-btn">
               Motoristas <span class="arrow">▼</span>
             </div>
-
             <ul class="submenu">
               <li><a href="./add_moto.html">Novo Motorista</a></li>
               <li><a href="./ver_motoristas.html">Gerenciamento</a></li>
@@ -51,7 +50,6 @@
             <div class="dropdown-btn">
               Relatórios <span class="arrow">▼</span>
             </div>
-
             <ul class="submenu">
               <li><a href="#">Ver Relatórios</a></li>
             </ul>
@@ -67,84 +65,118 @@
     </header>
 
     <main class="container">
-      <!-- div com titulo e botão-->
       <div class="header_titulo">
         <h2>Adicionar um Motorista</h2>
-        <a href="#">
+        <a href="tela_veiculos.html">
           <img src="assets/images/icons_cancel.png" alt="Cancelar" />
         </a>
       </div>
 
       <section class="card">
-        <!--card-->
         <div class="card_body">
-          <!--cabeçalho azul-->
           <div class="card_titulo">
             <img src="assets/images/icon_perfil.png" alt="logo" />
             <h3>Preencha os dados:</h3>
           </div>
 
-          <!-- Formulário -->
+          <!-- Mensagem de erro/sucesso -->
+          <div id="msg_formulario" style="display:none; padding:10px 20px; font-size:16px; border-radius:6px; margin:10px 20px 0;"></div>
+
           <form class="form" id="form_motorista">
+
+            <!-- NOME -->
             <div class="form-group">
               <div class="linha">
-                <label for="txf_nome_add_motorista">Nome:</label>
-                <input id="txf_nome_add_motorista" name="txf_nome_add_motorista" type="text" />
+                <label for="txf_nome_add_motorista">Nome completo:</label>
+                <input id="txf_nome_add_motorista" name="txf_nome_add_motorista" type="text" placeholder="Nome completo" />
               </div>
             </div>
 
+            <!-- DATA NASCIMENTO -->
             <div class="form-group">
               <div class="linha">
-                <label for="txf_data_add_motorista">Data Nascimento:</label>
+                <label for="txf_data_add_motorista">Data de Nascimento:</label>
                 <input id="txf_data_add_motorista" name="txf_data_add_motorista" type="date" />
               </div>
             </div>
 
+            <!-- CPF -->
             <div class="form-group">
               <div class="linha">
                 <label for="txf_cpf_add_motorista">CPF:</label>
-                <input id="txf_cpf_add_motorista" name="txf_cpf_add_motorista" type="text" placeholder="000.000.000-00" />
+                <input id="txf_cpf_add_motorista" name="txf_cpf_add_motorista" type="text" placeholder="Somente números" maxlength="11" />
               </div>
             </div>
 
+            <!-- EMAIL -->
             <div class="form-group">
               <div class="linha">
-                <label for="txf_registro_add_motorista">Habilitação (N. Registro):</label>
-                <input id="txf_registro_add_motorista" name="txf_registro_add_motorista" type="text" />
+                <label for="txf_email_add_motorista">E-mail:</label>
+                <input id="txf_email_add_motorista" name="txf_email_add_motorista" type="email" placeholder="email@exemplo.com" />
               </div>
             </div>
 
+            <!-- CARGO -->
             <div class="form-group">
               <div class="linha">
-                <label for="ddl_carteira_add_motorista">Categoria:</label>
+                <label for="txf_cargo_add_motorista">Cargo:</label>
+                <input id="txf_cargo_add_motorista" name="txf_cargo_add_motorista" type="text" placeholder="Ex: Técnico, Motorista..." />
+              </div>
+            </div>
 
-                <select id="ddl_carteira_add_motorista" name="ddl_carteira_add_motorista">
-                  <option value="">Selecione...</option>
-                  <option value="A">A</option>
-                  <option value="AB">AB</option>
-                  <option value="B">B</option>
-                  <option value="C">C</option>
-                  <option value="D">D</option>
-                  <option value="E">E</option>
+            <!-- TIPO USUÁRIO -->
+            <div class="form-group">
+              <div class="linha">
+                <label for="ddl_tipo_usuario_add_motorista">Tipo de acesso:</label>
+                <select id="ddl_tipo_usuario_add_motorista" name="ddl_tipo_usuario_add_motorista">
+                  <option value="tecnico">Técnico</option>
+                  <option value="adm">Administrador</option>
                 </select>
               </div>
             </div>
 
+            <!-- HABILITAÇÃO (N. REGISTRO) -->
+            <div class="form-group">
+              <div class="linha">
+                <label for="txf_registro_add_motorista">Habilitação (N. Registro):</label>
+                <input id="txf_registro_add_motorista" name="txf_registro_add_motorista" type="text" placeholder="Número do registro" />
+              </div>
+            </div>
+
+            <!-- CATEGORIA HABILITAÇÃO -->
+            <div class="form-group">
+              <div class="linha">
+                <label for="ddl_carteira_add_motorista">Categoria CNH:</label>
+                <select id="ddl_carteira_add_motorista" name="ddl_carteira_add_motorista">
+                  <option value="">Selecione...</option>
+                  <option value="B">B</option>
+                  <option value="AB">AB</option>
+                  <option value="C">C</option>
+                  <option value="AC">AC</option>
+                  <option value="D">D</option>
+                  <option value="AD">AD</option>
+                  <option value="E">E</option>
+                  <option value="AE">AE</option>
+                </select>
+              </div>
+            </div>
+
+            <!-- SENHA -->
             <div class="form-group">
               <div class="linha">
                 <label for="pwd_senha_add_motorista">Senha:</label>
-                <input id="pwd_senha_add_motorista" name="pwd_senha_add_motorista" type="password" />
+                <input id="pwd_senha_add_motorista" name="pwd_senha_add_motorista" type="password" placeholder="Mínimo 6 caracteres" />
               </div>
             </div>
 
+            <!-- CONFIRMAR SENHA -->
             <div class="form-group">
               <div class="linha">
                 <label for="pwd_conf_senha_add_motorista">Confirme a senha:</label>
-                <input id="pwd_conf_senha_add_motorista" name="pwd_conf_senha_add_motorista"  type="password" />
+                <input id="pwd_conf_senha_add_motorista" name="pwd_conf_senha_add_motorista" type="password" placeholder="Repita a senha" />
               </div>
             </div>
 
-            <!--botão salvar-->
             <div class="form-actions">
               <button id="btn_salvar_add_motorista" name="btn_salvar_add_motorista" type="submit" class="btn-save">Salvar</button>
             </div>

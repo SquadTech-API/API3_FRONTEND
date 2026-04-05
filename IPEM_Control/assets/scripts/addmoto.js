@@ -1,108 +1,174 @@
+document.addEventListener("DOMContentLoaded", function () {
 
-const btns = document.querySelectorAll(".dropdown-btn");
+  // ─── VERIFICAÇÃO DE SESSÃO ──────────────────────────────────────────────────
+  var usuarioLogado = JSON.parse(sessionStorage.getItem("usuario"));
+  if (!usuarioLogado) { window.location.href = "./index.html"; return; }
 
-btns.forEach(btn => {
-    btn.addEventListener("click", (e) => {
+  var API_BASE = "http://localhost:8080";
 
-        e.stopPropagation(); // evita fechar imediatamente
+  // ─── MENU DROPDOWN ──────────────────────────────────────────────────────────
+  document.querySelectorAll(".dropdown-btn").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var submenu = btn.nextElementSibling;
+      var arrow   = btn.querySelector(".arrow");
 
-        const submenu = btn.nextElementSibling;
-        const arrow = btn.querySelector(".arrow");
+      document.querySelectorAll(".submenu").forEach(function (m) {
+        if (m !== submenu) m.classList.remove("open");
+      });
+      document.querySelectorAll(".arrow").forEach(function (a) {
+        if (a !== arrow) a.classList.remove("rotate");
+      });
 
-        // Fecha os outros
-        document.querySelectorAll(".submenu").forEach(menu => {
-            if (menu !== submenu) menu.classList.remove("open");
-        });
-
-        document.querySelectorAll(".arrow").forEach(a => {
-            if (a !== arrow) a.classList.remove("rotate");
-        });
-
-        // Alterna atual
-        submenu.classList.toggle("open");
-        arrow.classList.toggle("rotate");
+      submenu.classList.toggle("open");
+      arrow.classList.toggle("rotate");
     });
-});
+  });
 
+  document.addEventListener("click", function () {
+    document.querySelectorAll(".submenu").forEach(function (m) { m.classList.remove("open"); });
+    document.querySelectorAll(".arrow").forEach(function (a)   { a.classList.remove("rotate"); });
+  });
 
-
-document.addEventListener("click", () => {
-
-    document.querySelectorAll(".submenu").forEach(menu => {
-        menu.classList.remove("open");
+  // ─── MENU MOBILE ────────────────────────────────────────────────────────────
+  var toggleBtn = document.querySelector(".btn_menu");
+  var navEl     = document.querySelector(".nav");
+  if (toggleBtn && navEl) {
+    toggleBtn.addEventListener("click", function () {
+      navEl.classList.toggle("active");
     });
+  }
 
-    document.querySelectorAll(".arrow").forEach(a => {
-        a.classList.remove("rotate");
-    });
+  // ─── HELPERS DE MENSAGEM ────────────────────────────────────────────────────
+  function mostrarMensagem(texto, tipo) {
+    var el = document.getElementById("msg_formulario");
+    if (!el) return;
+    el.textContent   = texto;
+    el.style.display = "block";
+    el.style.backgroundColor = tipo === "sucesso" ? "#d4edda" : "#f8d7da";
+    el.style.color           = tipo === "sucesso" ? "#155724" : "#721c24";
+    el.style.border          = tipo === "sucesso" ? "1px solid #c3e6cb" : "1px solid #f5c6cb";
+    if (tipo === "sucesso") {
+      setTimeout(function () { el.style.display = "none"; }, 4000);
+    }
+  }
 
-});
+  function esconderMensagem() {
+    var el = document.getElementById("msg_formulario");
+    if (el) el.style.display = "none";
+  }
 
-const toggle = document.querySelector(".btn_menu");
-const nav = document.querySelector(".nav");
+  // ─── FORMULÁRIO ─────────────────────────────────────────────────────────────
+  var form = document.getElementById("form_motorista");
+  if (!form) return;
 
-
-toggle.addEventListener("click", () => {
-    nav.classList.toggle("active");
-});
-
-
-const form = document.getElementById("form_motorista");
-
-form.addEventListener("submit", function(event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
+    esconderMensagem();
 
-    const nome = document.getElementById("txf_nome_add_motorista").value.trim();
-    const data = document.getElementById("txf_data_add_motorista").value.trim();
-    const cpf = document.getElementById("txf_cpf_add_motorista").value.trim();
-    const habilitacao = document.getElementById("txf_registro_add_motorista").value.trim();
-    const categoria = document.getElementById("ddl_carteira_add_motorista").value;
-    const senha = document.getElementById("pwd_senha_add_motorista").value.trim();
-    const confirmacaoSenha = document.getElementById("pwd_conf_senha_add_motorista").value.trim();
+    // Coleta todos os campos 
+    var nome              = document.getElementById("txf_nome_add_motorista").value.trim();
+    var dataNascimento    = document.getElementById("txf_data_add_motorista").value.trim();
+    var cpf               = document.getElementById("txf_cpf_add_motorista").value.trim().replace(/\D/g, "");
+    var email             = document.getElementById("txf_email_add_motorista").value.trim();
+    var cargo             = document.getElementById("txf_cargo_add_motorista").value.trim();
+    var tipoUsuario       = document.getElementById("ddl_tipo_usuario_add_motorista").value;
+    var numeroHabilitacao = document.getElementById("txf_registro_add_motorista").value.trim();
+    var tipoHabilitacao   = document.getElementById("ddl_carteira_add_motorista").value;
+    var senha             = document.getElementById("pwd_senha_add_motorista").value;
+    var confirmacaoSenha  = document.getElementById("pwd_conf_senha_add_motorista").value;
 
-    if (
-        nome === "" ||
-        data === "" ||
-        cpf === "" ||
-        habilitacao === "" ||
-        categoria === "" ||
-        senha === "" ||
-        confirmacaoSenha === ""
-    ) {
-        alert("Preencha todos os campos!");
-        return;
+    // ── Validações no frontend ────────────────────────────────────────────────
+    if (!nome || !dataNascimento || !cpf || !email || !senha || !confirmacaoSenha) {
+      mostrarMensagem("Preencha todos os campos obrigatórios: nome, data de nascimento, CPF, e-mail e senha.", "erro");
+      return;
+    }
+
+    if (cpf.length !== 11) {
+      mostrarMensagem("CPF inválido. Informe somente os 11 números.", "erro");
+      return;
+    }
+
+    var emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(email)) {
+      mostrarMensagem("E-mail inválido.", "erro");
+      return;
+    }
+
+    if (senha.length < 6) {
+      mostrarMensagem("A senha deve ter pelo menos 6 caracteres.", "erro");
+      return;
     }
 
     if (senha !== confirmacaoSenha) {
-    alert("As senhas não coincidem!");
-    return;
+      mostrarMensagem("As senhas não coincidem.", "erro");
+      return;
     }
 
-    console.log("Validação OK");
-
-    const dados = {
-        nome,
-        data,
-        cpf,
-        habilitacao,
-        categoria,
-        senha
+  
+    var dados = {
+      matricula:         null,
+      nome:              nome,
+      dataNascimento:    dataNascimento,          // "YYYY-MM-DD" — Jackson deserializa LocalDate
+      cpf:               cpf,                     // somente dígitos
+      email:             email,
+      cargo:             cargo  || null,
+      tipoUsuario:       tipoUsuario,              // "tecnico" | "adm"
+      numeroHabilitacao: numeroHabilitacao || null,
+      tipoHabilitacao:   tipoHabilitacao   || null, // enum: B, AB, C, AC, D, AD, E, AE
+      senha:             senha,
+      colaboradorAtivo:  true
     };
 
-    console.log("Dados enviados", dados);
+    var btnSalvar = document.getElementById("btn_salvar_add_motorista");
+    btnSalvar.disabled    = true;
+    btnSalvar.textContent = "Salvando...";
 
-            const API_URL = "URL_DO_BACKEND_AQUI";
+    try {
+      var resposta = await fetch(API_BASE + "/usuarios", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(dados)
+      });
 
-    fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-    }).then(() => {
+      if (resposta.ok) {
+        mostrarMensagem("✔ Motorista cadastrado com sucesso!", "sucesso");
         form.reset();
-    });
+      } else {
+        var corpo = await resposta.json().catch(function () { return null; });
+        var mensagemErro = "Erro ao cadastrar motorista.";
 
+        if (corpo) {
+          if (typeof corpo === "string")        mensagemErro = corpo;
+          else if (corpo.message)               mensagemErro = corpo.message;
+          else if (corpo.erro)                  mensagemErro = corpo.erro;
+          else if (corpo.error)                 mensagemErro = corpo.error;
+          else if (Array.isArray(corpo.errors)) mensagemErro = corpo.errors.map(function (e) { return e.defaultMessage || e.field; }).join("; ");
+        }
 
-});
+        // Mensagens amigáveis para erros comuns de duplicidade
+        if (resposta.status === 409 || mensagemErro.toLowerCase().includes("cpf")) {
+          mensagemErro = "CPF já cadastrado.";
+        } else if (mensagemErro.toLowerCase().includes("email")) {
+          mensagemErro = "E-mail já cadastrado.";
+        } else if (mensagemErro.toLowerCase().includes("habilitacao") || mensagemErro.toLowerCase().includes("habilitação")) {
+          mensagemErro = "Número de habilitação já cadastrado.";
+        }
 
+        mostrarMensagem(mensagemErro, "erro");
+      }
+    } catch (err) {
+      console.error("Erro ao conectar com o servidor:", err);
+      mostrarMensagem(
+        err.message && err.message.includes("Failed to fetch")
+          ? "Sem conexão com o servidor."
+          : "Erro inesperado: " + err.message,
+        "erro"
+      );
+    } finally {
+      btnSalvar.disabled    = false;
+      btnSalvar.textContent = "Salvar";
+    }
+  });
+
+}); // fim DOMContentLoaded

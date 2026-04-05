@@ -1,192 +1,262 @@
-const btns = document.querySelectorAll(".dropdown-btn");
+// ─── CONFIGURAÇÃO ─────────────────────────────────────────────────────────────
+const API_BASE = "http://localhost:8080";
 
-btns.forEach(btn => {
-    btn.addEventListener("click", (e) => {
-
-        e.stopPropagation(); // evita fechar imediatamente
-
-        const submenu = btn.nextElementSibling;
-        const arrow = btn.querySelector(".arrow");
-
-        // Fecha os outros
-        document.querySelectorAll(".submenu").forEach(menu => {
-            if (menu !== submenu) menu.classList.remove("open");
-        });
-
-        document.querySelectorAll(".arrow").forEach(a => {
-            if (a !== arrow) a.classList.remove("rotate");
-        });
-
-        // Alterna atual
-        submenu.classList.toggle("open");
-        arrow.classList.toggle("rotate");
-    });
-});
-
-
-
-document.addEventListener("click", () => {
-
-    document.querySelectorAll(".submenu").forEach(menu => {
-        menu.classList.remove("open");
-    });
-
-    document.querySelectorAll(".arrow").forEach(a => {
-        a.classList.remove("rotate");
-    });
-
-});
-
-const toggle = document.querySelector(".btn_menu");
-const nav = document.querySelector(".nav");
-
-
-toggle.addEventListener("click", () => {
-    nav.classList.toggle("active");
-});
-
-
-
+// ─── VERIFICAÇÃO DE SESSÃO ────────────────────────────────────────────────────
+const usuarioLogado = JSON.parse(sessionStorage.getItem("usuario"));
+if (!usuarioLogado) window.location.href = "./index.html";
 
 document.addEventListener("DOMContentLoaded", () => {
+  // ── ESTADO ──────────────────────────────────────────────────────────────────
+  let todosVeiculos = [];
+  let filtroAtual = "todas";
+  let buscaAtual = "";
 
-  // 1. VARIÁVEL GLOBAL
-  let veiculos = [];
+  // ── ELEMENTOS ───────────────────────────────────────────────────────────────
+  const container = document.getElementById("cards-container");
+  const loading = document.getElementById("loading");
+  const emptyState = document.getElementById("empty-state");
+  const searchAdm = document.getElementById("txf-search-adm");
+  const searchMobile = document.getElementById("txf-search-mobile");
+  const btnSearchAdm = document.getElementById("btn-search-adm");
+  const btnSearchMobile = document.getElementById("btn-search-mobile");
+  const btnTodas = document.getElementById("btn-todos-adm");
+  const btnDisp = document.getElementById("btn-disp-adm");
+  const btnUso = document.getElementById("btn-uso-adm");
+  const btnTodasMobile = document.getElementById("btn-todos-mobile");
+  const btnDispMobile = document.getElementById("btn-disp-mobile");
+  const btnUsoMobile = document.getElementById("btn-uso-mobile");
+  const btnLogoutMobile = document.getElementById("btn-logout-mobile");
+  const btnPerfilAdm = document.getElementById("btn-perfil-adm");
+  const hamburger = document.getElementById("hamburger");
+  const mobileNav = document.getElementById("mobile-nav");
 
-  // 2. BUSCAR DA API
-  async function buscarVeiculos() {
+  // ── HEADERS ─────────────────────────────────────────────────────────────────
+  function getAuthHeaders() {
+    const token =
+      sessionStorage.getItem("token") || localStorage.getItem("token");
+    const h = { "Content-Type": "application/json" };
+    if (token) h["Authorization"] = `Bearer ${token}`;
+    return h;
+  }
+
+  // ── BUSCAR VEÍCULOS ──────────────────────────────────────────────────────────
+  async function carregarVeiculos() {
+    mostrarLoading(true);
     try {
-      const resposta = await fetch("http://localhost:3000/veiculos");
-      const dados = await resposta.json();
-      return dados;
+      const response = await fetch(`${API_BASE}/veiculos`, {
+        headers: getAuthHeaders(),
+      });
+      if (!response.ok) throw new Error(`Erro ${response.status}`);
+
+      const dados = await response.json();
+      todosVeiculos = Array.isArray(dados) ? dados : dados.content || [];
+      renderizarCards();
     } catch (erro) {
-      console.error("Erro ao buscar veículos:", erro);
-      return [];
+      console.error("Erro ao carregar veículos:", erro);
+      if (container) {
+        container.innerHTML =
+          '<p style="padding:1rem;color:#888;">Erro ao carregar veículos. Verifique a conexão.</p>';
+      }
+    } finally {
+      mostrarLoading(false);
     }
   }
 
-  // 3. ESTADO
-  let statusSelecionado = "todos";
-  let textoBusca = "";
+  // ── RENDERIZAR ───────────────────────────────────────────────────────────────
+  function renderizarCards() {
+    container.querySelectorAll(".veiculo-card").forEach((c) => c.remove());
+    const filtrados = filtrarVeiculos();
 
-  // 4. ELEMENTOS
-  const container = document.getElementById("lista_veiculos");
-  const botoes = document.querySelectorAll(".filtro");
-  const inputBusca = document.querySelector(".barra_pesquisa input");
-
-  // 5. FORMATAR STATUS
-  function formatarStatus(status) {
-    return status === "disponivel" ? "DISPONÍVEL" : "EM USO";
-  }
-
-  // 6. RENDER
-  function renderizarCards(lista) {
-    container.innerHTML = "";
-
-    if (lista.length === 0) {
-      container.innerHTML = "<p>Nenhum veículo encontrado.</p>";
+    if (filtrados.length === 0) {
+      emptyState.style.display = "flex";
       return;
     }
+    emptyState.style.display = "none";
+    filtrados.forEach((veiculo, index) =>
+      container.appendChild(criarCard(veiculo, index)),
+    );
+  }
 
-    lista.forEach(v => {
-      container.innerHTML += `
-        <div class="card ${v.status}">
+  // ── FILTRAR ──────────────────────────────────────────────────────────────────
+  function filtrarVeiculos() {
+    return todosVeiculos.filter((v) => {
+      const matchFiltro = filtroAtual === "todas" || v.status === filtroAtual;
+      const matchBusca =
+        buscaAtual === "" ||
+        (v.modelo || "").toLowerCase().includes(buscaAtual.toLowerCase()) ||
+        (v.prefixo || "").toLowerCase().includes(buscaAtual.toLowerCase());
+      return matchFiltro && matchBusca;
+    });
+  }
 
-          <div class="card_topo">
-            <h3>${v.nome} : ${v.prefixo}</h3>
+  // ── CRIAR CARD ───────────────────────────────────────────────────────────────
+  
+  function criarCard(veiculo, index) {
+    const eEmUso = veiculo.status === "em_uso";
+
+    const card = document.createElement("div");
+    card.className = `veiculo-card${eEmUso ? " em-uso" : ""}`;
+    card.style.animationDelay = `${index * 0.06}s`;
+
+    card.innerHTML = `
+      <div class="card-header">
+        <div class="card-header-left">
+          <svg class="card-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+            <rect x="1" y="3" width="15" height="13" rx="2"/>
+            <path d="M16 8h4l3 3v5h-7V8z"/>
+            <circle cx="5.5" cy="18.5" r="2.5"/>
+            <circle cx="18.5" cy="18.5" r="2.5"/>
+          </svg>
+          <div>
+            <div class="card-modelo">${veiculo.modelo || "—"}</div>
+            <div class="card-viatura">viatura: ${veiculo.prefixo || "—"}</div>
           </div>
-
-          <div class="card_corpo">
-            <p><strong>Último uso:</strong> ${v.ultimoUso || "-"}</p>
-            <p><strong>Último abastecimento:</strong> ${v.abastecimento || "-"}</p>
-            <p><strong>KM:</strong> ${v.km || "-"}</p>
-
-            <span class="status ${v.status}">
-              ${formatarStatus(v.status)}
-            </span>
-          </div>
-
-          <!-- EXPANSÍVEL -->
-          <div class="card_extra">
-            ${
-              v.status === "em_uso"
-                ? `<p><strong>Motorista:</strong> ${v.motorista || "-"}</p>`
-                : `<p>Veículo disponível</p>`
-            }
-          </div>
-
         </div>
-      `;
-    });
+      </div>
+      <div class="card-body">
+        <div class="card-info-row">
+          <span class="card-info-label">Último uso em:</span>
+          <span class="card-info-value">${veiculo.ultimoUso || "—"}</span>
+        </div>
+        <div class="card-info-row">
+          <span class="card-info-label">Último abastecimento:</span>
+          <span class="card-info-value">${veiculo.ultimoAbastecimento || "—"}</span>
+        </div>
+        <div class="card-info-row">
+          <span class="card-info-label">KM:</span>
+          <span class="card-info-value">${veiculo.km || "—"}</span>
+        </div>
+      </div>
+      <div class="card-footer">
+        <div class="card-status ${eEmUso ? "em_uso" : "disponivel"}">
+          <span class="status-dot ${eEmUso ? "em_uso" : "disponivel"}"></span>
+          ${eEmUso ? "Em uso" : "Disponível"}
+        </div>
+      </div>
+    `;
+
+    return card;
   }
 
-  // 7. FILTROS
-  function aplicarFiltros() {
-    let filtrados = veiculos;
+  // ── LOADING ──────────────────────────────────────────────────────────────────
+  function mostrarLoading(show) {
+    if (loading) loading.style.display = show ? "flex" : "none";
+  }
 
-    // status
-    if (statusSelecionado !== "todos") {
-      filtrados = filtrados.filter(v => v.status === statusSelecionado);
+  // ── FILTROS ──────────────────────────────────────────────────────────────────
+  function setFiltro(filtro) {
+    filtroAtual = filtro;
+    [
+      btnTodas,
+      btnDisp,
+      btnUso,
+      btnTodasMobile,
+      btnDispMobile,
+      btnUsoMobile,
+    ].forEach((b) => b?.classList.remove("active"));
+
+    if (filtro === "todas") {
+      btnTodas?.classList.add("active");
+      btnTodasMobile?.classList.add("active");
+    }
+    if (filtro === "disponivel") {
+      btnDisp?.classList.add("active");
+      btnDispMobile?.classList.add("active");
+    }
+    if (filtro === "em_uso") {
+      btnUso?.classList.add("active");
+      btnUsoMobile?.classList.add("active");
     }
 
-    // busca
-    if (textoBusca !== "") {
-      filtrados = filtrados.filter(v =>
-        v.nome.toLowerCase().includes(textoBusca) ||
-        v.prefixo.toLowerCase().includes(textoBusca) ||
-        (v.motorista && v.motorista.toLowerCase().includes(textoBusca))
-      );
-    }
-
-    renderizarCards(filtrados);
+    renderizarCards();
   }
 
-  // 8. INICIAR
-  async function iniciar() {
-    veiculos = await buscarVeiculos();
-    renderizarCards(veiculos);
+  btnTodas?.addEventListener("click", () => setFiltro("todas"));
+  btnDisp?.addEventListener("click", () => setFiltro("disponivel"));
+  btnUso?.addEventListener("click", () => setFiltro("em_uso"));
+  btnTodasMobile?.addEventListener("click", () => setFiltro("todas"));
+  btnDispMobile?.addEventListener("click", () => setFiltro("disponivel"));
+  btnUsoMobile?.addEventListener("click", () => setFiltro("em_uso"));
+
+  // ── BUSCA ────────────────────────────────────────────────────────────────────
+  function executarBusca(valor) {
+    buscaAtual = valor.trim();
+    renderizarCards();
   }
 
-  iniciar();
-
-  // 9. BOTÕES
-  botoes.forEach(botao => {
-    botao.addEventListener("click", () => {
-
-      botoes.forEach(b => b.classList.remove("ativo"));
-      botao.classList.add("ativo");
-
-      statusSelecionado = botao.dataset.status;
-
-      aplicarFiltros();
-    });
+  btnSearchAdm?.addEventListener("click", () => executarBusca(searchAdm.value));
+  btnSearchMobile?.addEventListener("click", () =>
+    executarBusca(searchMobile.value),
+  );
+  searchAdm?.addEventListener("keyup", (e) => {
+    if (e.key === "Enter" || !searchAdm.value) executarBusca(searchAdm.value);
+  });
+  searchMobile?.addEventListener("keyup", (e) => {
+    if (e.key === "Enter" || !searchMobile.value)
+      executarBusca(searchMobile.value);
   });
 
-  // 10. BUSCA
-  inputBusca.addEventListener("input", () => {
-    textoBusca = inputBusca.value.toLowerCase();
-    aplicarFiltros();
+  // ── LOGOUT / PERFIL ──────────────────────────────────────────────────────────
+  btnLogoutMobile?.addEventListener("click", () => {
+    sessionStorage.clear();
+    window.location.href = "./index.html";
   });
 
-  // 11. CLICK NOS CARDS
-  container.addEventListener("click", (e) => {
-    const card = e.target.closest(".card");
-    if (!card) return;
+  btnPerfilAdm?.addEventListener("click", (e) => {
+    e.preventDefault();
+    sessionStorage.clear();
+    window.location.href = "./index.html";
+  });
 
-    // só abre se estiver em uso
-    if (!card.classList.contains("em_uso")) {
-      return;
-    }
+  // ── DROPDOWN DESKTOP ─────────────────────────────────────────────────────────
+  document.querySelectorAll(".dropdown").forEach((dropdown) => {
+    const btn = dropdown.querySelector(".dropdown-btn");
+    const submenu = dropdown.querySelector(".submenu");
+    const arrow = btn?.querySelector(".arrow");
+    if (!btn || !submenu) return;
 
-    // fecha os outros
-    document.querySelectorAll(".card").forEach(c => {
-      if (c !== card) {
-        c.classList.remove("ativo");
+    btn.addEventListener("click", (e) => {
+      e.stopPropagation();
+      const aberto = submenu.classList.contains("open");
+      document
+        .querySelectorAll(".submenu")
+        .forEach((s) => s.classList.remove("open"));
+      document
+        .querySelectorAll(".dropdown-btn .arrow")
+        .forEach((a) => a.classList.remove("rotate"));
+      if (!aberto) {
+        submenu.classList.add("open");
+        arrow?.classList.add("rotate");
       }
     });
-
-    // toggle
-    card.classList.toggle("ativo");
   });
 
-});
+  document.addEventListener("click", () => {
+    document
+      .querySelectorAll(".submenu")
+      .forEach((s) => s.classList.remove("open"));
+    document
+      .querySelectorAll(".dropdown-btn .arrow")
+      .forEach((a) => a.classList.remove("rotate"));
+  });
+
+  // ── HAMBURGER MOBILE ─────────────────────────────────────────────────────────
+  hamburger?.addEventListener("click", () => {
+    hamburger.classList.toggle("open");
+    mobileNav?.classList.toggle("open");
+  });
+
+  document.querySelectorAll(".mobile-section-title").forEach((title) => {
+    title.addEventListener("click", () => {
+      const target = title.dataset.target;
+      if (!target) return;
+      const sub = document.getElementById(target);
+      const arrow = title.querySelector(".arrow");
+      sub?.classList.toggle("open");
+      arrow?.classList.toggle("rotate");
+    });
+  });
+
+  // ── INIT ─────────────────────────────────────────────────────────────────────
+  carregarVeiculos();
+}); // fim DOMContentLoaded

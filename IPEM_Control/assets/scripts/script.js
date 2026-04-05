@@ -10,7 +10,7 @@ const API_URL = "http://localhost:8080/usuarios/login";
 
 // ─── MAPA DE REDIRECIONAMENTO POR TIPO ───────────────────────────────────────
 const ROTAS_POR_TIPO = {
-  adm: "./tela_veiculos.html",
+  adm: "./ver_veiculos.html",
   tecnico: "./tela_veiculos.html",
   default: "./erro.html",
 };

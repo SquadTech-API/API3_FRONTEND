@@ -1,120 +1,122 @@
+document.addEventListener("DOMContentLoaded", function () {
 
-const btns = document.querySelectorAll(".dropdown-btn");
+  // ─── VERIFICAÇÃO DE SESSÃO ──────────────────────────────────────────────────
+  var usuarioLogado = JSON.parse(sessionStorage.getItem("usuario"));
+  if (!usuarioLogado) { window.location.href = "./index.html"; return; }
 
-btns.forEach(btn => {
-    btn.addEventListener("click", (e) => {
+  var API_BASE = "http://localhost:8080";
 
-        e.stopPropagation(); // evita fechar imediatamente
+  // ─── MENU DROPDOWN ──────────────────────────────────────────────────────────
+  document.querySelectorAll(".dropdown-btn").forEach(function (btn) {
+    btn.addEventListener("click", function (e) {
+      e.stopPropagation();
+      var submenu = btn.nextElementSibling;
+      var arrow   = btn.querySelector(".arrow");
 
-        const submenu = btn.nextElementSibling;
-        const arrow = btn.querySelector(".arrow");
+      document.querySelectorAll(".submenu").forEach(function (m) {
+        if (m !== submenu) m.classList.remove("open");
+      });
+      document.querySelectorAll(".arrow").forEach(function (a) {
+        if (a !== arrow) a.classList.remove("rotate");
+      });
 
-        // Fecha os outros
-        document.querySelectorAll(".submenu").forEach(menu => {
-            if (menu !== submenu) menu.classList.remove("open");
-        });
-
-        document.querySelectorAll(".arrow").forEach(a => {
-            if (a !== arrow) a.classList.remove("rotate");
-        });
-
-        // Alterna atual
-        submenu.classList.toggle("open");
-        arrow.classList.toggle("rotate");
+      submenu.classList.toggle("open");
+      arrow.classList.toggle("rotate");
     });
-});
+  });
 
+  document.addEventListener("click", function () {
+    document.querySelectorAll(".submenu").forEach(function (m) { m.classList.remove("open"); });
+    document.querySelectorAll(".arrow").forEach(function (a)   { a.classList.remove("rotate"); });
+  });
 
-
-document.addEventListener("click", () => {
-
-    document.querySelectorAll(".submenu").forEach(menu => {
-        menu.classList.remove("open");
+  // ─── MENU MOBILE ────────────────────────────────────────────────────────────
+  var toggleBtn = document.querySelector(".btn_menu");
+  var navEl     = document.querySelector(".nav");
+  if (toggleBtn && navEl) {
+    toggleBtn.addEventListener("click", function () {
+      navEl.classList.toggle("active");
     });
+  }
 
-    document.querySelectorAll(".arrow").forEach(a => {
-        a.classList.remove("rotate");
-    });
+  // ─── FORMULÁRIO VEÍCULO ─────────────────────────────────────────────────────
+  var form = document.getElementById("form_veic");
+  if (!form) return;
 
-});
-
-const toggle = document.querySelector(".btn_menu");
-const nav = document.querySelector(".nav");
-
-
-toggle.addEventListener("click", () => {
-    nav.classList.toggle("active");
-});
-
-
-
-const form = document.getElementById("form_veic");
-
-form.addEventListener("submit", function(event) {
+  form.addEventListener("submit", async function (event) {
     event.preventDefault();
 
-    const marca = document.getElementById("txf_marca_add_veic").value.trim();
-    const modelo = document.getElementById("txf_modelo_add_veic").value.trim();
-    const ano = document.getElementById("txf_ano_add_veic").value.trim();
-    const combustivel = document.getElementById("ddl_combustivel_add_veic").value;
-    const habilitacao = document.getElementById("ddl_habilitacao_add_veic").value;
-    const placa = document.getElementById("txf_placa_add_veic").value.trim();
-    const km = document.getElementById("txf_km_add_veic").value.trim();
-    const prefixo = document.getElementById("txf_prefixo_add_veic").value.trim();
-    const nucleo = document.getElementById("txf_nucleo_add_veic").value.trim();
-    const numeroFi = document.getElementById("txf_nfi_add_veic").value.trim();
+    var marca                = document.getElementById("txf_marca_add_veic").value.trim();
+    var modelo               = document.getElementById("txf_modelo_add_veic").value.trim();
+    var ano                  = document.getElementById("txf_ano_add_veic").value.trim();
+    var tipoCombustivel      = document.getElementById("ddl_combustivel_add_veic").value;
+    var habilitacaoCategoria = document.getElementById("ddl_habilitacao_add_veic").value;
+    var placa                = document.getElementById("txf_placa_add_veic").value.trim();
+    var kmAtual              = document.getElementById("txf_km_add_veic").value.trim();
+    var prefixo              = document.getElementById("txf_prefixo_add_veic").value.trim();
+    var nucleoDar            = document.getElementById("txf_nucleo_add_veic").value.trim();
+    var numeroFl             = document.getElementById("txf_nfi_add_veic").value.trim();
 
-    if (
-        marca === "" ||
-        modelo === "" ||
-        ano === "" ||
-        placa === "" ||
-        km === "" ||
-        prefixo === "" ||
-        nucleo === "" ||
-        numeroFi === ""
-    ) {
-        alert("Preencha todos os campos!");
-        return;
+    if (!marca || !modelo || !ano || !placa || !kmAtual || !prefixo || !nucleoDar) {
+      alert("Preencha todos os campos obrigatórios!");
+      return;
+    }
+    if (!tipoCombustivel) {
+      alert("Selecione o tipo de combustível!");
+      return;
+    }
+    if (!habilitacaoCategoria) {
+      alert("Selecione a categoria de habilitação necessária!");
+      return;
     }
 
-    if (combustivel === "") {
-        alert("Selecione o tipo de combustível!");
-        return;
-    }
-    if (habilitacao === "") {
-        alert("Selecione a categoria da habilitação necessária!");
-        return;
-    }
-    console.log("Validação OK");
-
-    const dados = {
-        marca,
-        modelo,
-        ano,
-        combustivel,
-        habilitacao,
-        placa,
-        km,
-        prefixo,
-        nucleo,
-        numeroFi
+    var mapaCombustivel = {
+      "G":  "gasolina",
+      "E":  "etanol",
+      "F":  "flex",
+      "EL": "eletrico",
+      "H":  "hibrido"
     };
 
-    console.log("Dados enviados", dados);
+    var dados = {
+      marca:               marca,
+      modelo:              modelo,
+      ano:                 parseInt(ano, 10),
+      tipoCombustivel:     mapaCombustivel[tipoCombustivel] || tipoCombustivel,
+      habilitacaoCategoria: habilitacaoCategoria,
+      placa:               placa.toUpperCase(),
+      kmAtual:             parseFloat(kmAtual),
+      prefixo:             prefixo,
+      nucleoDar:           nucleoDar,
+      numeroFl:            numeroFl || null,
+      disponivel:          true
+    };
 
-        const API_URL = "URL_DO_BACKEND_AQUI";
+    var btnSalvar = document.getElementById("btn_salvar_add_veic");
+    btnSalvar.disabled = true;
+    btnSalvar.textContent = "Salvando...";
 
-        fetch(API_URL, {
-        method: "POST",
-        headers: {
-            "Content-Type": "application/json"
-        },
-        body: JSON.stringify(dados)
-    }).then(() => {
+    try {
+      var resposta = await fetch(API_BASE + "/veiculos", {
+        method:  "POST",
+        headers: { "Content-Type": "application/json" },
+        body:    JSON.stringify(dados)
+      });
+
+      if (resposta.ok || resposta.status === 201) {
+        alert("Veículo cadastrado com sucesso!");
         form.reset();
-    });
+      } else {
+        var erro = await resposta.json().catch(function () { return null; });
+        alert((erro && (erro.erro || erro.message)) || "Erro ao cadastrar veículo.");
+      }
+    } catch (err) {
+      console.error("Erro ao conectar com o servidor:", err);
+      alert("Não foi possível conectar ao servidor.");
+    } finally {
+      btnSalvar.disabled = false;
+      btnSalvar.textContent = "Salvar";
+    }
+  });
 
-});
-
-
+}); // fim DOMContentLoaded

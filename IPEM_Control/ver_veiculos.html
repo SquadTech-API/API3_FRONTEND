@@ -27,15 +27,15 @@
         <li class="dropdown">
           <div class="dropdown-btn">Veículos <span class="arrow">▼</span></div>
           <ul class="submenu">
-            <li><a href="#">Novo Veículo</a></li>
-            <li><a href="gerenciamento_veiculos.html">Gerenciamento</a></li>
+            <li><a href="./add_veic.html">Novo Veículo</a></li>
+            <li><a href="./ver_veiculos.html">Gerenciamento</a></li>
           </ul>
         </li>
         <li class="dropdown">
           <div class="dropdown-btn">Motoristas <span class="arrow">▼</span></div>
           <ul class="submenu">
-            <li><a href="#">Novo Motorista</a></li>
-            <li><a href="#">Gerenciamento</a></li>
+            <li><a href="./add_moto.html">Novo Motorista</a></li>
+            <li><a href="./ver_motoristas.html">Gerenciamento</a></li>
           </ul>
         </li>
         <li class="dropdown">
@@ -44,13 +44,10 @@
             <li><a href="#">Ver Relatórios</a></li>
           </ul>
         </li>
-        <!-- ADICIONADO: link direto Abastecer no menu desktop -->
-        <li>
-          <a href="abastecimento.html" class="menu-link-direto">Abastecer</a>
-        </li>
       </ul>
 
       <div class="nav_btn">
+        <!-- Clique no perfil faz logout -->
         <a href="#" id="btn-perfil-adm">
           <img src="assets/images/icon_perfil.png" alt="Perfil" />
         </a>
@@ -72,8 +69,8 @@
         Veículos <span class="arrow">▼</span>
       </div>
       <div class="mobile-sub" id="sub-veiculos">
-        <a href="#">Novo Veículo</a>
-        <a href="gerenciamento_veiculos.html">Gerenciamento</a>
+        <a href="./add_veic.html">Novo Veículo</a>
+        <a href="./ver_veiculos.html">Gerenciamento</a>
       </div>
     </div>
     <div class="mobile-section">
@@ -81,8 +78,8 @@
         Motoristas <span class="arrow">▼</span>
       </div>
       <div class="mobile-sub" id="sub-motoristas">
-        <a href="#">Novo Motorista</a>
-        <a href="#">Gerenciamento</a>
+        <a href="./add_moto.html">Novo Motorista</a>
+        <a href="./ver_motoristas.html">Gerenciamento</a>
       </div>
     </div>
     <div class="mobile-section">
@@ -93,20 +90,13 @@
         <a href="#">Ver Relatórios</a>
       </div>
     </div>
-    <!-- ADICIONADO: link Abastecer no menu mobile -->
-    <div class="mobile-section">
-      <div class="mobile-section-title" style="cursor:default;">
-        <a href="abastecimento.html" style="color:inherit;text-decoration:none;display:block;width:100%;">Abastecer</a>
-      </div>
-    </div>
     <div class="mobile-perfil">
       <button class="btn-logout-mobile" id="btn-logout-mobile">✕ Sair</button>
     </div>
   </div>
 
-
   <!-- ═══════════════════════════════════════════
-         MAIN — DESKTOP
+         MAIN
     ════════════════════════════════════════════ -->
   <main class="container">
     <h2 class="page-title">Gerenciamento de Veículos</h2>
@@ -121,7 +111,6 @@
           </svg>
         </button>
       </div>
-
       <div class="filter-btns">
         <button class="filter-btn active" id="btn-todos-adm">Todas</button>
         <button class="filter-btn" id="btn-disp-adm">Disponível</button>
@@ -129,7 +118,7 @@
       </div>
     </div>
 
-    <!-- Toolbar mobile (search) -->
+    <!-- Toolbar mobile -->
     <div class="toolbar-mobile">
       <div class="search-box">
         <input type="text" id="txf-search-mobile" placeholder="Procure uma viatura:" />
@@ -139,7 +128,6 @@
           </svg>
         </button>
       </div>
-
       <div class="filter-btns">
         <button class="filter-btn active" id="btn-todos-mobile">Todas</button>
         <button class="filter-btn" id="btn-disp-mobile">Disponível</button>
@@ -149,21 +137,15 @@
 
     <!-- Cards -->
     <div class="cards-grid" id="cards-container">
-
-      <!-- Loading -->
       <div class="loading-state" id="loading">
         <div class="spinner"></div>
         <span>Carregando veículos...</span>
       </div>
-
-      <!-- Estado vazio -->
       <div class="empty-state" id="empty-state" style="display:none;">
         Nenhum veículo encontrado.
       </div>
-
     </div>
   </main>
-
 
   <!-- ═══════════════════════════════════════════
          BOTTOM NAV (mobile)
@@ -189,7 +171,7 @@
     </button>
   </nav>
 
-  <script src="./assets/scripts/veiculos.js" defer></script>
+  <script src="./assets/scripts/verveicc.js" defer></script>
 </body>
 
 </html>
