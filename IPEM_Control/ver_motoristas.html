@@ -1,0 +1,100 @@
+<!doctype html>
+<html lang="PT-BR">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Ipem</title>
+    <link rel="stylesheet" href="assets/styles/vermoto.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+
+  <body>
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo_ipem.png" alt="Logo Ipem" />
+      </div>
+
+      <button class="btn_menu">
+        <img src="assets/images/icon_menu.png" alt="Menu" />
+      </button>
+
+      <nav class="nav">
+        <ul class="menu">
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Veículos <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="./add_veic.html">Novo Veículo</a></li>
+              <li><a href="./ver_veiculos.html">Gerenciamento</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Motoristas <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="./add_moto.html">Novo Motorista</a></li>
+              <li><a href="./ver_motoristas.html">Gerenciamento</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Relatórios <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="#">Ver Relatórios</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="nav_btn">
+          <a href="#">
+            <img src="assets/images/icon_perfil.png" alt="Perfil" />
+          </a>
+        </div>
+      </nav>
+    </header>
+
+<main class="main">
+  <div class="container">
+
+    <!-- 1. Título -->
+    <div class="nome_pagina">
+      <h1>Motoristas</h1>
+    </div>
+
+    <!-- 2. Busca + filtros -->
+    <div class="busca_filtros">
+      <div class="barra_pesquisa">
+        <div class="input-wrapper">
+          <img src="assets/images/icon_search.png" class="icone" />
+          <input type="text" placeholder="Digite o nome:" />
+        </div>
+      </div>
+
+      <div class="filtros">
+        <button class="filtro ativo" data-status="todos">Todos</button>
+        <button class="filtro" data-status="servico">Em serviço</button>
+      </div>
+    </div>
+
+    <!-- Cards -->
+    <div class="alinhamento_card" id="lista_motoristas"></div> 
+
+  </div>
+</main>
+
+    <script src="assets/scripts/vermoto.js"></script>
+  </body>
+</html>
