@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="pt-br">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Teste</title>
+    <link rel="stylesheet" href="assets/styles/relatorio-viatura.css" />
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Roboto:ital,wght@0,100..900;1,100..900&display=swap"
+      rel="stylesheet"
+    />
+  </head>
+  <body>
+    <header>
+      <div class="logo">
+        <img src="assets/images/logo_ipem.png" alt="Logo Ipem" />
+      </div>
+
+      <button class="btn_menu">
+        <img src="assets/images/icon_menu.png" alt="Menu" />
+      </button>
+
+      <nav class="nav">
+        <ul class="menu">
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Veículos <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="">Novo Veículo</a></li>
+              <li><a href="#">Gerenciamento</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Motoristas <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="#">Novo Motorista</a></li>
+              <li><a href="#">Gerenciamento</a></li>
+            </ul>
+          </li>
+
+          <li class="dropdown">
+            <div class="dropdown-btn">
+              Relatórios <span class="arrow">▼</span>
+            </div>
+
+            <ul class="submenu">
+              <li><a href="#">Ver Relatórios</a></li>
+            </ul>
+          </li>
+        </ul>
+
+        <div class="nav_btn">
+          <a href="#">
+            <img src="assets/images/icon_perfil.png" alt="Perfil" />
+          </a>
+        </div>
+      </nav>
+    </header>
+
+    <main class="container">
+      <div class="nome_pagina">
+        <h1>Relatórios</h1>
+      </div>
+      <div class="filtro-card">
+        <select id="filtroCard">
+          <option value="semana">Hoje</option>
+          <option value="mes">Últimos 30 dias</option>
+          <option value="ano">Último ano</option>
+        </select>
+      </div>
+
+      <section>
+        <div class="dashboard">
+          <div class="card">
+            <div class="card-title" id="gastoTotal">R$ 0.000,00</div>
+            <div class="card-value">Gasto Combustível</div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="litrosTotal">000.00 L</div>
+            <div class="card-value">Litros de Combustível</div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="kmTotal">KM: 0000.000</div>
+            <div class="card-value">Kilômetros Rodados</div>
+          </div>
+          <div class="card">
+            <div class="card-title" id="saidasTotal">00</div>
+            <div class="card-value">Número de saidas</div>
+          </div>
+        </div>
+
+        <!--grafico -->
+        <div class="chart-container">
+          <div class="chart">
+            <div class="chart-header">
+              <div class="chart-title">Veículos com mais saídas</div>
+              <div class="chart-options">
+                <select id="filtroGrafico">
+                  <option value="semana">Últimos 7 dias</option>
+                  <option value="mes">Últimos 30 dias</option>
+                  <option value="ano">Último ano</option>
+                </select>
+              </div>
+            </div>
+            <div class="chart-canvas">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+            </div>
+          </div>
+          <div class="painel-detalhes">
+            <div class="barra_pesquisa">
+              <div class="input-wrapper">
+                <img src="assets/images/icon_search.png" class="icone" />
+                <input
+                  type="text"
+                  id="buscaVeiculo"
+                  placeholder="Procure uma viatura:"
+                />
+                <ul class="sugestoes"></ul>
+              </div>
+            </div>
+            <div class="bloco-veiculo">
+              <div class="vtandfilter">
+                <div class="viatura-info">
+                  <span class="label">Viatura:</span>
+                  <span id="nomeViatura">teste-21</span>
+                </div>
+                <div class="filter">
+                  <select id="filtropesquisa">
+                    <option value="semana">Últimos 7 dias</option>
+                    <option value="mes">Últimos 30 dias</option>
+                    <option value="ano">Último ano</option>
+                  </select>
+                </div>
+              </div>
+              <div class="car-veic">
+                <div class="card">
+                  <div class="card-title" id="litrosViatura">000.00 L</div>
+                  <div class="card-value">Litros de Combustível</div>
+                  <div class="card-extra">
+                    <p id="gastoViatura">Gasto: R$ 0.000,00</p>
+                  </div>
+                </div>
+                <div class="card">
+                  <div class="card-title" id="kmViatura">000.00</div>
+                  <div class="card-value">Kilômetros rodados</div>
+                  <div class="card-extra">
+                    <p id="saidasViatura">Saidas: 00</p>
+                  </div>
+                </div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+    <script src="assets/scripts/relatorio-viatura.js"></script>
+  </body>
+</html>
