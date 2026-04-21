@@ -235,7 +235,7 @@ section {
 ======================= */
 
 .chart-container {
-    margin-top: 40px;
+    margin-top: 30px;
     display: grid;
     grid-template-columns: 1fr 1fr;
     gap: 1.5rem;
@@ -318,7 +318,7 @@ section {
     white-space: nowrap;
 }
 
-.bar:hover::before {
+#chart-saidas .bar:hover::before {
     content: attr(data-value);
     position: absolute;
     top: -25px;
@@ -331,6 +331,20 @@ section {
     white-space: nowrap;
     font-size: 0.85rem;
 }
+#chart-km .bar:hover::before {
+    content: attr(data-value) " KM";
+    position: absolute;
+    top: -25px;
+    left: 50%;
+    transform: translate(50%);
+    background: var(--cor-primaria);
+    color: #FFFFFF;
+    padding: 0.2rem 0.5rem;
+    border-radius: 3px;
+    white-space: nowrap;
+    font-size: 0.85rem;
+}
+
 
 /* =======================
    BUSCA / FILTROS / DETALHES
@@ -339,11 +353,13 @@ section {
     display: flex;
     flex-direction: column;
     height: 100%;
+    padding-top: 20px;
+    padding-bottom: 20px;
 }
 
 .barra_pesquisa{
     display: flex;
-    width: 100%;
+    width: 50%;
 }
 
 .input-wrapper {
@@ -386,7 +402,7 @@ section {
     max-height: 200px;
     overflow-y: auto;
     display: none;
-    z-index: 10;
+    z-index: 1000;
 }
 
 .sugestoes li {
@@ -406,7 +422,7 @@ section {
 
 
 }
-#nomeViatura {
+#modeloViatura {
   font-weight: 600;
   color: var(--cor-primaria);
   background: rgba(14, 35, 101, 0.08);
@@ -442,12 +458,14 @@ section {
 
 .car-veic {
     margin-top: 30px;
+    margin-bottom: 30px;
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(260px, 260px));
     justify-content: space-between;
     align-items: start;
     gap: 20px   
 }
+
 
 .card {
   cursor: pointer;
@@ -463,6 +481,9 @@ transition: all 0.2s ease-out;
 }
 .card-extra p{
   color: var(--cor-primaria);
+  background: rgba(14, 35, 101, 0.08);
+  padding: 5px 4px;
+  border-radius: 4px;
 
 }
 
@@ -524,6 +545,10 @@ transition: all 0.2s ease-out;
 
     .chart-container {
         grid-template-columns: repeat(auto-fit, minmax(300px, 300px));
+    }
+    .barra_pesquisa{
+    display: flex;
+    width: 100%;
     }
   
 }

@@ -71,7 +71,8 @@
       </div>
       <div class="filtro-card">
         <select id="filtroCard">
-          <option value="semana">Hoje</option>
+          <option value="hoje">Hoje</option>
+          <option value="semana">Últimos 7 dias</option>
           <option value="mes">Últimos 30 dias</option>
           <option value="ano">Último ano</option>
         </select>
@@ -97,19 +98,22 @@
           </div>
         </div>
 
-        <!--grafico -->
         <div class="chart-container">
-          <div class="chart">
+          <!-- GRÁFICO 1 -->
+          <div class="chart" id="chart-saidas">
             <div class="chart-header">
               <div class="chart-title">Veículos com mais saídas</div>
+
               <div class="chart-options">
-                <select id="filtroGrafico">
+                <select class="filtro-grafico">
+                  <option value="hoje">Hoje</option>
                   <option value="semana">Últimos 7 dias</option>
                   <option value="mes">Últimos 30 dias</option>
                   <option value="ano">Último ano</option>
                 </select>
               </div>
             </div>
+
             <div class="chart-canvas">
               <div class="bar"></div>
               <div class="bar"></div>
@@ -118,46 +122,86 @@
               <div class="bar"></div>
             </div>
           </div>
-          <div class="painel-detalhes">
-            <div class="barra_pesquisa">
-              <div class="input-wrapper">
-                <img src="assets/images/icon_search.png" class="icone" />
-                <input
-                  type="text"
-                  id="buscaVeiculo"
-                  placeholder="Procure uma viatura:"
-                />
-                <ul class="sugestoes"></ul>
+
+          <!-- GRÁFICO 2 -->
+          <div class="chart" id="chart-km">
+            <div class="chart-header">
+              <div class="chart-title">Veículos que mais rodaram</div>
+
+              <div class="chart-options">
+                <select class="filtro-grafico">
+                  <option value="hoje">Hoje</option>
+                  <option value="semana">Últimos 7 dias</option>
+                  <option value="mes">Últimos 30 dias</option>
+                  <option value="ano">Último ano</option>
+                </select>
               </div>
             </div>
-            <div class="bloco-veiculo">
-              <div class="vtandfilter">
-                <div class="viatura-info">
-                  <span class="label">Viatura:</span>
-                  <span id="nomeViatura">teste-21</span>
-                </div>
-                <div class="filter">
-                  <select id="filtropesquisa">
-                    <option value="semana">Últimos 7 dias</option>
-                    <option value="mes">Últimos 30 dias</option>
-                    <option value="ano">Último ano</option>
-                  </select>
+
+            <div class="chart-canvas">
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+              <div class="bar"></div>
+            </div>
+          </div>
+        </div>
+
+        <div class="painel-detalhes">
+          <div class="barra_pesquisa">
+            <div class="input-wrapper">
+              <img src="assets/images/icon_search.png" class="icone" />
+              <input
+                type="text"
+                id="buscaVeiculo"
+                placeholder="Procure uma viatura:"
+              />
+              <ul class="sugestoes"></ul>
+            </div>
+          </div>
+          <div class="bloco-veiculo">
+            <div class="vtandfilter">
+              <div class="viatura-info">
+                <span class="label">Viatura:</span>
+                <span id="modeloViatura">teste-21</span>
+              </div>
+              <div class="filter">
+                <select id="filtropesquisa">
+                  <option value="hoje">Hoje</option>
+                  <option value="semana">Últimos 7 dias</option>
+                  <option value="mes">Últimos 30 dias</option>
+                  <option value="ano">Último ano</option>
+                </select>
+              </div>
+            </div>
+            <div class="car-veic">
+              <div class="card">
+                <div class="card-title" id="gastoViatura">R$ 0.000,00</div>
+                <div class="card-value">Gasto combustível</div>
+                <div class="card-extra">
+                  <p id="precoMedioViatura">Preço médio (Litro): R$ 00,00</p>
                 </div>
               </div>
-              <div class="car-veic">
-                <div class="card">
-                  <div class="card-title" id="litrosViatura">000.00 L</div>
-                  <div class="card-value">Litros de Combustível</div>
-                  <div class="card-extra">
-                    <p id="gastoViatura">Gasto: R$ 0.000,00</p>
-                  </div>
+              <div class="card">
+                <div class="card-title" id="litrosViatura">000.00 L</div>
+                <div class="card-value">Litros de Combustível</div>
+                <div class="card-extra">
+                  <p id="consumoViatura">Consumo: 00 km por L</p>
                 </div>
-                <div class="card">
-                  <div class="card-title" id="kmViatura">000.00</div>
-                  <div class="card-value">Kilômetros rodados</div>
-                  <div class="card-extra">
-                    <p id="saidasViatura">Saidas: 00</p>
-                  </div>
+              </div>
+              <div class="card">
+                <div class="card-title" id="kmViatura">KM: 0000.000</div>
+                <div class="card-value">Kilômetros rodados</div>
+                <div class="card-extra">
+                  <p id="totalSaidas">Total de saidas: 00</p>
+                </div>
+              </div>
+              <div class="card">
+                <div class="card-title" id="trocaViatura">000.000</div>
+                <div class="card-value">Próxima troca de óleo</div>
+                <div class="card-extra">
+                  <p id="proximaTroca">Faltam 00.000 KM para troca</p>
                 </div>
               </div>
             </div>
