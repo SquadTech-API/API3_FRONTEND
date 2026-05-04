@@ -1,0 +1,193 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Vincular Serviços a Veículos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/styles/global.css"/>
+  <link rel="stylesheet" href="assets/styles/vincular-servicos.css"/>
+</head>
+<body>
+
+<!-- ══ HEADER — menu padrão ══════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <a href="veiculos.html"><img src="assets/images/logo_ipem.png" alt="IPEM Control"/></a>
+    </div>
+    <button class="btn_menu" id="btnMenu" aria-label="Menu">
+      <img src="assets/images/icon_menu.png" alt="Menu"/>
+    </button>
+    <nav class="nav" id="navPrincipal">
+      <ul class="menu">
+        <li class="dropdown">
+          <div class="dropdown-btn">Registros <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="nova-saida.html">Nova Saída</a></li>
+            <li><a href="nova-entrada.html">Registrar Retorno</a></li>
+            <li><a href="abastecimento.html">Abastecimento</a></li>
+            <li><a href="troca-de-oleo.html">Troca de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" data-role="adm">
+          <div class="dropdown-btn">Cadastrar <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="cadastrar-veiculo.html">Novo Veículo</a></li>
+            <li><a href="cadastrar-usuario.html">Novo Usuário</a></li>
+            <li><a href="cadastrar-tipo-servico.html">Tipo de Serviço</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" data-role="adm">
+          <div class="dropdown-btn">Gerenciamento <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="visualizar-veiculos.html">Veículos</a></li>
+            <li><a href="visualizar-usuario.html">Usuários</a></li>
+            <li><a href="visualizar-tipo-servicos.html">Tipos de Serviço</a></li>
+            <li><a href="vincular-servicos.html">Vincular Serviços a Veículos</a></li>
+            <li><a href="editar-troca-de-oleo.html">Trocas de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Relatórios <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="historico-viatura.html">Histórico de Viaturas</a></li>
+            <li data-role="adm"><a href="relatorio-viatura.html">Relatório de Viaturas</a></li>
+            <li data-role="adm"><a href="relatorio-tecnicos.html">Relatório de Técnicos</a></li>
+            <li data-role="adm"><a href="relatorio-abastecimento.html">Abastecimento e Óleo</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav_btn">
+        <a href="perfil.html"><img src="assets/images/icon_perfil.png" alt="Perfil"/></a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ CONTEÚDO ══════════════════════════════════════════════════ -->
+<main class="vs-container">
+
+  <!-- Cabeçalho da página -->
+  <div class="vs-page-header">
+    <div>
+      <h1 class="vs-page-title">Vincular Serviços a Veículos</h1>
+      <p class="vs-page-sub">Defina quais tipos de serviço cada viatura pode realizar</p>
+    </div>
+  </div>
+
+  <!-- Layout de duas colunas -->
+  <div class="vs-layout">
+
+    <!-- ── COLUNA ESQUERDA: seleção do veículo ── -->
+    <aside class="vs-sidebar">
+      <div class="vs-sidebar-header">
+        <div class="vs-sidebar-search">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+            <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+          </svg>
+          <input type="text" id="busca_veiculo" placeholder="Buscar viatura..."/>
+        </div>
+      </div>
+
+      <div class="vs-veiculo-lista" id="lista_veiculos">
+        <div class="vs-loading" id="loading-veiculos">
+          <div class="spinner"></div>
+          <span>Carregando viaturas...</span>
+        </div>
+      </div>
+    </aside>
+
+    <!-- ── COLUNA DIREITA: serviços vinculados ── -->
+    <section class="vs-painel" id="vs-painel">
+
+      <!-- Estado inicial (sem veículo selecionado) -->
+      <div class="vs-empty-painel" id="vs-empty-painel">
+        <svg width="52" height="52" viewBox="0 0 24 24" fill="none" stroke="#c8d0e8" stroke-width="1.4">
+          <rect x="1" y="3" width="15" height="13" rx="2"/>
+          <path d="M16 8h4l3 3v5h-7V8z"/>
+          <circle cx="5.5" cy="18.5" r="2.5"/>
+          <circle cx="18.5" cy="18.5" r="2.5"/>
+        </svg>
+        <h3>Selecione uma viatura</h3>
+        <p>Escolha um veículo na lista ao lado para configurar seus serviços habilitados.</p>
+      </div>
+
+      <!-- Painel com serviços (aparece após seleção) -->
+      <div class="vs-servicos-painel" id="vs-servicos-painel" style="display:none">
+
+        <!-- Cabeçalho do painel com info do veículo -->
+        <div class="vs-painel-header" id="vs-painel-header">
+          <div class="vs-veiculo-info">
+            <div class="vs-veiculo-icon">
+              <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8">
+                <rect x="1" y="3" width="15" height="13" rx="2"/>
+                <path d="M16 8h4l3 3v5h-7V8z"/>
+                <circle cx="5.5" cy="18.5" r="2.5"/>
+                <circle cx="18.5" cy="18.5" r="2.5"/>
+              </svg>
+            </div>
+            <div>
+              <div class="vs-veiculo-nome" id="vs-veiculo-nome">—</div>
+              <div class="vs-veiculo-detalhe" id="vs-veiculo-detalhe">—</div>
+            </div>
+          </div>
+
+          <!-- Contador de serviços selecionados -->
+          <div class="vs-counter">
+            <span class="vs-counter-num" id="vs-counter-num">0</span>
+            <span class="vs-counter-lbl">selecionado(s)</span>
+          </div>
+        </div>
+
+        <!-- Legenda -->
+        <div class="vs-legend">
+          <span class="vs-legend-item">
+            <span class="vs-legend-dot ativo"></span>Habilitado
+          </span>
+          <span class="vs-legend-item">
+            <span class="vs-legend-dot inativo"></span>Não habilitado
+          </span>
+          <span class="vs-legend-item">
+            <span class="vs-legend-dot oleo"></span>Troca de óleo
+          </span>
+        </div>
+
+        <!-- Lista de serviços com checkboxes -->
+        <div class="vs-servicos-lista" id="vs-servicos-lista">
+          <div class="vs-loading" id="loading-servicos">
+            <div class="spinner"></div><span>Carregando serviços...</span>
+          </div>
+        </div>
+
+        <!-- Barra de ações -->
+        <div class="vs-actions-bar">
+          <div class="vs-actions-left">
+            <button class="vs-btn-selecionar-todos" id="btn-selecionar-todos" onclick="toggleTodos()">
+              Marcar todos
+            </button>
+          </div>
+          <div class="vs-actions-right">
+            <button class="vs-btn-cancelar" onclick="cancelarEdicao()">Cancelar</button>
+            <button class="vs-btn-salvar" id="btn-salvar-vinculos" onclick="salvarVinculos()">
+              <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+                <polyline points="20 6 9 17 4 12"/>
+              </svg>
+              Salvar vínculos
+            </button>
+          </div>
+        </div>
+
+      </div>
+    </section>
+  </div>
+</main>
+
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><span>Salvando...</span></div>
+
+<script src="assets/scripts/global.js"></script>
+<script src="assets/scripts/vincular-servicos.js" defer></script>
+</body>
+</html>

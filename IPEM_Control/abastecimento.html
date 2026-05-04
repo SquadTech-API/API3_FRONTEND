@@ -1,164 +1,150 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Novo Abastecimento</title>
-  <link rel="stylesheet" href="./assets/styles/abastecimento.css" />
-  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:wght@300;400;500;600&display=swap" rel="stylesheet" />
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Novo Abastecimento</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/styles/global.css"/>
+  <link rel="stylesheet" href="assets/styles/mobile-form.css"/>
+  <style>
+    .nf-btn-row {
+      display: flex; align-items: center; gap: 10px; padding: 8px 16px 12px;
+    }
+    .btn-add-nf {
+      display: flex; align-items: center; gap: 6px;
+      background: transparent; border: 2px solid #2253a8; border-radius: 20px;
+      color: #2253a8; font-family: 'Roboto',sans-serif; font-size: 0.84rem;
+      font-weight: 600; padding: 7px 16px; cursor: pointer;
+      transition: background 0.2s, color 0.2s;
+    }
+    .btn-add-nf:hover { background: #2253a8; color: #fff; }
+    .nf-filename {
+      font-size: 0.75rem; color: #8896b3;
+      overflow: hidden; text-overflow: ellipsis; white-space: nowrap; max-width: 140px;
+    }
+    .intervalo-wrap { display: flex; align-items: center; gap: 6px; flex: 1; justify-content: flex-end; }
+    .intervalo-unit { font-size: 0.8rem; font-weight: 600; color: #8896b3; flex-shrink: 0; }
+  </style>
 </head>
 <body>
+<div class="page-wrapper">
 
-  <!-- ===== MOBILE WRAPPER ===== -->
-  <div class="page-wrapper">
+  <header class="page-header">
+    <button class="back-btn" onclick="window.location.href='veiculos.html'" title="Voltar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="page-title">Novo abastecimento</h1>
+    <div class="header-spacer"></div>
+  </header>
 
-    <!-- HEADER -->
-    <header class="page-header">
-      <button class="back-btn" onclick="window.location.href='tela_veiculos.html'" title="Voltar">
-        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-          <polyline points="15 18 9 12 15 6"/>
-        </svg>
-      </button>
-      <h1 class="page-title">Novo abastecimento</h1>
-      <div class="header-spacer"></div>
-    </header>
-
-    <!-- VEHICLE CARD -->
-    <div class="vehicle-card" id="vehicleCard">
-      <div class="vehicle-card-top">
-        <div class="vehicle-prefix-wrap">
-          <svg class="car-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-            <path d="M5 17H3a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v9a2 2 0 0 1-2 2h-2"/>
-            <circle cx="7.5" cy="17.5" r="2.5"/>
-            <circle cx="17.5" cy="17.5" r="2.5"/>
-          </svg>
-          <span class="label-prefix" id="Label_prefix_abastecer">Viatura FJV-23</span>
-        </div>
-        <span class="label-modelo badge" id="Label_modelo_abastecer">SPIN</span>
+  <div class="vehicle-card" id="vehicleCard">
+    <div class="vehicle-card-top">
+      <div class="vehicle-prefix-wrap">
+        <svg class="car-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <span class="label-prefix" id="Label_prefix_abastecer">Viatura —</span>
       </div>
-      <div class="vehicle-card-bottom">
-        <span class="motorista-label">Motorista:</span>
-        <span class="label-motorista" id="Label_motorista_abastecer">Guilherme Valim</span>
+      <span class="label-modelo badge" id="Label_modelo_abastecer">—</span>
+    </div>
+    <div class="vehicle-card-bottom">
+      <span class="motorista-label">Motorista:</span>
+      <span class="label-motorista" id="Label_motorista_abastecer">Carregando...</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="field-row datetime-row">
+      <div class="date-group">
+        <span class="dt-icon">
+          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <input type="date" id="Label_data_abastecer" class="field-input date-input"/>
+      </div>
+      <div class="time-group">
+        <span class="field-label-inline">H:</span>
+        <input type="time" id="Label_hora_abastecer" class="field-input time-input"/>
       </div>
     </div>
 
-    <!-- FORM CARD -->
-    <div class="form-card">
+    <div class="divider"></div>
 
-      <!-- DATE & TIME ROW -->
-      <div class="field-row datetime-row">
-        <div class="field-group date-group">
-          <label class="field-label" for="Label_data_abastecer">
-            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
-              <rect x="3" y="4" width="18" height="18" rx="2" ry="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/>
-            </svg>
-          </label>
-          <input type="date" id="Label_data_abastecer" class="field-input date-input" />
-        </div>
-        <div class="field-group time-group">
-          <label class="field-label field-label-inline" for="Label_hora_abastecer">H:</label>
-          <input type="time" id="Label_hora_abastecer" class="field-input time-input" />
-        </div>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- COMBUSTIVEL -->
-      <div class="field-row">
-        <label class="field-label-text" for="sel_combustivel">Combustível:</label>
-        <select id="sel_combustivel" class="field-input select-input">
-          <option value="">Selecione...</option>
-          <option value="gasolina">Gasolina</option>
-          <option value="etanol">Etanol</option>
-          <option value="flex">Flex</option>
-          <option value="diesel">Diesel</option>
-          <option value="gnv">GNV</option>
-          <option value="eletrico">Elétrico</option>
-          <option value="hibrido">Híbrido</option>
-        </select>
-      </div>
-
-      <!-- LITROS -->
-      <div class="field-row">
-        <label class="field-label-text" for="Txf_litros_abastecer">Quantidade(L):</label>
-        <input type="number" id="Txf_litros_abastecer" class="field-input" placeholder="00.000" step="0.001" min="0" />
-      </div>
-
-      <!-- PREÇO TOTAL -->
-      <div class="field-row">
-        <label class="field-label-text" for="Txf_preco_abastecer">Preço total(R$):</label>
-        <input type="number" id="Txf_preco_abastecer" class="field-input" placeholder="00.00" step="0.01" min="0" />
-      </div>
-
-      <!-- ODÔMETRO -->
-      <div class="field-row">
-        <label class="field-label-text" for="Txf_km_abastecer">Odômetro(km):</label>
-        <input type="number" id="Txf_km_abastecer" class="field-input" placeholder="000.000" step="0.01" min="0" />
-      </div>
-
-      <!-- POSTO NOME -->
-      <div class="field-row">
-        <label class="field-label-text" for="txf_posto_nome">Posto:</label>
-        <input type="text" id="txf_posto_nome" class="field-input" placeholder="Nome do posto" />
-      </div>
-
-      <!-- POSTO CIDADE -->
-      <div class="field-row">
-        <label class="field-label-text" for="txf_posto_cidade">Cidade:</label>
-        <input type="text" id="txf_posto_cidade" class="field-input" placeholder="Cidade do posto" />
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- ABASTECIMENTO COMPLETO TOGGLE -->
-      <div class="field-row toggle-row">
-        <span class="field-label-text">Abastecimento completo</span>
-        <label class="toggle-switch">
-          <input type="checkbox" id="Btn_completo_abastecer" />
-          <span class="toggle-slider"></span>
-        </label>
-      </div>
-
-      <div class="divider"></div>
-
-      <!-- NÚMERO NF -->
-      <div class="field-row">
-        <label class="field-label-text" for="Txf_nnf_abastecer">Número NF:</label>
-        <input type="text" id="Txf_nnf_abastecer" class="field-input" placeholder="000.000.000" />
-      </div>
-
-      <!-- ADICIONAR NF BUTTON -->
-      <div class="nf-btn-row">
-        <button class="btn-add-nf" id="Btn_add_nf_abastecer" onclick="triggerNfUpload()">
-          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" stroke-linecap="round" stroke-linejoin="round">
-            <circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/>
-          </svg>
-          Adicionar NF
-        </button>
-        <input type="file" id="nf_file_input" accept="image/*,.pdf" style="display:none" onchange="handleNfFile(event)" />
-        <span class="nf-filename" id="nf_filename_label"></span>
-      </div>
-
-    </div><!-- /form-card -->
-
-    <!-- ACTION BUTTONS -->
-    <div class="actions-row">
-      <button class="btn btn-descartar" id="Btn_descartar_abastecer" onclick="window.location.href='index.html'">
-        Descartar
-      </button>
-      <button class="btn btn-salvar" id="Btn_salvar_abastecer" onclick="salvarAbastecimento()">
-        Salvar
-      </button>
+    <div class="field-row">
+      <label class="field-label-text" for="sel_combustivel">Combustível:</label>
+      <select id="sel_combustivel" class="field-input select-input">
+        <option value="">Selecione...</option>
+        <option value="gasolina">Gasolina</option>
+        <option value="etanol">Etanol</option>
+        <option value="flex">Flex</option>
+        <option value="diesel">Diesel</option>
+        <option value="gnv">GNV</option>
+        <option value="eletrico">Elétrico</option>
+        <option value="hibrido">Híbrido</option>
+      </select>
     </div>
 
-    <!-- LOADING OVERLAY -->
-    <div class="loading-overlay" id="loadingOverlay">
-      <div class="spinner"></div>
-      <span>Salvando...</span>
+    <div class="field-row">
+      <label class="field-label-text" for="Txf_litros_abastecer">Quantidade(L):</label>
+      <input type="number" id="Txf_litros_abastecer" class="field-input" placeholder="00.000" step="0.001" min="0"/>
     </div>
 
-  </div><!-- /page-wrapper -->
+    <div class="field-row">
+      <label class="field-label-text" for="Txf_preco_abastecer">Preço total(R$):</label>
+      <input type="number" id="Txf_preco_abastecer" class="field-input" placeholder="00.00" step="0.01" min="0"/>
+    </div>
 
-  <script src="./assets/scripts/abastecimento.js" defer></script>
+    <div class="field-row">
+      <label class="field-label-text" for="Txf_km_abastecer">Odômetro(km):</label>
+      <input type="number" id="Txf_km_abastecer" class="field-input" placeholder="000.000" step="0.01" min="0"/>
+    </div>
+
+    <div class="field-row">
+      <label class="field-label-text" for="txf_posto_nome">Posto:</label>
+      <input type="text" id="txf_posto_nome" class="field-input" placeholder="Nome do posto" style="width:160px;text-align:left;"/>
+    </div>
+
+    <div class="field-row">
+      <label class="field-label-text" for="txf_posto_cidade">Cidade:</label>
+      <input type="text" id="txf_posto_cidade" class="field-input" placeholder="Cidade" style="width:160px;text-align:left;"/>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-row toggle-row">
+      <span class="field-label-text">Abastecimento completo</span>
+      <label class="toggle-switch">
+        <input type="checkbox" id="Btn_completo_abastecer"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-row">
+      <label class="field-label-text" for="Txf_nnf_abastecer">Número NF:</label>
+      <input type="text" id="Txf_nnf_abastecer" class="field-input" placeholder="000.000.000" style="width:160px;text-align:left;"/>
+    </div>
+
+    <div class="nf-btn-row">
+      <button class="btn-add-nf" id="Btn_add_nf_abastecer" onclick="triggerNfUpload()">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="16"/><line x1="8" y1="12" x2="16" y2="12"/></svg>
+        Adicionar NF
+      </button>
+      <input type="file" id="nf_file_input" accept="image/*,.pdf" style="display:none" onchange="handleNfFile(event)"/>
+      <span class="nf-filename" id="nf_filename_label"></span>
+    </div>
+
+  </div>
+
+  <div class="actions-row">
+    <button class="btn btn-descartar" onclick="window.location.href='veiculos.html'">Descartar</button>
+    <button class="btn btn-salvar" id="Btn_salvar_abastecer" onclick="salvarAbastecimento()">Salvar</button>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><span>Salvando...</span></div>
+</div>
+
+<script src="assets/scripts/global.js"></script>
+<script src="assets/scripts/abastecimento.js" defer></script>
 </body>
 </html>

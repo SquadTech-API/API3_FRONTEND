@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Troca de Óleo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/styles/global.css"/>
+  <link rel="stylesheet" href="assets/styles/mobile-form.css"/>
+  <style>
+    .intervalo-row { align-items: center; }
+    .intervalo-wrap { display:flex; align-items:center; gap:6px; flex:1; justify-content:flex-end; }
+    .intervalo-input { max-width:100px; }
+    .intervalo-unit  { font-size:0.8rem; font-weight:600; color:#8896b3; flex-shrink:0; }
+    .proxima-troca-preview {
+      display:flex; align-items:center; gap:8px;
+      margin:0 16px 4px; padding:10px 12px;
+      background:#f0f4ff; border-radius:8px;
+      font-size:0.8rem; color:#2253a8; font-weight:500;
+    }
+    .proxima-troca-preview.alerta { background:#fff7ed; color:#92400e; }
+    .label-km { color:#fff; font-weight:600; font-size:0.88rem; }
+  </style>
+</head>
+<body>
+<div class="page-wrapper">
+
+  <header class="page-header">
+    <button class="back-btn" onclick="window.location.href='veiculos.html'" title="Voltar">
+      <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+    </button>
+    <h1 class="page-title">Troca de óleo</h1>
+    <div class="header-spacer"></div>
+  </header>
+
+  <div class="vehicle-card" id="vehicleCard">
+    <div class="vehicle-card-top">
+      <div class="vehicle-prefix-wrap">
+        <svg class="car-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 5v3h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <span class="label-prefix" id="label_prefixo_veiculo">Viatura —</span>
+      </div>
+      <span class="label-modelo badge" id="label_modelo_veiculo">—</span>
+    </div>
+    <div class="vehicle-card-bottom">
+      <span class="motorista-label">KM atual:</span>
+      <span class="label-km" id="label_km_atual">—</span>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <div class="field-row">
+      <label class="field-label-text" for="input_data_troca">Data da troca:</label>
+      <input type="date" id="input_data_troca" class="field-input" style="width:160px;text-align:left;"/>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-row">
+      <label class="field-label-text" for="input_km_troca">KM na troca:</label>
+      <input type="number" id="input_km_troca" class="field-input" placeholder="000.000" step="0.01" min="0"/>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-row intervalo-row">
+      <label class="field-label-text" for="input_intervalo_km">Próxima troca em:</label>
+      <div class="intervalo-wrap">
+        <input type="number" id="input_intervalo_km" class="field-input intervalo-input" placeholder="5000" step="100" min="100" value="5000"/>
+        <span class="intervalo-unit">km</span>
+      </div>
+    </div>
+
+    <div class="proxima-troca-preview" id="proxima_troca_preview">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+      <span id="texto_proxima_troca">Informe o KM da troca e o intervalo</span>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-row">
+      <label class="field-label-text" for="select_saida_vinculada">Saída vinculada <span style="color:#8896b3;font-size:0.76rem;">(opcional)</span>:</label>
+      <select id="select_saida_vinculada" class="field-input select-input">
+        <option value="">Nenhuma</option>
+      </select>
+    </div>
+
+    <div class="divider"></div>
+
+    <div class="field-col">
+      <label class="field-label-col" for="input_observacoes">Observações:</label>
+      <textarea id="input_observacoes" class="field-textarea" placeholder="Tipo de óleo, filtro utilizado, marca..." rows="3"></textarea>
+    </div>
+
+  </div>
+
+  <div class="actions-row">
+    <button class="btn btn-descartar" onclick="window.location.href='veiculos.html'">Descartar</button>
+    <button class="btn btn-salvar" id="btn_salvar_troca" onclick="salvarTrocaOleo()">Salvar</button>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><span>Salvando...</span></div>
+</div>
+
+<script src="assets/scripts/global.js"></script>
+<script src="assets/scripts/troca-de-oleo.js" defer></script>
+</body>
+</html>

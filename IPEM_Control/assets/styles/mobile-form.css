@@ -1,0 +1,288 @@
+/* ═══════════════════════════════════════════════════════════════
+   mobile-form.css
+   Base compartilhada: nova-saida, nova-entrada, abastecimento,
+   troca-de-oleo, cadastrar-tipo-servico
+   Complementa global.css
+   ═══════════════════════════════════════════════════════════════ */
+
+body { background: #f2f4f8; }
+
+.page-wrapper {
+  max-width: 480px;
+  margin: 0 auto;
+  min-height: 100vh;
+  background: #f2f4f8;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  padding: 0 0 36px;
+  position: relative;
+}
+
+/* ── Header mobile ── */
+.page-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  background: #1a2d5a;
+  padding: 18px 20px 16px;
+  color: #fff;
+  gap: 12px;
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  box-shadow: 0 2px 12px rgba(26,45,90,0.18);
+}
+
+.back-btn, .add-btn {
+  background: rgba(255,255,255,0.12);
+  border: none;
+  border-radius: 50%;
+  width: 36px; height: 36px;
+  display: flex; align-items: center; justify-content: center;
+  color: #fff;
+  cursor: pointer;
+  transition: background 0.2s;
+  flex-shrink: 0;
+}
+.back-btn:hover { background: rgba(255,255,255,0.22); }
+.add-btn {
+  background: rgba(255,255,255,0.18);
+  border: 1.5px solid rgba(255,255,255,0.3);
+}
+.add-btn:hover { background: rgba(255,255,255,0.28); }
+
+.page-title {
+  font-family: 'Rajdhani', 'Roboto', sans-serif;
+  font-size: 1.35rem;
+  font-weight: 700;
+  letter-spacing: 0.03em;
+  color: #fff;
+  flex: 1;
+  text-align: center;
+}
+
+.header-spacer { width: 36px; flex-shrink: 0; }
+
+/* ── Vehicle card ── */
+.vehicle-card {
+  background: #1e3a7a;
+  border-radius: 16px;
+  margin: 0 16px;
+  padding: 14px 18px;
+  box-shadow: 0 4px 24px rgba(26,45,90,0.10);
+  color: #fff;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  animation: fadeSlideDown 0.4s ease both;
+}
+@keyframes fadeSlideDown {
+  from { opacity:0; transform:translateY(-10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.vehicle-card-top {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+.vehicle-prefix-wrap {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+.car-icon { color: #a8c0ff; flex-shrink: 0; }
+.label-prefix {
+  font-family: 'Rajdhani', 'Roboto', sans-serif;
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+  color: #fff;
+}
+.label-modelo.badge {
+  background: rgba(255,255,255,0.18);
+  border: 1.5px solid rgba(255,255,255,0.28);
+  color: #fff;
+  font-size: 0.78rem;
+  font-weight: 700;
+  letter-spacing: 0.12em;
+  padding: 3px 10px;
+  border-radius: 20px;
+}
+.vehicle-card-bottom {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  background: rgba(255,255,255,0.10);
+  border-radius: 8px;
+  padding: 7px 12px;
+}
+.motorista-label { font-size: 0.78rem; color: #a8c0ff; font-weight: 500; }
+.label-motorista  { font-size: 0.88rem; font-weight: 600; color: #fff; }
+
+/* ── Form card ── */
+.form-card {
+  background: #fff;
+  border-radius: 16px;
+  border: 2px solid #2253a8;
+  margin: 0 16px;
+  padding: 4px 0;
+  box-shadow: 0 4px 24px rgba(26,45,90,0.10);
+  overflow: hidden;
+}
+
+/* ── Fields ── */
+.field-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 16px;
+  gap: 10px;
+}
+.field-col {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+  padding: 10px 16px;
+}
+.field-label-text {
+  font-size: 0.84rem;
+  font-weight: 500;
+  color: #4a5568;
+  white-space: nowrap;
+  flex-shrink: 0;
+  min-width: 110px;
+}
+.field-label-col {
+  color: #2253a8;
+  font-weight: 600;
+  font-size: 0.82rem;
+}
+.field-input {
+  background: #f7f9fc;
+  border: 1.5px solid #dde3ef;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.84rem;
+  color: #1a2d5a;
+  padding: 7px 10px;
+  text-align: right;
+  width: 140px;
+  outline: none;
+  transition: border-color 0.2s, box-shadow 0.2s;
+}
+.field-input:focus {
+  border-color: #2253a8;
+  box-shadow: 0 0 0 3px rgba(34,83,168,0.12);
+}
+.field-input.select-input { text-align: left; cursor: pointer; width: 160px; }
+.field-input.field-readonly {
+  background: #eef1f8;
+  color: #4a5568;
+  cursor: default;
+}
+.field-input.field-readonly:focus { border-color: #dde3ef; box-shadow: none; }
+.field-textarea {
+  background: #f7f9fc;
+  border: 1.5px solid #dde3ef;
+  border-radius: 8px;
+  font-family: 'Roboto', sans-serif;
+  font-size: 0.84rem;
+  color: #1a2d5a;
+  padding: 10px 12px;
+  resize: vertical;
+  width: 100%;
+  outline: none;
+  transition: border-color 0.2s;
+  line-height: 1.5;
+}
+.field-textarea:focus { border-color: #2253a8; }
+.field-textarea::placeholder { color: #8896b3; }
+
+/* ── Datetime row ── */
+.datetime-row { gap: 8px; justify-content: flex-start; }
+.date-group, .time-group {
+  display: flex; align-items: center; gap: 5px;
+}
+.date-group { flex: 1; }
+.dt-icon { display: flex; align-items: center; color: #8896b3; flex-shrink: 0; }
+.field-label-inline {
+  font-size: 0.78rem; font-weight: 600;
+  color: #4a5568; letter-spacing: 0.05em; flex-shrink: 0;
+}
+.date-input { width: 100%; text-align: left; }
+.time-input { width: 92px; text-align: center; }
+
+/* ── Divider ── */
+.divider { height: 1px; background: #dde3ef; margin: 0 16px; }
+
+/* ── Toggle switch ── */
+.toggle-row { padding: 12px 16px; }
+.toggle-switch {
+  position: relative; display: inline-block; width: 48px; height: 26px; flex-shrink: 0;
+}
+.toggle-switch input { display: none; }
+.toggle-slider {
+  position: absolute; inset: 0; background: #d1d9e8; border-radius: 34px;
+  cursor: pointer; transition: background 0.25s;
+}
+.toggle-slider::before {
+  content: ''; position: absolute; left: 3px; top: 3px;
+  width: 20px; height: 20px; border-radius: 50%; background: #fff;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.20); transition: transform 0.25s;
+}
+.toggle-switch input:checked + .toggle-slider { background: #2253a8; }
+.toggle-switch input:checked + .toggle-slider::before { transform: translateX(22px); }
+
+/* ── Actions ── */
+.actions-row {
+  display: flex; gap: 14px; padding: 0 16px;
+  animation: fadeSlideUp 0.4s 0.1s ease both;
+}
+@keyframes fadeSlideUp {
+  from { opacity:0; transform:translateY(10px); }
+  to   { opacity:1; transform:translateY(0); }
+}
+.btn {
+  flex: 1; border: none; border-radius: 30px;
+  font-family: 'Rajdhani', 'Roboto', sans-serif;
+  font-size: 1.05rem; font-weight: 600; letter-spacing: 0.04em;
+  padding: 15px 10px; cursor: pointer;
+  transition: transform 0.2s, opacity 0.2s;
+}
+.btn:active { transform: scale(0.97); }
+.btn-descartar {
+  background: #e8ecf5; color: #1a2d5a;
+  border: 1.5px solid #dde3ef;
+}
+.btn-descartar:hover { background: #d6dce8; }
+.btn-salvar {
+  background: #1a2d5a; color: #fff;
+  box-shadow: 0 4px 14px rgba(34,83,168,0.30);
+}
+.btn-salvar:hover    { opacity: 0.90; }
+.btn-salvar:disabled { opacity: 0.55; cursor: not-allowed; box-shadow: none; }
+
+/* ── Desktop layout ── */
+@media (min-width: 768px) {
+  body {
+    background: linear-gradient(135deg, #e8edf8 0%, #f2f4f8 100%);
+    display: flex; align-items: flex-start;
+    justify-content: center; padding: 40px 20px 60px;
+  }
+  .page-wrapper {
+    max-width: 600px; width: 100%;
+    border-radius: 20px; overflow: hidden;
+    box-shadow: 0 20px 60px rgba(26,45,90,0.14);
+    background: #f2f4f8; min-height: unset;
+    gap: 0; padding-bottom: 0;
+  }
+  .page-header { padding: 22px 28px; position: relative; }
+  .page-title  { font-size: 1.45rem; }
+  .vehicle-card { margin: 20px 20px 16px; border-radius: 14px; }
+  .form-card    { margin: 0 20px; border-radius: 14px; }
+  .actions-row  { margin: 20px 20px 24px; padding: 0; }
+}
+@media (min-width: 1100px) {
+  .page-wrapper { max-width: 640px; }
+}

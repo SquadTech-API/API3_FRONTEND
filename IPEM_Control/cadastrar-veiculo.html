@@ -1,0 +1,131 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Cadastrar Veículo</title>
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/styles/global.css"/>
+  <link rel="stylesheet" href="assets/styles/cadastro-desktop.css"/>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="logo"><a href="veiculos.html"><img src="assets/images/logo_ipem.png" alt="IPEM Control"/></a></div>
+    <button class="btn_menu" id="btnMenu" aria-label="Menu"><img src="assets/images/icon_menu.png" alt="Menu"/></button>
+    <nav class="nav" id="navPrincipal">
+      <ul class="menu">
+        <li class="dropdown"><div class="dropdown-btn">Registros <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="nova-saida.html">Nova Saída</a></li>
+            <li><a href="nova-entrada.html">Registrar Retorno</a></li>
+            <li><a href="abastecimento.html">Abastecimento</a></li>
+            <li><a href="troca-de-oleo.html">Troca de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown"><div class="dropdown-btn">Cadastrar <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="cadastrar-veiculo.html">Novo Veículo</a></li>
+            <li><a href="cadastrar-usuario.html">Novo Usuário</a></li>
+            <li><a href="cadastrar-tipo-servico.html">Tipo de Serviço</a></li>
+          </ul>
+        </li>
+        <li class="dropdown"><div class="dropdown-btn">Gerenciamento <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="visualizar-veiculos.html">Veículos</a></li>
+            <li><a href="visualizar-usuario.html">Usuários</a></li>
+            <li><a href="visualizar-tipo-servicos.html">Tipos de Serviço</a></li>
+            <li><a href="editar-troca-de-oleo.html">Trocas de Óleo</a></li>
+            <li><a href="vincular-servicos.html">Vincular Serviços a Veículos</a></li>
+          </ul>
+        </li>
+        <li class="dropdown"><div class="dropdown-btn">Relatórios <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="historico-viatura.html">Histórico de Viaturas</a></li>
+            <li><a href="relatorio-viatura.html">Relatório de Viaturas</a></li>
+            <li><a href="relatorio-tecnicos.html">Relatório de Técnicos</a></li>
+            <li><a href="relatorio-abastecimento.html">Abastecimento e Óleo</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav_btn"><a href="perfil.html"><img src="assets/images/icon_perfil.png" alt="Perfil"/></a></div>
+    </nav>
+  </div>
+</header>
+
+<main class="cad-container">
+  <div class="cad-header">
+    <h2>Cadastrar Veículo</h2>
+    <a href="visualizar-veiculos.html" class="cad-cancel">
+      <img src="assets/images/icons_cancel.png" alt="Cancelar"/>
+    </a>
+  </div>
+
+  <section class="cad-card">
+    <div class="cad-card-titulo">
+      <img src="assets/images/icon_car.png" alt=""/>
+      <h3>Preencha os dados:</h3>
+    </div>
+
+    <form class="cad-form" id="form_veic">
+      <div class="cad-row"><label>Prefixo (viatura):</label>
+        <input id="txf_prefixo" type="text" placeholder="Ex: FJV-23"/></div>
+      <div class="cad-row"><label>Placa:</label>
+        <input id="txf_placa" type="text" placeholder="ABC-1234" maxlength="8"/></div>
+      <div class="cad-row"><label>Núcleo / DAR:</label>
+        <input id="txf_nucleo" type="text"/></div>
+      <div class="cad-row"><label>Número FI:</label>
+        <input id="txf_nfi" type="text" placeholder="Opcional"/></div>
+      <div class="cad-row"><label>Marca:</label>
+        <input id="txf_marca" type="text"/></div>
+      <div class="cad-row"><label>Modelo:</label>
+        <input id="txf_modelo" type="text"/></div>
+      <div class="cad-row"><label>Ano:</label>
+        <input id="txf_ano" type="number" min="1990" max="2030"/></div>
+      <div class="cad-row"><label>Combustível:</label>
+        <select id="ddl_combustivel">
+          <option value="">Selecione...</option>
+          <option value="gasolina">Gasolina</option>
+          <option value="etanol">Etanol</option>
+          <option value="flex">Flex</option>
+          <option value="diesel">Diesel</option>
+          <option value="gnv">GNV</option>
+          <option value="eletrico">Elétrico</option>
+          <option value="hibrido">Híbrido</option>
+        </select>
+      </div>
+      <div class="cad-row"><label>Habilitação necessária:</label>
+        <select id="ddl_habilitacao">
+          <option value="">Selecione...</option>
+          <option value="A">A</option><option value="B">B</option>
+          <option value="AB">AB</option><option value="C">C</option>
+          <option value="AC">AC</option><option value="D">D</option>
+          <option value="AD">AD</option><option value="E">E</option>
+          <option value="AE">AE</option>
+        </select>
+      </div>
+      <div class="cad-row"><label>KM atual:</label>
+        <input id="txf_km" type="number" step="0.01" min="0" placeholder="000.000"/></div>
+      <div class="cad-row"><label>Troca de óleo a cada (km):</label>
+        <input id="txf_intervalo_oleo" type="number" step="100" min="500" value="5000"/></div>
+
+      <!-- Serviços habilitados -->
+      <div class="cad-row" style="align-items:flex-start;padding-top:14px;">
+        <label style="padding-top:4px;">Serviços habilitados:</label>
+        <div id="chk_servicos_container" class="servicos-check-wrap" style="width:55%;">
+          <span style="color:#8896b3;font-size:14px;">Carregando...</span>
+        </div>
+      </div>
+
+      <div class="cad-actions">
+        <button type="submit" class="btn-cad-salvar">Salvar</button>
+      </div>
+    </form>
+  </section>
+</main>
+
+<script src="assets/scripts/global.js"></script>
+<script src="assets/scripts/cadastrar-veiculo.js" defer></script>
+</body>
+</html>

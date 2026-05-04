@@ -1,135 +1,121 @@
-*,
-*::before,
-*::after {
-  box-sizing: border-box;
-  margin: 0;
-  padding: 0;
-}
+/* ═══════════════════════════════════════════════════════════════
+   style.css — Tela de Login
+   ═══════════════════════════════════════════════════════════════ */
 
-:root {
-  --ipem-navy: #0a2e6e;
-  --ipem-blue: #1a3a8f;
-  --ipem-dark: #0d1f4c;
-  --card-bg: #c8cfe0;
-  --bg: #e8eaf0;
-  --input-bg: #ffffff;
-  --input-border: #b0b8d0;
-  --btn-bg: #1a3a8f;
-  --btn-hover: #0d2a6e;
-  --text-main: #1a1a2e;
-  --text-muted: #4a5580;
-  --radius: 6px;
-  --shadow: 0 4px 24px rgba(10, 46, 110, 0.13);
-  --font: "Roboto", sans-serif;
-}
-
-body {
+.login-page {
+  background: linear-gradient(135deg, #0E2365 0%, #223A8E 100%);
   min-height: 100vh;
-  background: var(--bg);
-  font-family: var(--font);
-  color: var(--text-main);
+  display: flex;
+  align-items: center;
+  justify-content: center;
 }
 
-.page {
+.login-page-wrap {
   display: flex;
   align-items: center;
   justify-content: center;
   min-height: 100vh;
+  padding: 20px;
+  width: 100%;
 }
 
-.container {
+.login-container {
   width: 100%;
   max-width: 400px;
 }
 
-.logo-wrap {
+.login-logo-wrap {
   text-align: center;
-  margin-bottom: 20px;
+  margin-bottom: 28px;
 }
 
-.logo-text {
-  font-size: 48px;
+.login-logo-text {
+  font-size: 42px;
   font-weight: 700;
-  color: var(--ipem-navy);
+  color: #ffffff;
+  letter-spacing: 0.02em;
 }
 
-.card {
-  background: var(--card-bg);
-  border-radius: 12px;
-  padding: 30px;
-  box-shadow: var(--shadow);
+.login-logo-sub {
+  font-size: 13px;
+  color: rgba(255,255,255,0.65);
+  margin-top: 4px;
+  font-weight: 400;
 }
 
-.field {
-  margin-bottom: 16px;
+.login-card {
+  background: #ffffff;
+  border-radius: 16px;
+  padding: 36px 32px 28px;
+  box-shadow: 0 24px 60px rgba(0,0,0,0.25);
 }
 
-.field label {
+.login-field {
+  margin-bottom: 18px;
+}
+
+.login-field label {
   display: block;
   font-size: 13px;
   font-weight: 600;
-  color: var(--text-muted);
-  margin-bottom: 5px;
+  color: #4a5580;
+  margin-bottom: 6px;
 }
 
-.field input {
+.login-field input {
   width: 100%;
-  height: 44px;
-  border: 1.5px solid var(--input-border);
-  border-radius: var(--radius);
-  padding: 0 12px;
-  background: var(--input-bg);
+  height: 46px;
+  border: 1.5px solid #c8d0e8;
+  border-radius: 8px;
+  padding: 0 14px;
+  background: #f8f9fd;
   font-family: var(--font);
-  font-size: 14px;
-  color: var(--text-main);
-}
-
-.field input:focus {
-  border-color: var(--ipem-blue);
+  font-size: 15px;
+  color: var(--navy);
+  transition: border-color 0.2s, box-shadow 0.2s;
   outline: none;
 }
 
-/* Remove o ícone nativo de senha do Chrome, Edge e IE */
-input[type="password"]::-ms-reveal,
-input[type="password"]::-ms-clear {
-  display: none;
-}
-input::-webkit-credentials-auto-fill-button,
-input[type="password"]::-webkit-textfield-decoration-container {
-  display: none !important;
-  visibility: hidden;
-  pointer-events: none;
+.login-field input:focus {
+  border-color: var(--blue);
+  box-shadow: 0 0 0 3px rgba(34,58,142,0.12);
+  background: #fff;
 }
 
-/* input-wrap: flex para que input e botão fiquem na mesma linha, mesma altura */
-.input-wrap {
+.login-field input::placeholder {
+  color: #aab4cc;
+}
+
+/* Remove ícone nativo de senha */
+input[type="password"]::-ms-reveal,
+input[type="password"]::-ms-clear { display: none; }
+
+.login-input-wrap {
   display: flex;
   align-items: center;
+  position: relative;
 }
 
-.input-wrap input {
-  flex: 1;
-  padding-right: 44px;
+.login-input-wrap input {
+  padding-right: 46px;
 }
 
-/* botão posicionado via flex, não absolute — sem top/margin tricks */
 .eye-btn {
-  flex-shrink: 0;
-  width: 44px;
-  height: 44px;
-  margin-left: -44px; /* sobrepõe o espaço reservado no padding do input */
+  position: absolute;
+  right: 0;
+  width: 46px;
+  height: 46px;
   border: none;
   background: none;
   cursor: pointer;
   display: flex;
   align-items: center;
   justify-content: center;
-  color: var(--text-muted);
+  color: #8896b3;
+  transition: color 0.2s;
 }
 
-.eye-btn:hover {
-  color: var(--ipem-blue);
-}
+.eye-btn:hover { color: var(--navy); }
 
 #eye-icon {
   width: 20px;
@@ -138,40 +124,49 @@ input[type="password"]::-webkit-textfield-decoration-container {
   pointer-events: none;
 }
 
-.btn-entrar {
+.login-btn {
   width: 100%;
-  height: 45px;
-  background: var(--btn-bg);
+  height: 48px;
+  background: var(--navy);
   color: white;
   border: none;
-  border-radius: var(--radius);
+  border-radius: 8px;
   cursor: pointer;
-  margin-top: 10px;
+  margin-top: 8px;
   font-family: var(--font);
-  font-size: 15px;
-  font-weight: 500;
-  transition: background 0.2s ease;
+  font-size: 16px;
+  font-weight: 600;
+  transition: background 0.2s, transform 0.15s;
+  letter-spacing: 0.02em;
 }
 
-.btn-entrar:hover {
-  background: var(--btn-hover);
+.login-btn:hover { background: var(--blue); }
+.login-btn:active { transform: scale(0.98); }
+.login-btn:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
 }
 
-.btn_centralizar {
+.login-forgot-wrap {
   text-align: center;
+  margin-top: 14px;
 }
 
-.forgot {
-  margin-top: 12px;
+.login-forgot {
   background: none;
   border: none;
-  color: var(--ipem-blue);
+  color: var(--blue);
   cursor: pointer;
   text-decoration: underline;
   font-family: var(--font);
   font-size: 13px;
+  transition: color 0.2s;
 }
 
-.forgot:hover {
-  color: var(--ipem-dark);
+.login-forgot:hover { color: var(--navy); }
+
+@media (max-width: 480px) {
+  .login-card { padding: 28px 20px 22px; }
+  .login-logo-text { font-size: 34px; }
 }

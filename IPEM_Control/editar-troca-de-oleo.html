@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Histórico de Trocas de Óleo</title>
+  <link rel="stylesheet" href="./assets/styles/editar-troca-de-oleo.css" />
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;1,9..40,400&display=swap" rel="stylesheet" />
+</head>
+
+<body>
+
+  <div class="page-wrapper">
+
+    <!-- HEADER -->
+    <header class="page-header">
+      <button class="back-btn" onclick="window.location.href='index.html'" title="Voltar">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6" />
+        </svg>
+      </button>
+      <h1 class="page-title">Trocas de óleo</h1>
+      <button class="add-btn" onclick="irParaNovaTroca()" title="Nova troca">
+        <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="12" y1="5" x2="12" y2="19" />
+          <line x1="5" y1="12" x2="19" y2="12" />
+        </svg>
+      </button>
+    </header>
+
+    <!-- SELETOR DE VEÍCULO -->
+    <div class="veiculo-select-wrap">
+      <label class="veiculo-select-label">Veículo:</label>
+      <select id="select_veiculo" class="veiculo-select">
+        <option value="">Selecione um veículo...</option>
+      </select>
+    </div>
+
+    <!-- STATUS CARD (km atual vs próxima troca) -->
+    <div class="status-card" id="status_card" style="display:none;">
+      <div class="status-card-header">
+        <div class="status-info">
+          <span class="status-veiculo" id="status_veiculo_nome">—</span>
+          <span class="status-km-atual">KM atual: <strong id="status_km_atual">—</strong></span>
+        </div>
+        <div class="status-badge-wrap" id="status_badge_wrap"></div>
+      </div>
+      <div class="status-progress-wrap" id="status_progress_wrap" style="display:none;">
+        <div class="status-progress-labels">
+          <span id="prog_label_troca">Última troca</span>
+          <span id="prog_label_proxima">Próxima troca</span>
+        </div>
+        <div class="status-progress-bar">
+          <div class="status-progress-fill" id="prog_fill"></div>
+        </div>
+        <div class="status-progress-vals">
+          <span id="prog_val_troca">—</span>
+          <span id="prog_val_proxima">—</span>
+        </div>
+      </div>
+    </div>
+
+    <!-- LISTA DE TROCAS -->
+    <div class="trocas-lista" id="lista_trocas">
+      <div class="empty-state" id="empty-inicial">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z" />
+        </svg>
+        <span>Selecione um veículo para ver o histórico</span>
+      </div>
+      <div class="empty-state" id="empty-sem-trocas" style="display:none;">
+        <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.4">
+          <circle cx="12" cy="12" r="10" />
+          <line x1="12" y1="8" x2="12" y2="12" />
+          <line x1="12" y1="16" x2="12.01" y2="16" />
+        </svg>
+        <span>Nenhuma troca registrada para este veículo.</span>
+      </div>
+    </div>
+
+  </div><!-- /page-wrapper -->
+
+  <!-- ═══ MODAL DE EDIÇÃO ════════════════════════════════════ -->
+  <div class="modal-backdrop" id="modal-backdrop" onclick="fecharModal()"></div>
+
+  <div class="modal" id="modal-edicao">
+    <div class="modal-handle"></div>
+    <div class="modal-header">
+      <h2 class="modal-titulo">Editar troca de óleo</h2>
+      <button class="modal-close" onclick="fecharModal()">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <line x1="18" y1="6" x2="6" y2="18" />
+          <line x1="6" y1="6" x2="18" y2="18" />
+        </svg>
+      </button>
+    </div>
+
+    <div class="modal-body">
+      <input type="hidden" id="modal_id_troca" />
+
+      <div class="modal-row">
+        <div class="modal-field">
+          <label class="modal-label" for="modal_data_troca">Data da troca</label>
+          <input type="date" id="modal_data_troca" class="modal-input" />
+        </div>
+        <div class="modal-field">
+          <label class="modal-label" for="modal_km_troca">KM na troca</label>
+          <input type="number" id="modal_km_troca" class="modal-input" step="0.01" min="0" />
+        </div>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label" for="modal_intervalo_km">Intervalo (km)</label>
+        <div class="intervalo-wrap">
+          <input type="number" id="modal_intervalo_km" class="modal-input intervalo-input" step="100" min="100" />
+          <span class="intervalo-unit">km</span>
+        </div>
+        <span class="modal-hint" id="modal_hint_proxima">—</span>
+      </div>
+
+      <div class="modal-field">
+        <label class="modal-label" for="modal_observacoes">Observações</label>
+        <textarea id="modal_observacoes" class="modal-textarea" rows="3"></textarea>
+      </div>
+    </div>
+
+    <div class="modal-footer">
+      <button class="modal-btn modal-btn-cancelar" onclick="fecharModal()">Cancelar</button>
+      <button class="modal-btn modal-btn-salvar" id="modal-btn-salvar" onclick="salvarEdicao()">Salvar</button>
+    </div>
+
+    <div class="modal-loading" id="modal-loading">
+      <div class="spinner-sm"></div>
+    </div>
+  </div>
+
+  <div class="loading-overlay" id="loadingOverlay">
+    <div class="spinner"></div>
+    <span>Aguarde...</span>
+  </div>
+
+  <script src="./assets/scripts/editar-troca-de-oleo.js" defer></script>
+</body>
+
+</html>

@@ -1,0 +1,541 @@
+/* =============================================
+   VER TROCA DE ÓLEO — CSS
+   ============================================= */
+@import url("./troca-de-oleo.css");
+
+/* ── SELETOR DE VEÍCULO ── */
+.veiculo-select-wrap {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 14px 16px 6px;
+}
+
+.veiculo-select-label {
+  font-size: 0.82rem;
+  font-weight: 600;
+  color: var(--color-accent);
+  white-space: nowrap;
+  flex-shrink: 0;
+}
+
+.veiculo-select {
+  flex: 1;
+  background: var(--color-card-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 0.84rem;
+  color: var(--color-text);
+  padding: 9px 12px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color var(--transition);
+}
+.veiculo-select:focus {
+  border-color: var(--color-accent);
+}
+
+/* ── STATUS CARD ── */
+.status-card {
+  background: var(--color-vehicle);
+  border-radius: var(--radius-card);
+  margin: 0 16px;
+  padding: 16px 18px;
+  color: #fff;
+  box-shadow: var(--shadow-card);
+  animation: fadeSlide 0.35s ease both;
+}
+
+@keyframes fadeSlide {
+  from {
+    opacity: 0;
+    transform: translateY(-8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.status-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 10px;
+}
+
+.status-info {
+  display: flex;
+  flex-direction: column;
+  gap: 3px;
+}
+
+.status-veiculo {
+  font-family: var(--font-display);
+  font-size: 1.05rem;
+  font-weight: 700;
+  letter-spacing: 0.04em;
+}
+
+.status-km-atual {
+  font-size: 0.78rem;
+  color: rgba(255, 255, 255, 0.7);
+}
+
+.status-km-atual strong {
+  color: #fff;
+}
+
+/* Badge de status */
+.status-badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  border-radius: 20px;
+  padding: 5px 12px;
+  font-size: 0.72rem;
+  font-weight: 700;
+  letter-spacing: 0.06em;
+  white-space: nowrap;
+}
+
+.status-badge.ok {
+  background: rgba(34, 197, 94, 0.2);
+  color: #86efac;
+  border: 1px solid rgba(34, 197, 94, 0.35);
+}
+.status-badge.alerta {
+  background: rgba(245, 158, 11, 0.25);
+  color: #fcd34d;
+  border: 1px solid rgba(245, 158, 11, 0.4);
+}
+.status-badge.vencida {
+  background: rgba(239, 68, 68, 0.25);
+  color: #fca5a5;
+  border: 1px solid rgba(239, 68, 68, 0.4);
+}
+.status-badge.sem-registro {
+  background: rgba(255, 255, 255, 0.1);
+  color: rgba(255, 255, 255, 0.6);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+}
+
+.badge-dot-sm {
+  width: 7px;
+  height: 7px;
+  border-radius: 50%;
+}
+.ok .badge-dot-sm {
+  background: #22c55e;
+}
+.alerta .badge-dot-sm {
+  background: #f59e0b;
+}
+.vencida .badge-dot-sm {
+  background: #ef4444;
+}
+
+/* ── PROGRESS BAR ── */
+.status-progress-wrap {
+  margin-top: 14px;
+}
+
+.status-progress-labels,
+.status-progress-vals {
+  display: flex;
+  justify-content: space-between;
+  font-size: 0.7rem;
+  color: rgba(255, 255, 255, 0.6);
+  margin-bottom: 4px;
+}
+
+.status-progress-vals {
+  margin-bottom: 0;
+  margin-top: 4px;
+  color: rgba(255, 255, 255, 0.8);
+  font-weight: 500;
+}
+
+.status-progress-bar {
+  height: 8px;
+  background: rgba(255, 255, 255, 0.15);
+  border-radius: 4px;
+  overflow: hidden;
+}
+
+.status-progress-fill {
+  height: 100%;
+  border-radius: 4px;
+  transition:
+    width 0.6s ease,
+    background 0.3s;
+  min-width: 4px;
+}
+
+.status-progress-fill.ok {
+  background: linear-gradient(90deg, #22c55e, #4ade80);
+}
+.status-progress-fill.alerta {
+  background: linear-gradient(90deg, #f59e0b, #fcd34d);
+}
+.status-progress-fill.vencida {
+  background: linear-gradient(90deg, #ef4444, #f87171);
+}
+
+/* ── LISTA DE TROCAS ── */
+.trocas-lista {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 4px 16px 16px;
+}
+
+/* ── CARD DE TROCA ── */
+.troca-card {
+  background: var(--color-card-bg);
+  border-radius: var(--radius-card);
+  border: 1.5px solid var(--color-border);
+  box-shadow: var(--shadow-card);
+  overflow: hidden;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    box-shadow var(--transition),
+    border-color var(--transition);
+  animation: fadeUp 0.3s ease both;
+}
+
+@keyframes fadeUp {
+  from {
+    opacity: 0;
+    transform: translateY(8px);
+  }
+  to {
+    opacity: 1;
+    transform: translateY(0);
+  }
+}
+
+.troca-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 32px rgba(26, 45, 90, 0.14);
+  border-color: var(--color-accent);
+}
+
+.troca-card-main {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+  padding: 14px 16px;
+}
+
+.troca-card-icon {
+  width: 44px;
+  height: 44px;
+  border-radius: 12px;
+  background: #eef2fb;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  flex-shrink: 0;
+  color: var(--color-accent);
+}
+
+.troca-card-info {
+  flex: 1;
+  min-width: 0;
+}
+
+.troca-card-data {
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  color: var(--color-text);
+  letter-spacing: 0.02em;
+}
+
+.troca-card-km {
+  font-size: 0.76rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.troca-card-prox {
+  font-size: 0.72rem;
+  margin-top: 3px;
+  font-weight: 500;
+}
+.troca-card-prox.ok {
+  color: #16a34a;
+}
+.troca-card-prox.alerta {
+  color: #d97706;
+}
+.troca-card-prox.vencida {
+  color: #dc2626;
+}
+
+.troca-card-arrow {
+  color: var(--color-muted);
+  transition:
+    transform var(--transition),
+    color var(--transition);
+}
+.troca-card:hover .troca-card-arrow {
+  transform: translateX(3px);
+  color: var(--color-accent);
+}
+
+/* ── EMPTY STATES ── */
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  gap: 12px;
+  padding: 48px 20px;
+  color: var(--color-muted);
+  font-size: 0.88rem;
+  text-align: center;
+}
+
+/* ── MODAL ── */
+.modal-backdrop {
+  display: none;
+  position: fixed;
+  inset: 0;
+  background: rgba(15, 23, 42, 0.55);
+  backdrop-filter: blur(4px);
+  z-index: 100;
+}
+.modal-backdrop.open {
+  display: block;
+}
+
+.modal {
+  display: none;
+  position: fixed;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%) translateY(20px);
+  width: 100%;
+  max-width: 480px;
+  background: var(--color-card-bg);
+  border-radius: 24px 24px 0 0;
+  box-shadow: 0 24px 64px rgba(26, 45, 90, 0.22);
+  z-index: 101;
+  overflow: hidden;
+  opacity: 0;
+  transition:
+    transform 0.3s cubic-bezier(0.34, 1.56, 0.64, 1),
+    opacity 0.25s;
+}
+
+.modal.open {
+  display: block;
+  transform: translateX(-50%) translateY(0);
+  opacity: 1;
+}
+
+.modal-handle {
+  width: 36px;
+  height: 4px;
+  background: var(--color-border);
+  border-radius: 2px;
+  margin: 12px auto 0;
+}
+
+.modal-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 10px 20px 14px;
+  border-bottom: 1px solid var(--color-border);
+}
+
+.modal-titulo {
+  font-family: var(--font-display);
+  font-size: 1.15rem;
+  font-weight: 700;
+  color: var(--color-primary);
+  letter-spacing: 0.03em;
+}
+
+.modal-close {
+  background: var(--color-bg);
+  border: none;
+  border-radius: 50%;
+  width: 32px;
+  height: 32px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--color-muted);
+  cursor: pointer;
+  transition: background var(--transition);
+}
+.modal-close:hover {
+  background: #e8ecf5;
+  color: var(--color-primary);
+}
+
+.modal-body {
+  padding: 18px 20px 8px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+}
+
+.modal-row {
+  display: flex;
+  gap: 12px;
+}
+
+.modal-field {
+  display: flex;
+  flex-direction: column;
+  gap: 5px;
+  flex: 1;
+}
+
+.modal-label {
+  font-size: 0.79rem;
+  font-weight: 600;
+  color: var(--color-accent);
+}
+
+.modal-hint {
+  font-size: 0.72rem;
+  color: var(--color-muted);
+  margin-top: 2px;
+}
+
+.modal-input,
+.modal-textarea {
+  background: var(--color-input-bg);
+  border: 1.5px solid var(--color-border);
+  border-radius: var(--radius-input);
+  font-family: var(--font-body);
+  font-size: 0.86rem;
+  color: var(--color-text);
+  padding: 9px 11px;
+  outline: none;
+  width: 100%;
+  transition: border-color var(--transition);
+}
+.modal-input:focus,
+.modal-textarea:focus {
+  border-color: var(--color-accent);
+}
+.modal-textarea {
+  resize: vertical;
+  min-height: 80px;
+  line-height: 1.5;
+}
+
+.modal-footer {
+  display: flex;
+  gap: 12px;
+  padding: 14px 20px 24px;
+}
+
+.modal-btn {
+  flex: 1;
+  border: none;
+  border-radius: 30px;
+  font-family: var(--font-display);
+  font-size: 1rem;
+  font-weight: 600;
+  padding: 13px 10px;
+  cursor: pointer;
+  transition:
+    transform var(--transition),
+    opacity var(--transition);
+}
+.modal-btn:active {
+  transform: scale(0.97);
+}
+
+.modal-btn-cancelar {
+  background: #e8ecf5;
+  color: var(--color-primary);
+  border: 1.5px solid var(--color-border);
+}
+.modal-btn-cancelar:hover {
+  background: #d6dce8;
+}
+
+.modal-btn-salvar {
+  background: var(--color-primary);
+  color: #fff;
+  box-shadow: var(--shadow-btn);
+}
+.modal-btn-salvar:hover {
+  opacity: 0.9;
+}
+.modal-btn-salvar:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+.modal-loading {
+  display: none;
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.78);
+  backdrop-filter: blur(2px);
+  align-items: center;
+  justify-content: center;
+  border-radius: 24px 24px 0 0;
+}
+.modal-loading.active {
+  display: flex;
+}
+
+.spinner-sm {
+  width: 28px;
+  height: 28px;
+  border: 3px solid rgba(26, 45, 90, 0.12);
+  border-top-color: var(--color-accent);
+  border-radius: 50%;
+  animation: spin 0.7s linear infinite;
+}
+
+/* ── DESKTOP ── */
+@media (min-width: 768px) {
+  .status-card,
+  .trocas-lista {
+    margin-left: 20px !important;
+    margin-right: 20px !important;
+  }
+  .veiculo-select-wrap {
+    padding: 16px 20px 6px;
+  }
+
+  .modal {
+    bottom: auto;
+    top: 50%;
+    transform: translateX(-50%) translateY(-40%);
+    border-radius: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+    opacity: 0;
+  }
+  .modal.open {
+    transform: translateX(-50%) translateY(-50%);
+    opacity: 1;
+  }
+  .modal-handle {
+    display: none;
+  }
+  .modal-loading {
+    border-radius: 20px;
+  }
+}
+
+@media (min-width: 1100px) {
+  .modal {
+    max-width: 520px;
+  }
+}

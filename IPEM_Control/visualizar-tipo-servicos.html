@@ -1,0 +1,190 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Tipos de Serviço</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@500;600;700&family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="assets/styles/global.css"/>
+  <link rel="stylesheet" href="assets/styles/visualizar-tipo-servicos.css"/>
+</head>
+<body>
+
+<!-- ══ HEADER — menu padrão do projeto ═══════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <a href="veiculos.html"><img src="assets/images/logo_ipem.png" alt="IPEM Control"/></a>
+    </div>
+    <button class="btn_menu" id="btnMenu" aria-label="Menu">
+      <img src="assets/images/icon_menu.png" alt="Menu"/>
+    </button>
+    <nav class="nav" id="navPrincipal">
+      <ul class="menu">
+        <li class="dropdown">
+          <div class="dropdown-btn">Registros <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="nova-saida.html">Nova Saída</a></li>
+            <li><a href="nova-entrada.html">Registrar Retorno</a></li>
+            <li><a href="abastecimento.html">Abastecimento</a></li>
+            <li><a href="troca-de-oleo.html">Troca de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" data-role="adm">
+          <div class="dropdown-btn">Cadastrar <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="cadastrar-veiculo.html">Novo Veículo</a></li>
+            <li><a href="cadastrar-usuario.html">Novo Usuário</a></li>
+            <li><a href="cadastrar-tipo-servico.html">Tipo de Serviço</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" data-role="adm">
+          <div class="dropdown-btn">Gerenciamento <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="visualizar-veiculos.html">Veículos</a></li>
+            <li><a href="visualizar-usuario.html">Usuários</a></li>
+            <li><a href="visualizar-tipo-servicos.html">Tipos de Serviço</a></li>
+            <li><a href="vincular-servicos.html">Vincular Serviços a Veículos</a></li>
+            <li><a href="editar-troca-de-oleo.html">Trocas de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Relatórios <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="historico-viatura.html">Histórico de Viaturas</a></li>
+            <li data-role="adm"><a href="relatorio-viatura.html">Relatório de Viaturas</a></li>
+            <li data-role="adm"><a href="relatorio-tecnicos.html">Relatório de Técnicos</a></li>
+            <li data-role="adm"><a href="relatorio-abastecimento.html">Abastecimento e Óleo</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav_btn">
+        <a href="perfil.html"><img src="assets/images/icon_perfil.png" alt="Perfil"/></a>
+      </div>
+    </nav>
+  </div>
+</header>
+
+<!-- ══ CONTEÚDO PRINCIPAL ════════════════════════════════════════ -->
+<div class="page-wrapper">
+
+  <div class="page-top-bar">
+    <div class="page-top-left">
+      <button class="back-btn-top" onclick="window.location.href='veiculos.html'" title="Voltar">
+        <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+          <polyline points="15 18 9 12 15 6"/>
+        </svg>
+        Voltar
+      </button>
+      <h1 class="page-title-top">Tipos de Serviço</h1>
+    </div>
+    <button class="btn-add-top" onclick="window.location.href='cadastrar-tipo-servico.html'" title="Novo serviço">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/>
+      </svg>
+      Novo
+    </button>
+  </div>
+
+  <!-- Stats -->
+  <div class="stats-bar" id="stats-bar">
+    <div class="stat-pill">
+      <span class="sp-num" id="stat-total">0</span>
+      <span class="sp-label">Total</span>
+    </div>
+    <div class="stat-pill sp-green">
+      <span class="sp-num" id="stat-ativos">0</span>
+      <span class="sp-label">Ativos</span>
+    </div>
+    <div class="stat-pill sp-amber">
+      <span class="sp-num" id="stat-inativos">0</span>
+      <span class="sp-label">Inativos</span>
+    </div>
+  </div>
+
+  <!-- Busca -->
+  <div class="search-bar-row">
+    <div class="search-wrap">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/>
+      </svg>
+      <input type="text" id="busca_servico" placeholder="Buscar serviço..." autocomplete="off"/>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filter-bar">
+    <button class="filter-chip active" data-filtro="todos">Todos</button>
+    <button class="filter-chip" data-filtro="ativos">Ativos</button>
+    <button class="filter-chip" data-filtro="inativos">Inativos</button>
+  </div>
+
+  <!-- Lista -->
+  <div class="servicos-lista" id="lista_servicos">
+    <div class="loading-state" id="loading">
+      <div class="spinner"></div>
+      <span>Carregando serviços...</span>
+    </div>
+    <div class="empty-state" id="empty-state" style="display:none;">
+      <svg width="40" height="40" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+        <path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/>
+      </svg>
+      <span>Nenhum tipo de serviço encontrado.</span>
+    </div>
+  </div>
+
+</div>
+
+<!-- ══ MODAL DE EDIÇÃO ═══════════════════════════════════════════ -->
+<div class="modal-backdrop" id="modal-backdrop" onclick="fecharModal()"></div>
+<div class="modal" id="modal-edicao" role="dialog" aria-modal="true" aria-labelledby="modal-titulo">
+  <div class="modal-header">
+    <h2 class="modal-titulo" id="modal-titulo">Editar serviço</h2>
+    <button class="modal-close" onclick="fecharModal()" aria-label="Fechar">
+      <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5">
+        <line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/>
+      </svg>
+    </button>
+  </div>
+  <div class="modal-body">
+    <input type="hidden" id="modal_id_servico"/>
+    <div class="modal-field">
+      <label class="modal-label" for="modal_nome_servico">Nome do serviço</label>
+      <input type="text" id="modal_nome_servico" class="modal-input" maxlength="100" autocomplete="off"/>
+      <span class="modal-counter" id="modal_counter_nome">0/100</span>
+    </div>
+    <div class="modal-field">
+      <label class="modal-label" for="modal_descricao_servico">
+        Descrição <span class="modal-optional">(opcional)</span>
+      </label>
+      <textarea id="modal_descricao_servico" class="modal-textarea" rows="4" maxlength="500"></textarea>
+      <span class="modal-counter" id="modal_counter_desc">0/500</span>
+    </div>
+    <div class="modal-status-row" id="modal_status_row">
+      <div class="modal-status-info">
+        <span class="modal-status-label">Status do serviço</span>
+        <span class="modal-status-desc" id="modal_status_desc">Habilitado — aparece no registro de saída</span>
+      </div>
+      <label class="toggle-switch" title="Habilitar / Desabilitar">
+        <input type="checkbox" id="modal_toggle_habilitado"/>
+        <span class="toggle-slider"></span>
+      </label>
+    </div>
+  </div>
+  <div class="modal-footer">
+    <button class="modal-btn modal-btn-cancelar" onclick="fecharModal()">Cancelar</button>
+    <button class="modal-btn modal-btn-salvar" id="modal-btn-salvar" onclick="salvarEdicao()">
+      Salvar alterações
+    </button>
+  </div>
+  <div class="modal-loading" id="modal-loading"><div class="spinner-sm"></div></div>
+</div>
+
+<div class="loading-overlay" id="loadingOverlay"><div class="spinner"></div><span>Aguarde...</span></div>
+
+<script src="assets/scripts/global.js"></script>
+<script src="assets/scripts/visualizar-tipo-servicos.js" defer></script>
+</body>
+</html>

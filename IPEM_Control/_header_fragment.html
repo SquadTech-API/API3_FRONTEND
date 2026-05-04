@@ -1,0 +1,61 @@
+<!-- ══ FRAGMENTO: HEADER PADRÃO ADM (copiar para todas as telas desktop) ══
+     Substitua [TITULO_PAGINA] pelo título da tela.
+     Este é o padrão para: cadastrar-*, visualizar-*, relatorio-*
+     ══════════════════════════════════════════════════════════════════════ -->
+<header>
+  <div class="header-inner">
+    <div class="logo">
+      <a href="veiculos.html"><img src="assets/images/logo_ipem.png" alt="IPEM Control"/></a>
+    </div>
+
+    <button class="btn_menu" id="btnMenu" aria-label="Abrir menu">
+      <img src="assets/images/icon_menu.png" alt="Menu"/>
+    </button>
+
+    <nav class="nav" id="navPrincipal">
+      <ul class="menu">
+        <li class="dropdown">
+          <div class="dropdown-btn">Registros <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="nova-saida.html">Nova Saída</a></li>
+            <li><a href="nova-entrada.html">Registrar Retorno</a></li>
+            <li><a href="abastecimento.html">Abastecimento</a></li>
+            <li><a href="troca-de-oleo.html">Troca de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" data-role="adm">
+          <div class="dropdown-btn">Cadastrar <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="cadastrar-veiculo.html">Novo Veículo</a></li>
+            <li><a href="cadastrar-usuario.html">Novo Usuário</a></li>
+            <li><a href="cadastrar-tipo-servico.html">Tipo de Serviço</a></li>
+          </ul>
+        </li>
+        <li class="dropdown" data-role="adm">
+          <div class="dropdown-btn">Gerenciamento <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="visualizar-veiculos.html">Veículos</a></li>
+            <li><a href="visualizar-usuario.html">Usuários</a></li>
+            <li><a href="visualizar-tipo-servicos.html">Tipos de Serviço</a></li>
+            <li><a href="editar-troca-de-oleo.html">Trocas de Óleo</a></li>
+            <li><a href="vincular-servicos.html">Vincular Serviços a Veículos</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Relatórios <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="historico-viatura.html">Histórico de Viaturas</a></li>
+            <li data-role="adm"><a href="relatorio-viatura.html">Relatório de Viaturas</a></li>
+            <li data-role="adm"><a href="relatorio-tecnicos.html">Relatório de Técnicos</a></li>
+            <li data-role="adm"><a href="relatorio-abastecimento.html">Abastecimento e Óleo</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav_btn">
+        <a href="perfil.html" aria-label="Perfil">
+          <img src="assets/images/icon_perfil.png" alt="Perfil"/>
+        </a>
+      </div>
+    </nav>
+  </div>
+</header>
