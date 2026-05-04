@@ -1,0 +1,174 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IPEM Control — Relatório de Técnicos</title>
+  <link rel="stylesheet" href="./relatorio-tecnicos.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.js" defer></script>
+</head>
+
+<body>
+
+  <!-- ═══════════════════════════════════════════════
+       HEADER DE NAVEGAÇÃO
+       Mesmo padrão das demais telas do projeto.
+  ═══════════════════════════════════════════════ -->
+  <header>
+    <div class="logo">
+      <img src="assets/images/logo_ipem.png" alt="Logo Ipem" />
+    </div>
+
+    <button class="btn_menu" id="btnMenu">
+      <img src="assets/images/icon_menu.png" alt="Menu" />
+    </button>
+
+    <nav class="nav" id="navPrincipal">
+      <ul class="menu">
+        <li class="dropdown">
+          <div class="dropdown-btn">Registros <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="nova_saida.html">Nova Saída</a></li>
+            <li><a href="nova_entrada.html">Registrar Retorno</a></li>
+            <li><a href="abastecimento.html">Abastecimento</a></li>
+            <li><a href="troca_oleo.html">Troca de Óleo</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Cadastrar <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="add_veic.html">Novo Veículo</a></li>
+            <li><a href="add_moto.html">Novo Motorista</a></li>
+            <li><a href="cadastrar-tipo-servico.html">Tipo de Serviço</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Gerenciamento <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="ver_veiculos.html">Veículos</a></li>
+            <li><a href="ver_motoristas.html">Motoristas</a></li>
+            <li><a href="visualizar-tipo-servico.html">Tipos de Serviço</a></li>
+          </ul>
+        </li>
+        <li class="dropdown">
+          <div class="dropdown-btn">Relatórios <span class="arrow">▼</span></div>
+          <ul class="submenu">
+            <li><a href="relatorio-tecnicos.html">Técnicos</a></li>
+            <li><a href="relatorio-viaturas.html">Viaturas</a></li>
+          </ul>
+        </li>
+      </ul>
+      <div class="nav_btn">
+        <a href="tela_veiculos.html">
+          <img src="assets/images/icon_perfil.png" alt="Início" />
+        </a>
+      </div>
+    </nav>
+  </header>
+
+  <!-- ═══════════════════════════════════════════════
+       CONTEÚDO PRINCIPAL
+  ═══════════════════════════════════════════════ -->
+  <main class="container">
+
+    <!-- TOPBAR -->
+    <div class="topbar">
+      <div class="topbar-left">
+        <h1 class="page-title">Relatório de técnicos</h1>
+        <span class="badge-adm">ADM</span>
+      </div>
+      <div class="filter-pill">
+        <label for="periodGlobal">Período:</label>
+        <select id="periodGlobal">
+          <option value="hoje">Hoje</option>
+          <option value="7" selected>Últimos 7 dias</option>
+          <option value="30">Últimos 30 dias</option>
+          <option value="ano">Último ano</option>
+        </select>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO 1: VISÃO GERAL ── -->
+    <div class="sec-head">Visão geral da frota</div>
+
+    <div class="metrics-grid" id="metricsGrid">
+      <!-- Preenchido por relatorio-tecnicos.js -->
+    </div>
+
+    <!-- ── SEÇÃO 2: GRÁFICOS GERAIS ── -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">Saídas por técnico</div>
+        <div class="chart-legend" id="legBar">
+          <span><span class="leg-sq" style="background:#0E2365"></span>Saídas</span>
+          <span><span class="leg-sq" style="background:#3B6D11"></span>KM / 100</span>
+        </div>
+        <div class="chart-wrap">
+          <canvas id="cBar" role="img" aria-label="Gráfico de barras com total de saídas por técnico">
+            Saídas realizadas por cada técnico no período selecionado.
+          </canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">Distribuição de serviços</div>
+        <div class="chart-legend" id="legPie"></div>
+        <div class="chart-wrap">
+          <canvas id="cPie" role="img" aria-label="Gráfico de rosca com distribuição de tipos de serviço">
+            Percentual de cada tipo de serviço realizado no período.
+          </canvas>
+        </div>
+      </div>
+
+      <div class="chart-card">
+        <div class="chart-title">KM rodados — tendência</div>
+        <div class="chart-wrap">
+          <canvas id="cLine" role="img" aria-label="Gráfico de linha com tendência de KM rodados por semana">
+            Evolução de KM rodados ao longo das semanas do período.
+          </canvas>
+        </div>
+      </div>
+    </div>
+
+    <!-- ── SEÇÃO 3: RANKING ── -->
+    <div class="chart-card" style="margin-bottom:24px;">
+      <div class="chart-title">Ranking — uso do sistema</div>
+      <div id="rankingList"></div>
+    </div>
+
+    <!-- ── DIVISOR ── -->
+    <div class="divider"></div>
+    <div class="sec-head">Relatório individual</div>
+
+    <!-- ── SEÇÃO 4: BUSCA INDIVIDUAL ── -->
+    <div class="search-box">
+      <div class="search-row">
+        <input type="text" id="searchInput" placeholder="Nome ou matrícula do técnico..." autocomplete="off" />
+        <select id="periodIndiv">
+          <option value="hoje">Hoje</option>
+          <option value="7" selected>Últimos 7 dias</option>
+          <option value="30">Últimos 30 dias</option>
+          <option value="ano">Último ano</option>
+        </select>
+        <button class="btn-search" id="btnBuscar">Buscar</button>
+      </div>
+      <div class="sugg-list" id="suggList"></div>
+    </div>
+
+    <div class="alert-info">
+      Selecione o técnico pelo nome ou matrícula e escolha o período para gerar o relatório completo.
+    </div>
+
+    <!-- ── ÁREA DO PERFIL (gerada por JS) ── -->
+    <div id="profileArea"></div>
+
+  </main>
+
+  <script src="./relatorio-tecnicos.js" defer></script>
+</body>
+
+</html>
