@@ -1,0 +1,280 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Dashboard</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/dashboard.css"/>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo">
+        <img src="./assets/logo.png" alt="IPEM-SP"
+          onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.04em;">IPEM SP</span>
+      </div>
+      <nav class="nav" aria-label="Menu principal">
+        <ul class="menu">
+          <li class="dropdown">
+            <button class="dropdown-btn" type="button">Registros <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./vehicles.html">Selecionar viatura</a></li>
+              <li><a href="./vehicle-history.html">Histórico de viaturas</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <button class="dropdown-btn" type="button">Cadastrar <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./register-vehicle.html">Nova viatura</a></li>
+              <li><a href="./register-user.html">Novo usuário</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./manage-vehicles.html">Viaturas</a></li>
+              <li><a href="./manage-users.html">Usuários</a></li>
+              <li><a href="./manage-service-types.html">Tipos de serviço</a></li>
+              <li><a href="./manage-fuel-types.html">Tipos de combustível</a></li>
+              <li><a href="./link-services.html">Vincular serviços</a></li>
+              <li><a href="./oil-change-history.html">Trocas de óleo</a></li>
+              <li><a href="./manage-records.html">Edição de registros</a></li>
+              <li><a href="./schedules.html">Agendamentos</a></li>
+              <li><a href="./audit-log.html">Audit log</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <button class="dropdown-btn" type="button">Relatórios <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./report-vehicles.html">Viaturas</a></li>
+              <li><a href="./report-technicians.html">Técnicos</a></li>
+              <li><a href="./report-fueling.html">Abastecimentos</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="nav-actions">
+      <div style="position:relative;">
+        <button class="btn-icon" id="btn-notifications" aria-label="Notificações" type="button">
+          <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" width="18" height="18">
+            <path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"/>
+            <path d="M13.73 21a2 2 0 0 1-3.46 0"/>
+          </svg>
+          <span class="notif-badge" id="notif-count" style="display:none;">0</span>
+        </button>
+        <div class="notif-dropdown" id="notif-dropdown">
+          <div class="notif-header">
+            <span class="notif-header-title">Notificações</span>
+            <button class="notif-mark-all" id="btn-mark-all" type="button">Marcar todas como lidas</button>
+          </div>
+          <div class="notif-list" id="notif-list">
+            <div class="notif-empty">Nenhuma notificação.</div>
+          </div>
+        </div>
+      </div>
+      <button class="user-chip" id="btn-profile" type="button">
+        <div class="user-avatar" id="header-avatar">AD</div>
+        <span id="header-user-name"></span>
+      </button>
+    </div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobile-nav">
+  <div class="mobile-section">
+    <div class="mobile-section-title" data-target="mob-reg">Registros <span class="arrow">▾</span></div>
+    <div class="mobile-sub" id="mob-reg">
+      <a href="./vehicles.html">Selecionar viatura</a>
+      <a href="./vehicle-history.html">Histórico de viaturas</a>
+    </div>
+  </div>
+  <div class="mobile-section">
+    <div class="mobile-section-title" data-target="mob-cad">Cadastrar <span class="arrow">▾</span></div>
+    <div class="mobile-sub" id="mob-cad">
+      <a href="./register-vehicle.html">Nova viatura</a>
+      <a href="./register-user.html">Novo usuário</a>
+    </div>
+  </div>
+  <div class="mobile-section">
+    <div class="mobile-section-title" data-target="mob-ger">Gerenciamento <span class="arrow">▾</span></div>
+    <div class="mobile-sub" id="mob-ger">
+      <a href="./manage-vehicles.html">Viaturas</a>
+      <a href="./manage-users.html">Usuários</a>
+      <a href="./schedules.html">Agendamentos</a>
+      <a href="./audit-log.html">Audit log</a>
+    </div>
+  </div>
+  <div class="mobile-nav-footer">
+    <a href="./profile.html" style="color:rgba(255,255,255,.8);font-size:14px;padding:8px 0;">Meu perfil</a>
+    <button onclick="logout()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:10px;font-size:13px;cursor:pointer;font-family:var(--font);">Sair</button>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main>
+  <div class="container">
+
+    <!-- Welcome bar -->
+    <div class="welcome-bar">
+      <div class="welcome-left">
+        <div class="welcome-greeting">Bem-vindo de volta,</div>
+        <div class="welcome-name" id="welcome-name">Administrador</div>
+        <div class="welcome-date" id="welcome-date">—</div>
+      </div>
+      <div class="welcome-badge">ADMINISTRADOR</div>
+    </div>
+
+    <!-- Métricas principais -->
+    <div class="section-label">Visão geral de hoje</div>
+    <div class="metrics-grid">
+      <div class="metric-card info">
+        <div class="metric-icon info">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        </div>
+        <div class="metric-value" id="metric-vehicles-in-use">—</div>
+        <div class="metric-label">Viaturas em uso</div>
+        <div class="metric-sub" id="metric-vehicles-sub">de — disponíveis</div>
+      </div>
+      <div class="metric-card ok">
+        <div class="metric-icon ok">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 00-4-4H5a4 4 0 00-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 00-3-3.87"/><path d="M16 3.13a4 4 0 010 7.75"/></svg>
+        </div>
+        <div class="metric-value" id="metric-active-users">—</div>
+        <div class="metric-label">Técnicos em serviço</div>
+        <div class="metric-sub" id="metric-users-sub">de — cadastrados</div>
+      </div>
+      <div class="metric-card warn">
+        <div class="metric-icon warn">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+        </div>
+        <div class="metric-value" id="metric-departures-today">—</div>
+        <div class="metric-label">Saídas hoje</div>
+        <div class="metric-sub" id="metric-departures-sub">— este mês</div>
+      </div>
+      <div class="metric-card danger">
+        <div class="metric-icon danger">
+          <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/><line x1="12" y1="9" x2="12" y2="13"/><line x1="12" y1="17" x2="12.01" y2="17"/></svg>
+        </div>
+        <div class="metric-value" id="metric-oil-alerts">—</div>
+        <div class="metric-label">Alertas de troca de óleo</div>
+        <div class="metric-sub" id="metric-oil-sub">viaturas com troca pendente</div>
+      </div>
+    </div>
+
+    <!-- Row 1: viaturas em uso + agendamentos pendentes -->
+    <div class="section-label">Atividade em tempo real</div>
+    <div class="dash-row">
+
+      <!-- Viaturas em uso agora -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+            Viaturas em uso agora
+          </div>
+          <a href="./manage-vehicles.html" class="dash-card-link">Ver todas →</a>
+        </div>
+        <div class="dash-card-body" id="vehicles-in-use-list">
+          <div class="card-empty">Carregando...</div>
+        </div>
+      </div>
+
+      <!-- Agendamentos pendentes -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+            Agendamentos pendentes
+          </div>
+          <a href="./schedules.html" class="dash-card-link">Gerenciar →</a>
+        </div>
+        <div class="dash-card-body" id="pending-schedules-list">
+          <div class="card-empty">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Row 2: saídas recentes + alertas de óleo -->
+    <div class="section-label">Últimas saídas e alertas</div>
+    <div class="dash-row three">
+
+      <!-- Saídas recentes -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2L2 7l10 5 10-5-10-5z"/><path d="M2 17l10 5 10-5"/><path d="M2 12l10 5 10-5"/></svg>
+            Saídas recentes
+          </div>
+          <a href="./manage-records.html" class="dash-card-link">Ver todas →</a>
+        </div>
+        <div class="dash-card-body">
+          <table class="dep-table">
+            <thead>
+              <tr>
+                <th>Viatura</th>
+                <th>Condutor</th>
+                <th>Serviço</th>
+                <th>Saída em</th>
+                <th>Status</th>
+              </tr>
+            </thead>
+            <tbody id="recent-departures-body">
+              <tr><td colspan="5" style="padding:24px;text-align:center;color:var(--muted);">Carregando...</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <!-- Alertas de troca de óleo -->
+      <div class="dash-card">
+        <div class="dash-card-header">
+          <div class="dash-card-title">
+            <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/></svg>
+            Alertas de troca de óleo
+          </div>
+          <a href="./oil-change-history.html" class="dash-card-link">Ver histórico →</a>
+        </div>
+        <div class="dash-card-body" id="oil-alerts-list">
+          <div class="card-empty">Carregando...</div>
+        </div>
+      </div>
+    </div>
+
+  </div>
+</main>
+
+<!-- Modal de recusa de agendamento -->
+<div class="reject-modal-overlay" id="reject-modal">
+  <div class="reject-modal">
+    <div class="reject-modal-title">Recusar agendamento</div>
+    <div class="reject-modal-sub" id="reject-modal-sub">Informe o motivo da recusa. O técnico será notificado.</div>
+    <textarea class="reject-reason-input" id="reject-reason"
+      placeholder="Ex: Viatura reservada para manutenção nessa data..." rows="3"></textarea>
+    <div class="reject-modal-actions">
+      <button class="reject-modal-cancel" onclick="closeRejectModal()" type="button">Cancelar</button>
+      <button class="reject-modal-confirm" id="reject-confirm-btn" type="button">Confirmar recusa</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+</div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/dashboard.js"></script>
+</body>
+</html>
