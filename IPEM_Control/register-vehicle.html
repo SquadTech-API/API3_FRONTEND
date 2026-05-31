@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Nova Viatura</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/register-vehicle.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li><li><a href="./manage-service-types.html">Tipos de serviço</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="cad-container">
+  <div class="cad-top">
+    <h1 class="cad-title">Cadastrar viatura</h1>
+    <button class="cad-back" onclick="window.location.href='./manage-vehicles.html'" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Voltar
+    </button>
+  </div>
+
+  <div class="cad-card">
+    <div class="cad-card-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+      Dados da viatura
+    </div>
+    <div class="cad-form">
+      <div class="cad-row"><label class="cad-label">Prefixo <span>*</span></label><input class="cad-input" id="input-prefix" placeholder="Ex: FJV-23" type="text"/></div>
+      <div class="cad-row"><label class="cad-label">Placa <span>*</span></label><input class="cad-input" id="input-plate" placeholder="ABC-1D23" type="text"/></div>
+      <div class="cad-row"><label class="cad-label">Núcleo / DAR <span>*</span></label><input class="cad-input" id="input-dar" placeholder="Ex: DAR-Central" type="text"/></div>
+      <div class="cad-row"><label class="cad-label">Número FL</label><input class="cad-input" id="input-fl" placeholder="Opcional" type="text"/></div>
+      <div class="cad-row"><label class="cad-label">Marca <span>*</span></label><input class="cad-input" id="input-brand" placeholder="Ex: Chevrolet" type="text"/></div>
+      <div class="cad-row"><label class="cad-label">Modelo <span>*</span></label><input class="cad-input" id="input-model" placeholder="Ex: Spin" type="text"/></div>
+      <div class="cad-row"><label class="cad-label">Ano <span>*</span></label><input class="cad-input" id="input-year" placeholder="Ex: 2022" type="number" min="1990" max="2030"/></div>
+      <div class="cad-row"><label class="cad-label">Tipo de combustível <span>*</span></label><select class="cad-select" id="select-fuel"><option value="">Selecione</option></select></div>
+      <div class="cad-row"><label class="cad-label">Habilitação exigida</label><select class="cad-select" id="select-license"><option value="">Nenhuma</option><option>A</option><option>B</option><option>AB</option><option>C</option><option>AC</option><option>D</option><option>AD</option><option>E</option><option>AE</option></select></div>
+      <div class="cad-row"><label class="cad-label">KM atual <span>*</span></label><input class="cad-input" id="input-mileage" placeholder="Ex: 52300" type="number" min="0"/></div>
+      <div class="cad-row"><label class="cad-label">Troca de óleo a cada (km)</label><input class="cad-input" id="input-oil-interval" value="5000" type="number" min="500"/></div>
+    </div>
+  </div>
+
+  <div class="cad-card">
+    <div class="cad-card-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14.7 6.3a1 1 0 0 0 0 1.4l1.6 1.6a1 1 0 0 0 1.4 0l3.77-3.77a6 6 0 0 1-7.94 7.94l-6.91 6.91a2.12 2.12 0 0 1-3-3l6.91-6.91a6 6 0 0 1 7.94-7.94l-3.76 3.76z"/></svg>
+      Serviços habilitados para esta viatura
+    </div>
+    <div class="cad-form">
+      <div class="services-grid" id="services-grid">
+        <span style="color:var(--muted);font-size:13px;">Carregando serviços...</span>
+      </div>
+    </div>
+  </div>
+
+  <div class="cad-actions">
+    <button class="btn-cancel-cad" onclick="window.location.href='./manage-vehicles.html'" type="button">Cancelar</button>
+    <button class="btn-save-cad" id="btn-save" type="button">Cadastrar viatura</button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div><span>Cadastrando viatura...</span></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/register-vehicle.js"></script>
+</body>
+</html>

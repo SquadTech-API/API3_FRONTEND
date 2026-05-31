@@ -1,0 +1,33 @@
+body{background:var(--bg);}
+    .cad-container{max-width:760px;margin:0 auto;padding:28px 20px 60px;}
+    .cad-top{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+    .cad-title{font-size:20px;font-weight:600;color:var(--navy);}
+    .cad-back{display:flex;align-items:center;gap:6px;color:var(--muted);font-size:13px;cursor:pointer;border:none;background:none;font-family:var(--font);}
+    .cad-back:hover{color:var(--navy);}
+    .cad-card{background:#fff;border-radius:var(--radius-lg);border:.5px solid var(--border);box-shadow:var(--shadow);overflow:hidden;margin-bottom:16px;}
+    .cad-card-header{background:var(--blue);display:flex;align-items:center;gap:10px;padding:12px 20px;color:#fff;font-size:13px;font-weight:600;}
+    .cad-form{padding:0 20px 8px;}
+    .cad-row{display:flex;justify-content:space-between;align-items:center;padding:11px 0;border-bottom:.5px solid #eef1f8;gap:12px;}
+    .cad-row:last-child{border-bottom:none;}
+    .cad-label{font-size:13px;color:var(--navy);font-weight:500;min-width:190px;flex-shrink:0;}
+    .cad-label span{color:var(--danger);margin-left:2px;}
+    .cad-input,.cad-select{flex:1;background:#f7f9fc;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:8px 11px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;transition:border-color var(--transition);}
+    .cad-input:focus,.cad-select:focus{border-color:var(--blue);}
+    .cad-input::placeholder{color:var(--muted);}
+
+    /* Checkboxes serviços */
+    .services-grid{display:flex;flex-wrap:wrap;gap:8px;padding:12px 0 8px;}
+    .svc-check-item{display:flex;align-items:center;gap:7px;font-size:13px;color:var(--text);cursor:pointer;padding:6px 10px;border:1.5px solid var(--border);border-radius:6px;transition:all var(--transition);}
+    .svc-check-item:has(input:checked){background:var(--info-bg);border-color:#2563eb;color:#1e40af;}
+    .svc-check-item input{width:15px;height:15px;cursor:pointer;accent-color:var(--blue);}
+
+    .cad-actions{display:flex;justify-content:flex-end;gap:10px;margin-top:8px;}
+    .btn-cancel-cad{background:#e8ecf5;color:var(--navy);border:none;border-radius:8px;padding:11px 24px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);}
+    .btn-save-cad{background:var(--navy);color:#fff;border:none;border-radius:8px;padding:11px 32px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);}
+    .btn-save-cad:disabled{opacity:.5;cursor:not-allowed;}
+
+    @media(max-width:640px){
+      .cad-row{flex-direction:column;align-items:flex-start;}
+      .cad-input,.cad-select{width:100%;}
+      .cad-label{min-width:unset;}
+    }
