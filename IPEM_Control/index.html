@@ -3,60 +3,78 @@
 <head>
   <meta charset="UTF-8"/>
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>IPEM Control — Login</title>
+  <title>IPEM Control — Acesso</title>
   <link rel="preconnect" href="https://fonts.googleapis.com"/>
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin/>
-  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet"/>
-  <link rel="stylesheet" href="assets/styles/global.css"/>
-  <link rel="stylesheet" href="assets/styles/style.css"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/index.css"/>
 </head>
-<body class="login-page">
+<body>
 
-  <main class="login-page-wrap">
-    <section class="login-container">
+<div class="login-wrapper">
+  <div class="login-brand">
+    <div class="login-logo-box">
+      <span class="login-system-name">IPEM Control</span>
+    </div>
+    <div class="login-subtitle">Sistema de Controle de Frota — IPEM-SP</div>
+  </div>
 
-      <div class="login-logo-wrap">
-        <h1 class="login-logo-text">IPEM Control</h1>
-        <p class="login-logo-sub">Sistema de Controle de Frota</p>
+  <div class="login-card">
+    <div class="login-card-title">Acesse sua conta</div>
+
+    <div class="form-group">
+      <label class="form-label" for="input-email">E-mail</label>
+      <input
+        id="input-email"
+        class="form-input"
+        type="email"
+        placeholder="seu@ipem.sp.gov.br"
+        autocomplete="username"
+      />
+    </div>
+
+    <div class="form-group">
+      <label class="form-label" for="input-password">Senha</label>
+      <div class="password-wrap">
+        <input
+          id="input-password"
+          class="form-input"
+          type="password"
+          placeholder="••••••••"
+          autocomplete="current-password"
+        />
+        <button
+          id="btn-toggle-password"
+          class="btn-toggle-pass"
+          type="button"
+          aria-label="Mostrar senha"
+        >
+          <svg id="eye-icon" viewBox="0 0 24 24">
+            <path d="M1 12s4-8 11-8 11 8 11 8-4 8-11 8-11-8-11-8z"/>
+            <circle cx="12" cy="12" r="3"/>
+          </svg>
+        </button>
       </div>
+    </div>
 
-      <div class="login-card">
+    <button id="btn-login" class="btn-login">Entrar</button>
+    <button id="btn-forgot" class="btn-forgot">Esqueceu sua senha?</button>
+  </div>
 
-        <div class="login-field">
-          <label for="username">E-mail</label>
-          <input id="username" name="username" type="text" required
-                 placeholder="seu@email.gov.br" autocomplete="username"/>
-        </div>
+  <div class="login-footer">IPEM-SP · Controle de Frota</div>
+</div>
 
-        <div class="login-field">
-          <label for="password">Senha</label>
-          <div class="login-input-wrap">
-            <input id="password" name="password" type="password" required
-                   placeholder="••••••••" autocomplete="current-password"/>
-            <button type="button" class="eye-btn" id="togglePassword" aria-label="Mostrar senha">
-              <svg id="eye-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24"
-                   fill="none" stroke="currentColor" stroke-width="2">
-                <path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94"/>
-                <path d="M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19"/>
-                <line x1="1" y1="1" x2="23" y2="23"/>
-              </svg>
-            </button>
-          </div>
-        </div>
+<!-- Modal -->
+<div id="modal-overlay" class="modal-overlay">
+  <div class="modal-box">
+    <div id="modal-icon" class="modal-icon error">✕</div>
+    <div id="modal-title" class="modal-title"></div>
+    <div id="modal-msg" class="modal-msg"></div>
+    <button id="modal-btn" class="modal-btn">OK</button>
+  </div>
+</div>
 
-        <button type="button" class="login-btn" id="btnEntrar">Entrar</button>
-
-        <div class="login-forgot-wrap">
-          <button type="button" class="login-forgot" id="forgotBtn">
-            Esqueceu a senha?
-          </button>
-        </div>
-
-      </div>
-    </section>
-  </main>
-
-  <script src="assets/scripts/global.js"></script>
-  <script src="assets/scripts/script.js" defer></script>
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/index.js"></script>
 </body>
 </html>

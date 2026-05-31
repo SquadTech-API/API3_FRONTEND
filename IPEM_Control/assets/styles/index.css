@@ -1,0 +1,260 @@
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --navy:    #0E2365;
+      --blue:    #223A8E;
+      --bg:      #f2f4f8;
+      --white:   #ffffff;
+      --border:  #dde3ef;
+      --text:    #1a2d5a;
+      --muted:   #6b7c9e;
+      --danger:  #ef4444;
+      --font:    'Roboto', sans-serif;
+      --font-d:  'Rajdhani', sans-serif;
+    }
+
+    html, body {
+      min-height: 100%;
+      font-family: var(--font);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ── LAYOUT ── */
+    body {
+      display: flex;
+      flex-direction: column;
+      min-height: 100vh;
+      background: linear-gradient(145deg, var(--navy) 0%, var(--blue) 100%);
+    }
+
+    .login-wrapper {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 32px 20px;
+      gap: 24px;
+    }
+
+    /* ── LOGO / HEADER ── */
+    .login-brand {
+      text-align: center;
+      animation: fadeDown 0.5s ease both;
+    }
+
+    .login-logo-box {
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      background: rgba(255, 255, 255, 0.12);
+      border: 1.5px solid rgba(255, 255, 255, 0.22);
+      border-radius: 14px;
+      padding: 12px 24px;
+      margin-bottom: 14px;
+    }
+
+    .login-system-name {
+      font-family: var(--font-d);
+      font-size: 2rem;
+      font-weight: 700;
+      color: #fff;
+      letter-spacing: 0.06em;
+    }
+
+    .login-subtitle {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      letter-spacing: 0.04em;
+      margin-top: 4px;
+    }
+
+    /* ── CARD ── */
+    .login-card {
+      background: var(--white);
+      border-radius: 18px;
+      padding: 32px 28px;
+      width: 100%;
+      max-width: 380px;
+      box-shadow: 0 24px 64px rgba(0, 0, 0, 0.3);
+      animation: fadeUp 0.5s 0.1s ease both;
+    }
+
+    .login-card-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 22px;
+      text-align: center;
+    }
+
+    /* ── FORM ── */
+    .form-group {
+      display: flex;
+      flex-direction: column;
+      gap: 5px;
+      margin-bottom: 14px;
+    }
+
+    .form-label {
+      font-size: 12px;
+      font-weight: 600;
+      color: var(--muted);
+      letter-spacing: 0.03em;
+    }
+
+    .form-input {
+      background: #f7f9fc;
+      border: 1.5px solid var(--border);
+      border-radius: 8px;
+      padding: 10px 13px;
+      font-size: 13px;
+      color: var(--text);
+      font-family: var(--font);
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+      width: 100%;
+    }
+    .form-input:focus {
+      border-color: var(--blue);
+      box-shadow: 0 0 0 3px rgba(34, 83, 168, 0.1);
+    }
+    .form-input::placeholder { color: var(--muted); font-size: 12px; }
+
+    .password-wrap {
+      position: relative;
+    }
+    .password-wrap .form-input {
+      padding-right: 42px;
+    }
+    .btn-toggle-pass {
+      position: absolute;
+      right: 10px;
+      top: 50%;
+      transform: translateY(-50%);
+      background: none;
+      border: none;
+      cursor: pointer;
+      color: var(--muted);
+      display: flex;
+      align-items: center;
+      padding: 4px;
+      transition: color 0.2s;
+    }
+    .btn-toggle-pass:hover { color: var(--blue); }
+    .btn-toggle-pass svg { width: 18px; height: 18px; fill: none; stroke: currentColor; stroke-width: 2; }
+
+    /* ── BOTÃO ENTRAR ── */
+    .btn-login {
+      width: 100%;
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 10px;
+      padding: 13px;
+      font-size: 14px;
+      font-weight: 600;
+      font-family: var(--font-d);
+      letter-spacing: 0.06em;
+      cursor: pointer;
+      margin-top: 8px;
+      transition: opacity 0.2s, transform 0.15s;
+    }
+    .btn-login:hover  { opacity: 0.88; }
+    .btn-login:active { transform: scale(0.98); }
+    .btn-login:disabled { opacity: 0.5; cursor: not-allowed; }
+
+    /* ── ESQUECEU SENHA ── */
+    .btn-forgot {
+      display: block;
+      text-align: center;
+      margin-top: 14px;
+      font-size: 12px;
+      color: var(--blue);
+      background: none;
+      border: none;
+      cursor: pointer;
+      font-family: var(--font);
+      text-decoration: underline;
+      text-underline-offset: 2px;
+    }
+    .btn-forgot:hover { color: var(--navy); }
+
+    /* ── RODAPÉ ── */
+    .login-footer {
+      font-size: 11px;
+      color: rgba(255, 255, 255, 0.4);
+      text-align: center;
+      animation: fadeDown 0.5s 0.2s ease both;
+    }
+
+    /* ── ANIMAÇÕES ── */
+    @keyframes fadeDown {
+      from { opacity: 0; transform: translateY(-12px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    @keyframes fadeUp {
+      from { opacity: 0; transform: translateY(14px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    /* ── MODAL (embutido, sem depender do global.css) ── */
+    .modal-overlay {
+      display: none;
+      position: fixed;
+      inset: 0;
+      background: rgba(10, 20, 60, 0.55);
+      backdrop-filter: blur(4px);
+      z-index: 9000;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+    .modal-overlay.active { display: flex; }
+
+    .modal-box {
+      background: var(--white);
+      border-radius: 16px;
+      padding: 30px 26px 22px;
+      max-width: 380px;
+      width: 100%;
+      box-shadow: 0 20px 60px rgba(14, 35, 101, 0.22);
+      text-align: center;
+      animation: fadeUp 0.25s ease both;
+    }
+    .modal-icon {
+      width: 52px;
+      height: 52px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 14px;
+      font-size: 22px;
+    }
+    .modal-icon.error   { background: #fee2e2; color: #dc2626; }
+    .modal-icon.warning { background: #fef3c7; color: #d97706; }
+    .modal-icon.info    { background: #dbeafe; color: #2563eb; }
+    .modal-title {
+      font-size: 16px;
+      font-weight: 600;
+      color: var(--navy);
+      margin-bottom: 8px;
+    }
+    .modal-msg {
+      font-size: 13px;
+      color: var(--muted);
+      line-height: 1.6;
+      margin-bottom: 20px;
+    }
+    .modal-btn {
+      background: var(--navy);
+      color: #fff;
+      border: none;
+      border-radius: 26px;
+      padding: 11px 32px;
+      font-size: 13px;
+      font-weight: 600;
+      cursor: pointer;
+      width: 100%;
+    }
