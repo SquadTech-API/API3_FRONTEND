@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Meu perfil</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/mobile-form.css"/>
+  <link rel="stylesheet" href="./assets/styles/profile.css"/>
+</head>
+<body>
+
+<div class="page-header">
+  <button class="back-btn" onclick="window.history.back()" aria-label="Voltar" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h1 class="page-title">Meu perfil</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<div class="page-wrapper" style="padding-top:0;gap:10px;">
+
+  <!-- Avatar -->
+  <div class="avatar-card">
+    <div class="avatar-circle" id="avatar-initials">??</div>
+    <div class="avatar-info">
+      <div class="avatar-name"  id="profile-name">—</div>
+      <div class="avatar-role"  id="profile-role">—</div>
+      <div class="avatar-badge" id="profile-badge">TÉCNICO</div>
+    </div>
+  </div>
+
+  <!-- Dados da conta -->
+  <div class="section-title">Dados da conta</div>
+  <div class="info-card">
+    <div class="info-row"><span class="info-label">Matrícula</span><span class="info-value" id="info-registration">—</span></div>
+    <div class="info-row"><span class="info-label">E-mail</span><span class="info-value" id="info-email">—</span></div>
+    <div class="info-row"><span class="info-label">Habilitação</span><span class="info-value" id="info-license">—</span></div>
+    <div class="info-row"><span class="info-label">Cargo</span><span class="info-value" id="info-role">—</span></div>
+    <div class="info-row"><span class="info-label">Tipo de acesso</span><span class="info-value" id="info-user-type">—</span></div>
+  </div>
+
+  <!-- Alterar senha -->
+  <div class="section-title">Alterar senha</div>
+  <div class="password-card">
+    <label class="pwd-label" for="pwd-current">Senha atual</label>
+    <input class="pwd-input" type="password" id="pwd-current" placeholder="Digite sua senha atual" autocomplete="current-password"/>
+
+    <label class="pwd-label" for="pwd-new">Nova senha</label>
+    <input class="pwd-input" type="password" id="pwd-new" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/>
+
+    <label class="pwd-label" for="pwd-confirm">Confirmar nova senha</label>
+    <input class="pwd-input" type="password" id="pwd-confirm" placeholder="Repita a nova senha" autocomplete="new-password"/>
+
+    <button class="btn-save-pwd" id="btn-save-pwd" type="button">Alterar senha</button>
+  </div>
+
+  <!-- Logout -->
+  <button class="btn-logout" id="btn-logout" type="button">Sair do sistema</button>
+
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <span>Salvando...</span>
+</div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/profile.js"></script>
+</body>
+</html>
