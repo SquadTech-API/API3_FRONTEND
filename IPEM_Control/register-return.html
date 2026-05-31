@@ -1,0 +1,115 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Registrar Retorno</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/mobile-form.css"/>
+  <link rel="stylesheet" href="./assets/styles/register-return.css"/>
+</head>
+<body>
+
+<div class="page-header">
+  <button class="back-btn" onclick="window.location.href='./vehicles.html'" aria-label="Voltar" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h1 class="page-title">Registrar retorno</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<div class="page-wrapper" style="padding-top:0;">
+
+  <!-- Vehicle card -->
+  <div class="vehicle-card">
+    <div class="vehicle-card-top">
+      <div class="vehicle-prefix-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <div>
+          <div class="vehicle-prefix" id="vehicle-prefix">—</div>
+          <div class="vehicle-model"  id="vehicle-model">—</div>
+        </div>
+      </div>
+      <span class="vehicle-license-badge" id="vehicle-license">—</span>
+    </div>
+    <div class="vehicle-card-bottom">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      <span id="conductor-label">Condutor: </span>
+      <strong id="conductor-name" style="color:#fff;margin-left:2px;">—</strong>
+    </div>
+  </div>
+
+  <!-- Form card -->
+  <div class="form-card">
+
+    <!-- Serviço (readonly) -->
+    <div class="field-row">
+      <label class="field-label" for="input-service">Serviço</label>
+      <input class="field-input readonly" type="text" id="input-service" readonly/>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Destino (readonly) -->
+    <div class="field-row">
+      <label class="field-label" for="input-destination">Destino</label>
+      <input class="field-input readonly" type="text" id="input-destination" readonly/>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Data da saída (readonly) -->
+    <div class="field-row">
+      <label class="field-label" for="input-departure-date">Saída em</label>
+      <input class="field-input readonly" type="text" id="input-departure-date" readonly/>
+    </div>
+    <div class="divider"></div>
+
+    <!-- KM de saída (readonly) -->
+    <div class="field-row">
+      <label class="field-label" for="input-start-mileage">KM de saída</label>
+      <input class="field-input readonly" type="text" id="input-start-mileage" readonly/>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Datetime de retorno -->
+    <div class="field-row datetime-row">
+      <div class="date-group">
+        <span class="dt-icon">
+          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="4" width="18" height="18" rx="2"/><line x1="16" y1="2" x2="16" y2="6"/><line x1="8" y1="2" x2="8" y2="6"/><line x1="3" y1="10" x2="21" y2="10"/></svg>
+        </span>
+        <span class="field-label-inline">Retorno</span>
+        <input class="field-input date-input" type="date" id="input-return-date"/>
+      </div>
+      <div class="time-group">
+        <span class="field-label-inline">Hora</span>
+        <input class="field-input time-input" type="time" id="input-return-time"/>
+      </div>
+    </div>
+    <div class="divider"></div>
+
+    <!-- KM final -->
+    <div class="field-row">
+      <label class="field-label" for="input-final-mileage">Odômetro final (km)</label>
+      <input class="field-input" type="number" id="input-final-mileage" placeholder="0" min="0" step="1"/>
+    </div>
+
+  </div>
+
+  <div class="actions-row">
+    <button class="btn btn-cancel" onclick="window.location.href='./vehicles.html'" type="button">Cancelar</button>
+    <button class="btn btn-save" id="btn-save" type="button">Registrar retorno</button>
+  </div>
+
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <span>Registrando retorno...</span>
+</div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/register-return.js"></script>
+</body>
+</html>
