@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Vincular Serviços</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/link-services.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li><li><a href="./manage-service-types.html">Tipos de serviço</a></li><li><a href="./manage-fuel-types.html">Combustíveis</a></li><li><a href="./link-services.html">Vincular serviços</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="page-top" style="margin-bottom:20px;">
+      <h1 class="page-title">Vincular serviços a viaturas</h1>
+    </div>
+    <div class="link-layout">
+      <div class="vehicles-panel">
+        <div class="panel-header">Viaturas</div>
+        <div class="panel-search"><input type="search" id="vehicle-search" placeholder="Buscar viatura..."/></div>
+        <div class="veh-list" id="vehicle-list">
+          <div style="padding:16px;color:var(--muted);font-size:13px;">Carregando...</div>
+        </div>
+      </div>
+      <div class="services-panel" id="services-panel">
+        <div class="sp-empty">Selecione uma viatura para gerenciar seus serviços habilitados.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div><span>Salvando...</span></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/link-services.js"></script>
+</body>
+</html>
