@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Troca de Óleo</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/mobile-form.css"/>
+  <link rel="stylesheet" href="./assets/styles/oil-change.css"/>
+</head>
+<body>
+
+<div class="page-header">
+  <button class="back-btn" onclick="window.location.href='./vehicles.html'" aria-label="Voltar" type="button">
+    <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+  </button>
+  <h1 class="page-title">Troca de óleo</h1>
+  <div class="header-spacer"></div>
+</div>
+
+<div class="page-wrapper" style="padding-top:0;">
+
+  <div class="vehicle-card">
+    <div class="vehicle-card-top">
+      <div class="vehicle-prefix-wrap">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="rgba(255,255,255,.7)" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+        <div>
+          <div class="vehicle-prefix" id="vehicle-prefix">—</div>
+          <div class="vehicle-model"  id="vehicle-model">—</div>
+        </div>
+      </div>
+    </div>
+    <div class="vehicle-card-bottom">
+      <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg>
+      <span>KM atual: </span>
+      <strong id="current-mileage" style="color:#fff;margin-left:2px;">—</strong>
+    </div>
+  </div>
+
+  <div class="form-card">
+
+    <!-- Data da troca -->
+    <div class="field-row">
+      <label class="field-label" for="input-date">Data da troca</label>
+      <input class="field-input" type="date" id="input-date" style="text-align:left;width:155px;"/>
+    </div>
+    <div class="divider"></div>
+
+    <!-- KM na troca -->
+    <div class="field-row">
+      <label class="field-label" for="input-change-mileage">KM na troca</label>
+      <input class="field-input" type="number" id="input-change-mileage"
+        placeholder="0" min="0" step="1"/>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Intervalo -->
+    <div class="field-row">
+      <label class="field-label" for="input-interval">Intervalo (km)</label>
+      <input class="field-input" type="number" id="input-interval"
+        placeholder="5000" min="500" step="500" value="5000"/>
+    </div>
+
+    <!-- Preview próxima troca -->
+    <div class="next-change-preview ok" id="next-change-preview">
+      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="20 6 9 17 4 12"/></svg>
+      <span>Próxima troca: <strong id="next-change-km">—</strong></span>
+    </div>
+    <div class="divider" style="margin-top:8px;"></div>
+
+    <!-- Saída vinculada -->
+    <div class="field-row">
+      <label class="field-label" for="select-departure">Saída vinculada</label>
+      <select class="field-input select-input" id="select-departure">
+        <option value="">Selecione</option>
+      </select>
+    </div>
+    <div class="divider"></div>
+
+    <!-- Observações -->
+    <div class="field-col">
+      <label class="field-label-col" for="input-notes">Observações</label>
+      <textarea class="field-textarea" id="input-notes"
+        placeholder="Ex: Óleo 5W30 sintético — filtro Mahle — 4,5L" rows="3"></textarea>
+    </div>
+
+  </div>
+
+  <div class="actions-row">
+    <button class="btn btn-cancel" onclick="window.location.href='./vehicles.html'" type="button">Cancelar</button>
+    <button class="btn btn-save" id="btn-save" type="button">Registrar troca</button>
+  </div>
+
+</div>
+
+<div class="loading-overlay" id="loading-overlay">
+  <div class="spinner"></div>
+  <span>Registrando troca de óleo...</span>
+</div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/oil-change.js"></script>
+</body>
+</html>
