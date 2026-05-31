@@ -1,0 +1,137 @@
+/* ── Vehicle card — prefixo em destaque ── */
+    .vehicle-card {
+      background: var(--blue);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      color: #fff;
+      cursor: pointer;
+      transition: transform 0.18s, box-shadow 0.18s;
+      animation: cardIn 0.3s ease both;
+      position: relative;
+      overflow: hidden;
+    }
+    .vehicle-card:hover {
+      transform: translateY(-3px);
+      box-shadow: 0 12px 32px rgba(14,35,101,0.22);
+    }
+    .vehicle-card.in-use {
+      background: #7a8fb0;
+      cursor: default;
+    }
+    .vehicle-card.in-use:hover {
+      transform: none;
+      box-shadow: none;
+    }
+
+    @keyframes cardIn {
+      from { opacity: 0; transform: translateY(8px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+
+    .vc-prefix {
+      font-family: var(--font-display);
+      font-size: 20px;
+      font-weight: 700;
+      letter-spacing: 0.04em;
+      line-height: 1.1;
+    }
+    .vc-model {
+      font-size: 10px;
+      color: rgba(255,255,255,0.55);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-top: 3px;
+    }
+    .vc-sep {
+      border-top: 0.5px solid rgba(255,255,255,0.15);
+      margin: 10px 0;
+    }
+    .vc-row {
+      display: flex;
+      justify-content: space-between;
+      font-size: 11px;
+      color: rgba(255,255,255,0.65);
+      margin-bottom: 4px;
+    }
+    .vc-row:last-of-type { margin-bottom: 0; }
+    .vc-row strong { color: rgba(255,255,255,0.9); font-weight: 500; }
+
+    .vc-status {
+      margin-top: 10px;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      font-size: 10px;
+      font-weight: 700;
+    }
+    .vc-dot {
+      width: 7px; height: 7px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+    .vc-dot.available { background: #4ade80; }
+    .vc-dot.in-use    { background: #fb923c; }
+    .vc-status-text.available { color: #4ade80; }
+    .vc-status-text.in-use    { color: #fb923c; }
+
+    /* conductor chip when in use */
+    .vc-conductor {
+      margin-top: 6px;
+      background: rgba(255,255,255,0.1);
+      border-radius: 6px;
+      padding: 5px 8px;
+      font-size: 10px;
+      color: rgba(255,255,255,0.8);
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    /* action buttons row (inside card) */
+    .vc-actions {
+      display: flex;
+      gap: 6px;
+      margin-top: 10px;
+    }
+    .vc-btn {
+      flex: 1;
+      border: 1px solid rgba(255,255,255,0.25);
+      background: rgba(255,255,255,0.1);
+      border-radius: var(--radius-sm);
+      padding: 6px;
+      font-size: 10px;
+      font-weight: 600;
+      color: rgba(255,255,255,0.9);
+      cursor: pointer;
+      text-align: center;
+      transition: background 0.15s;
+      font-family: var(--font);
+    }
+    .vc-btn:hover { background: rgba(255,255,255,0.2); }
+    .vc-btn.primary {
+      background: rgba(255,255,255,0.18);
+      border-color: rgba(255,255,255,0.35);
+    }
+
+    /* ── Loading state ── */
+    .loading-state {
+      grid-column: 1 / -1;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 12px;
+      padding: 60px 20px;
+      color: var(--muted);
+      font-size: 14px;
+    }
+    .loading-state .spinner-sm {
+      width: 24px; height: 24px;
+      border: 3px solid var(--border);
+      border-top-color: var(--navy);
+      border-radius: 50%;
+      animation: spin 0.75s linear infinite;
+    }
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ── Bottom nav icons (svg inline) ── */
+    .bn-icon { width: 22px; height: 22px; fill: none; stroke: currentColor; stroke-width: 2; }
