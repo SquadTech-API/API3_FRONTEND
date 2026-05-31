@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Gerenciar Viaturas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/manage-vehicles.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav" aria-label="Menu principal">
+        <ul class="menu">
+          <li class="dropdown"><button class="dropdown-btn" type="button">Registros <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./vehicles.html">Selecionar viatura</a></li><li><a href="./vehicle-history.html">Histórico de viaturas</a></li></ul></li>
+          <li class="dropdown"><button class="dropdown-btn" type="button">Cadastrar <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./register-vehicle.html">Nova viatura</a></li><li><a href="./register-user.html">Novo usuário</a></li></ul></li>
+          <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li><li><a href="./manage-service-types.html">Tipos de serviço</a></li><li><a href="./manage-fuel-types.html">Tipos de combustível</a></li><li><a href="./link-services.html">Vincular serviços</a></li><li><a href="./oil-change-history.html">Trocas de óleo</a></li><li><a href="./manage-records.html">Edição de registros</a></li><li><a href="./schedules.html">Agendamentos</a></li><li><a href="./audit-log.html">Audit log</a></li></ul></li>
+          <li class="dropdown"><button class="dropdown-btn" type="button">Relatórios <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./report-vehicles.html">Viaturas</a></li><li><a href="./report-technicians.html">Técnicos</a></li><li><a href="./report-fueling.html">Abastecimentos</a></li></ul></li>
+        </ul>
+      </nav>
+    </div>
+    <div class="nav-actions">
+      <button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button>
+    </div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="page-top">
+      <h1 class="page-title">Gerenciar viaturas</h1>
+      <button class="btn-primary" onclick="window.location.href='./register-vehicle.html'" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Nova viatura
+      </button>
+    </div>
+    <div class="toolbar">
+      <div class="search-box">
+        <input type="search" id="search-input" placeholder="Buscar por prefixo ou modelo..."/>
+        <button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button>
+      </div>
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all" type="button">Todas</button>
+        <button class="filter-btn" data-filter="available" type="button">Disponível</button>
+        <button class="filter-btn" data-filter="in_use" type="button">Em uso</button>
+        <button class="filter-btn" data-filter="inactive" type="button">Inativas</button>
+      </div>
+    </div>
+    <div class="cards-grid-4" id="vehicles-grid">
+      <div class="loading-state"><div class="spinner-sm"></div><span>Carregando...</span></div>
+    </div>
+  </div>
+</main>
+
+<!-- Edit modal -->
+<div class="edit-overlay" id="edit-overlay">
+  <div class="edit-modal">
+    <div class="edit-modal-title">
+      <span>Editar viatura</span>
+      <button class="edit-modal-close" onclick="closeEditModal()" type="button">×</button>
+    </div>
+    <input type="hidden" id="edit-vehicle-id"/>
+    <div class="edit-form-grid">
+      <div class="edit-form-group"><label class="edit-label">Prefixo</label><input class="edit-input" id="edit-prefix" type="text"/></div>
+      <div class="edit-form-group"><label class="edit-label">Placa</label><input class="edit-input" id="edit-plate" type="text"/></div>
+      <div class="edit-form-group"><label class="edit-label">Marca</label><input class="edit-input" id="edit-brand" type="text"/></div>
+      <div class="edit-form-group"><label class="edit-label">Modelo</label><input class="edit-input" id="edit-model" type="text"/></div>
+      <div class="edit-form-group"><label class="edit-label">Ano</label><input class="edit-input" id="edit-year" type="number"/></div>
+      <div class="edit-form-group"><label class="edit-label">KM atual</label><input class="edit-input" id="edit-mileage" type="number"/></div>
+      <div class="edit-form-group"><label class="edit-label">Núcleo/DAR</label><input class="edit-input" id="edit-dar" type="text"/></div>
+      <div class="edit-form-group"><label class="edit-label">Número FL</label><input class="edit-input" id="edit-fl" type="text"/></div>
+      <div class="edit-form-group"><label class="edit-label">Habilitação exigida</label>
+        <select class="edit-select" id="edit-license"><option value="">Nenhuma</option><option>A</option><option>B</option><option>AB</option><option>C</option><option>D</option><option>E</option></select>
+      </div>
+      <div class="edit-form-group"><label class="edit-label">Intervalo troca óleo (km)</label><input class="edit-input" id="edit-oil-interval" type="number"/></div>
+      <div class="edit-form-group full"><label class="edit-label">Tipo de combustível</label>
+        <select class="edit-select" id="edit-fuel-type"><option value="">Selecione</option></select>
+      </div>
+    </div>
+    <div class="edit-modal-actions">
+      <button class="edit-btn-cancel" onclick="closeEditModal()" type="button">Cancelar</button>
+      <button class="edit-btn-save" id="edit-save-btn" type="button">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/manage-vehicles.js"></script>
+</body>
+</html>

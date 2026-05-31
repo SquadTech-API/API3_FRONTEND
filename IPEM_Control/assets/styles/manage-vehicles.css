@@ -1,0 +1,57 @@
+.vehicle-card {
+      background: var(--blue);
+      border-radius: var(--radius);
+      padding: 14px 16px;
+      color: #fff;
+      transition: transform .18s, box-shadow .18s;
+      animation: cardIn .3s ease both;
+    }
+    @keyframes cardIn { from{opacity:0;transform:translateY(8px)} to{opacity:1;transform:translateY(0)} }
+    .vehicle-card:hover { transform: translateY(-3px); box-shadow: 0 12px 32px rgba(14,35,101,.22); }
+    .vehicle-card.in-use    { background: #7a8fb0; }
+    .vehicle-card.inactive  { background: #b0bac8; opacity:.7; }
+    .vc-prefix { font-family:var(--font-display); font-size:20px; font-weight:700; letter-spacing:.04em; }
+    .vc-model  { font-size:10px; color:rgba(255,255,255,.55); text-transform:uppercase; letter-spacing:.07em; margin-top:3px; }
+    .vc-sep    { border-top:.5px solid rgba(255,255,255,.15); margin:9px 0; }
+    .vc-row    { display:flex; justify-content:space-between; font-size:11px; color:rgba(255,255,255,.65); margin-bottom:3px; }
+    .vc-row strong { color:rgba(255,255,255,.9); font-weight:500; }
+    .vc-status { margin-top:8px; display:flex; align-items:center; gap:5px; font-size:10px; font-weight:700; }
+    .vc-dot { width:7px; height:7px; border-radius:50%; flex-shrink:0; }
+    .vc-dot.available { background:#4ade80; }
+    .vc-dot.in-use    { background:#fb923c; }
+    .vc-status-text.available { color:#4ade80; }
+    .vc-status-text.in-use    { color:#fb923c; }
+    .vc-actions { display:flex; gap:5px; margin-top:9px; }
+    .vc-btn {
+      flex:1; border:1px solid rgba(255,255,255,.25);
+      background:rgba(255,255,255,.1); border-radius:var(--radius-sm);
+      padding:6px; font-size:10px; font-weight:600;
+      color:rgba(255,255,255,.9); cursor:pointer; text-align:center;
+      transition:background .15s; font-family:var(--font);
+    }
+    .vc-btn:hover { background:rgba(255,255,255,.2); }
+    .vc-btn.danger { background:rgba(239,68,68,.15); border-color:rgba(239,68,68,.3); color:#fca5a5; flex:0; padding:6px 10px; }
+    .vc-btn.danger:hover { background:rgba(239,68,68,.28); }
+    .vc-btn.activate { background:rgba(34,197,94,.15); border-color:rgba(34,197,94,.3); color:#86efac; }
+
+    /* Edit modal */
+    .edit-overlay { display:none; position:fixed; inset:0; background:rgba(10,20,60,.55); backdrop-filter:blur(4px); z-index:9000; align-items:center; justify-content:center; padding:20px; }
+    .edit-overlay.active { display:flex; }
+    .edit-modal { background:#fff; border-radius:16px; padding:28px 24px 22px; max-width:520px; width:100%; box-shadow:0 20px 60px rgba(14,35,101,.22); max-height:90vh; overflow-y:auto; }
+    .edit-modal-title { font-size:16px; font-weight:600; color:var(--navy); margin-bottom:20px; display:flex; justify-content:space-between; align-items:center; }
+    .edit-modal-close { background:none; border:none; font-size:20px; color:var(--muted); cursor:pointer; line-height:1; }
+    .edit-form-grid { display:grid; grid-template-columns:1fr 1fr; gap:14px; }
+    .edit-form-group { display:flex; flex-direction:column; gap:5px; }
+    .edit-form-group.full { grid-column:span 2; }
+    .edit-label { font-size:11px; font-weight:600; color:var(--muted); }
+    .edit-input, .edit-select {
+      border:1.5px solid var(--border); border-radius:var(--radius-sm);
+      padding:8px 11px; font-size:13px; color:var(--text);
+      font-family:var(--font); outline:none; background:#f7f9fc;
+      transition:border-color var(--transition);
+    }
+    .edit-input:focus, .edit-select:focus { border-color:var(--blue); }
+    .edit-modal-actions { display:flex; gap:10px; margin-top:22px; }
+    .edit-btn-cancel { flex:1; background:#e8ecf5; color:var(--navy); border:none; border-radius:8px; padding:11px; font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); }
+    .edit-btn-save   { flex:2; background:var(--navy); color:#fff; border:none; border-radius:8px; padding:11px; font-size:13px; font-weight:600; cursor:pointer; font-family:var(--font); }
+    .edit-btn-save:disabled { opacity:.5; cursor:not-allowed; }
