@@ -1,0 +1,71 @@
+/* ── Conductor search dropdown ── */
+    .conductor-search-wrap { position: relative; }
+    .conductor-search-input {
+      width: 100%;
+      background: #f7f9fc;
+      border: 1.5px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 8px 12px;
+      font-size: 12px;
+      color: var(--text);
+      font-family: var(--font);
+      outline: none;
+      transition: border-color var(--transition);
+    }
+    .conductor-search-input:focus { border-color: var(--blue); }
+    .conductor-search-input::placeholder { color: var(--muted); }
+
+    .conductor-results {
+      position: absolute;
+      top: calc(100% + 4px);
+      left: 0; right: 0;
+      background: #fff;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      box-shadow: var(--shadow-md);
+      z-index: 200;
+      max-height: 180px;
+      overflow-y: auto;
+      display: none;
+    }
+    .conductor-results.open { display: block; }
+
+    .conductor-result-item {
+      padding: 9px 13px;
+      font-size: 12px;
+      color: var(--text);
+      cursor: pointer;
+      border-bottom: 0.5px solid var(--border);
+      transition: background 0.15s;
+    }
+    .conductor-result-item:last-child { border-bottom: none; }
+    .conductor-result-item:hover { background: #f0f4ff; }
+    .conductor-result-item .cri-name { font-weight: 600; }
+    .conductor-result-item .cri-meta { font-size: 10px; color: var(--muted); margin-top: 1px; }
+
+    /* ── Active departure warning ── */
+    .departure-warning {
+      background: #fff7ed;
+      border: 1.5px solid #fcd34d;
+      border-radius: var(--radius);
+      margin: 0 14px;
+      padding: 12px 14px;
+      font-size: 12px;
+      color: #78350f;
+      line-height: 1.5;
+      animation: fadeSlideDown 0.3s ease both;
+    }
+    .departure-warning strong { display: block; margin-bottom: 4px; font-size: 13px; }
+    .btn-go-return {
+      display: inline-block;
+      margin-top: 9px;
+      background: #fcd34d;
+      color: #78350f;
+      border: none;
+      border-radius: 7px;
+      padding: 7px 16px;
+      font-size: 12px;
+      font-weight: 600;
+      cursor: pointer;
+      font-family: var(--font);
+    }
