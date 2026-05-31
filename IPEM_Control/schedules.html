@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Agendamentos</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/schedules.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Registros <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./vehicles.html">Selecionar viatura</a></li></ul></li>
+        <li class="dropdown" data-role="admin"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./schedules.html">Agendamentos</a></li><li><a href="./manage-records.html">Edição de registros</a></li></ul></li>
+        <li class="dropdown"><button class="dropdown-btn" type="button">Relatórios <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./report-vehicles.html">Viaturas</a></li><li><a href="./report-technicians.html">Técnicos</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">??</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="page-top" style="margin-bottom:20px;">
+      <h1 class="page-title">Agendamentos</h1>
+      <button class="btn-primary" id="btn-new-sched" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo agendamento
+      </button>
+    </div>
+
+    <!-- Formulário novo agendamento (técnico) -->
+    <div class="new-sched-card" id="new-sched-form" style="display:none;">
+      <div class="new-sched-title">Solicitar agendamento</div>
+      <div class="form-grid">
+        <div class="form-row full"><label class="form-label">Título *</label><input class="form-input" id="sched-title" type="text" placeholder="Ex: Inspeção em campo — Zona Norte"/></div>
+        <div class="form-row"><label class="form-label">Viatura *</label><select class="form-select" id="sched-vehicle"><option value="">Selecione</option></select></div>
+        <div class="form-row"><label class="form-label">Tipo de serviço *</label><select class="form-select" id="sched-service"><option value="">Selecione</option></select></div>
+        <div class="form-row"><label class="form-label">Data e hora *</label><input class="form-input" id="sched-datetime" type="datetime-local"/></div>
+        <div class="form-row"><label class="form-label">Prioridade</label><select class="form-select" id="sched-priority"><option value="low">Baixa</option><option value="medium" selected>Média</option><option value="high">Alta</option></select></div>
+        <div class="form-row"><label class="form-label">KM estimada</label><input class="form-input" id="sched-mileage" type="number" placeholder="Opcional"/></div>
+      </div>
+      <div class="form-actions">
+        <button class="btn-form-cancel" onclick="document.getElementById('new-sched-form').style.display='none'" type="button">Cancelar</button>
+        <button class="btn-form-save" id="btn-save-sched" type="button">Solicitar agendamento</button>
+      </div>
+    </div>
+
+    <!-- Stats -->
+    <div class="stats-row" id="stats-row"></div>
+
+    <!-- Filtros -->
+    <div class="toolbar" style="margin-bottom:14px;">
+      <div class="search-box" style="max-width:300px;"><input type="search" id="sched-search" placeholder="Buscar agendamento..."/><button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button></div>
+      <div class="filter-group">
+        <button class="filter-btn active" data-filter="all" type="button">Todos</button>
+        <button class="filter-btn" data-filter="pending" type="button">Pendentes</button>
+        <button class="filter-btn" data-filter="confirmed" type="button">Confirmados</button>
+        <button class="filter-btn" data-filter="rejected" type="button">Recusados</button>
+      </div>
+    </div>
+
+    <div id="schedules-list"><div style="color:var(--muted);padding:20px 0;">Carregando...</div></div>
+  </div>
+</main>
+
+<!-- Modal de recusa -->
+<div class="reject-overlay" id="reject-overlay">
+  <div class="reject-modal">
+    <div class="reject-modal-title">Recusar agendamento</div>
+    <div class="reject-modal-sub" id="reject-sub">Informe o motivo da recusa. O técnico será notificado automaticamente.</div>
+    <textarea class="reject-reason-input" id="reject-reason" placeholder="Ex: Viatura reservada para manutenção nesta data..." rows="3"></textarea>
+    <div class="reject-modal-actions">
+      <button class="btn-reject-cancel" onclick="closeRejectModal()" type="button">Cancelar</button>
+      <button class="btn-reject-confirm" id="btn-reject-confirm" type="button">Confirmar recusa</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/schedules.js"></script>
+</body>
+</html>
