@@ -1,0 +1,45 @@
+/* Preview de total calculado */
+    .price-preview {
+      background: #f0f4ff;
+      border-radius: var(--radius-sm);
+      padding: 7px 12px;
+      margin: 4px 14px 0;
+      font-size: 11px;
+      color: var(--blue);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .price-preview strong { font-size: 13px; }
+
+    /* Attach NF */
+    .attach-row {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 8px 14px 12px;
+    }
+    .btn-attach {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      background: transparent;
+      border: 1.5px solid var(--blue);
+      border-radius: 20px;
+      color: var(--blue);
+      font-size: 11px;
+      font-weight: 600;
+      padding: 6px 14px;
+      cursor: pointer;
+      font-family: var(--font);
+      transition: background var(--transition), color var(--transition);
+    }
+    .btn-attach:hover { background: var(--blue); color: #fff; }
+    .attach-filename {
+      font-size: 11px;
+      color: var(--muted);
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+      max-width: 160px;
+    }
