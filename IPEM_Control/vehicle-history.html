@@ -1,0 +1,139 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Histórico de Viaturas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/vehicle-history.css"/>
+</head>
+<body>
+
+<!-- ══ HEADER ══ -->
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo">
+        <img src="./assets/logo.png" alt="IPEM-SP" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/>
+        <span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;letter-spacing:.04em;">IPEM SP</span>
+      </div>
+      <nav class="nav" aria-label="Menu principal">
+        <ul class="menu">
+          <li class="dropdown">
+            <button class="dropdown-btn" type="button">Registros <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./vehicles.html">Selecionar viatura</a></li>
+              <li><a href="./vehicle-history.html">Histórico de viaturas</a></li>
+            </ul>
+          </li>
+          <li class="dropdown" data-role="admin">
+            <button class="dropdown-btn" type="button">Cadastrar <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./register-vehicle.html">Nova viatura</a></li>
+              <li><a href="./register-user.html">Novo usuário</a></li>
+            </ul>
+          </li>
+          <li class="dropdown" data-role="admin">
+            <button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./manage-vehicles.html">Viaturas</a></li>
+              <li><a href="./manage-users.html">Usuários</a></li>
+              <li><a href="./manage-service-types.html">Tipos de serviço</a></li>
+              <li><a href="./manage-fuel-types.html">Tipos de combustível</a></li>
+              <li><a href="./link-services.html">Vincular serviços</a></li>
+              <li><a href="./oil-change-history.html">Trocas de óleo</a></li>
+              <li><a href="./manage-records.html">Edição de registros</a></li>
+              <li><a href="./schedules.html">Agendamentos</a></li>
+              <li><a href="./audit-log.html">Audit log</a></li>
+            </ul>
+          </li>
+          <li class="dropdown">
+            <button class="dropdown-btn" type="button">Relatórios <span class="arrow">▾</span></button>
+            <ul class="submenu">
+              <li><a href="./report-vehicles.html">Viaturas</a></li>
+              <li><a href="./report-technicians.html">Técnicos</a></li>
+              <li><a href="./report-fueling.html">Abastecimentos</a></li>
+            </ul>
+          </li>
+        </ul>
+      </nav>
+    </div>
+    <div class="nav-actions">
+      <button class="user-chip" onclick="window.location.href='./profile.html'" type="button">
+        <div class="user-avatar" id="header-avatar">--</div>
+        <span id="header-user-name"></span>
+      </button>
+    </div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Abrir menu">
+      <span></span><span></span><span></span>
+    </button>
+  </div>
+</header>
+
+<div class="mobile-nav" id="mobile-nav">
+  <div class="mobile-section">
+    <div class="mobile-section-title" data-target="mob-reg">Registros <span class="arrow">▾</span></div>
+    <div class="mobile-sub" id="mob-reg">
+      <a href="./vehicles.html">Selecionar viatura</a>
+      <a href="./vehicle-history.html">Histórico de viaturas</a>
+    </div>
+  </div>
+  <div class="mobile-nav-footer">
+    <a href="./profile.html" style="color:rgba(255,255,255,.8);font-size:14px;padding:8px 0;">Meu perfil</a>
+    <button onclick="logout()" style="background:rgba(255,255,255,.1);border:1px solid rgba(255,255,255,.2);color:#fff;border-radius:8px;padding:10px;font-size:13px;cursor:pointer;font-family:var(--font);">Sair</button>
+  </div>
+</div>
+
+<!-- ══ MAIN ══ -->
+<main>
+  <div class="container">
+    <div class="page-top">
+      <h1 class="page-title">Histórico de viaturas</h1>
+      <div class="search-box" style="max-width:280px;">
+        <input type="search" id="search-vehicles" placeholder="Buscar viatura..." autocomplete="off"/>
+        <button type="button" aria-label="Buscar">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+        </button>
+      </div>
+    </div>
+
+    <div class="history-layout">
+      <!-- Coluna esquerda: lista de viaturas -->
+      <div class="vehicle-list-panel" id="vehicle-list-panel">
+        <div class="panel-label">Viaturas</div>
+        <div id="vehicle-list">
+          <div style="color:var(--muted);font-size:13px;padding:16px 0;">Carregando...</div>
+        </div>
+      </div>
+
+      <!-- Coluna direita: detalhe -->
+      <div class="detail-panel" id="detail-panel">
+        <div class="panel-empty">Selecione uma viatura para ver o histórico.</div>
+      </div>
+    </div>
+  </div>
+</main>
+
+<nav class="bottom-nav" aria-label="Navegação mobile">
+  <button class="bottom-nav-btn" onclick="window.location.href='./vehicles.html'" type="button">
+    <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg>
+    Viaturas
+  </button>
+  <button class="bottom-nav-btn active" onclick="window.location.href='./vehicle-history.html'" type="button">
+    <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 8v4l3 3m6-3a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+    Histórico
+  </button>
+  <button class="bottom-nav-btn" onclick="window.location.href='./profile.html'" type="button">
+    <svg class="bn-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+    Perfil
+  </button>
+</nav>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/vehicle-history.js"></script>
+</body>
+</html>

@@ -1,0 +1,194 @@
+/* ── Layout duas colunas ── */
+    .history-layout {
+      display: grid;
+      grid-template-columns: 280px 1fr;
+      gap: 16px;
+      align-items: start;
+    }
+
+    /* ── Lista de viaturas (coluna esq) ── */
+    .vehicle-list-panel { display: flex; flex-direction: column; gap: 8px; }
+    .panel-label {
+      font-size: 10px;
+      font-weight: 700;
+      color: var(--muted);
+      text-transform: uppercase;
+      letter-spacing: 0.07em;
+      margin-bottom: 2px;
+    }
+
+    .veh-item {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 1px solid var(--border);
+      overflow: hidden;
+      cursor: pointer;
+      transition: border-color var(--transition), box-shadow var(--transition);
+    }
+    .veh-item:hover { border-color: var(--navy); box-shadow: var(--shadow); }
+    .veh-item.selected {
+      border: 2px solid var(--navy);
+      box-shadow: 0 4px 16px rgba(14,35,101,0.14);
+    }
+
+    .veh-item-header {
+      background: var(--navy);
+      color: #fff;
+      padding: 9px 13px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+    .veh-item-header.in-use { background: #b45309; }
+
+    .veh-item-prefix { font-family: var(--font-display); font-size: 16px; font-weight: 700; }
+    .veh-item-model  { font-size: 9px; color: rgba(255,255,255,0.55); text-transform: uppercase; letter-spacing: .06em; }
+
+    .veh-item-status {
+      font-size: 9px;
+      font-weight: 700;
+      padding: 2px 8px;
+      border-radius: 10px;
+      flex-shrink: 0;
+    }
+    .veh-item-status.available { background: rgba(74,222,128,.2); color: #86efac; border: 0.5px solid rgba(74,222,128,.3); }
+    .veh-item-status.in-use    { background: rgba(251,191,36,.2); color: #fcd34d; border: 0.5px solid rgba(251,191,36,.3); }
+
+    .veh-item-meta {
+      padding: 8px 13px;
+      font-size: 11px;
+      color: var(--muted);
+      display: flex;
+      flex-direction: column;
+      gap: 3px;
+    }
+    .veh-item-meta strong { color: var(--text); }
+
+    /* ── Painel de detalhe (col dir) ── */
+    .detail-panel { display: flex; flex-direction: column; gap: 12px; }
+
+    .detail-header {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border);
+      padding: 16px;
+      box-shadow: var(--shadow);
+    }
+    .dh-top {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      margin-bottom: 14px;
+    }
+    .dh-icon {
+      width: 46px; height: 46px;
+      border-radius: 10px;
+      background: var(--navy);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+    .dh-prefix { font-family: var(--font-display); font-size: 22px; font-weight: 700; color: var(--navy); }
+    .dh-model  { font-size: 11px; color: var(--muted); text-transform: uppercase; letter-spacing: .06em; margin-top: 2px; }
+
+    .dh-stats {
+      display: grid;
+      grid-template-columns: repeat(4, 1fr);
+      gap: 8px;
+    }
+    .dh-stat {
+      background: var(--bg);
+      border-radius: var(--radius-sm);
+      padding: 9px 11px;
+    }
+    .dh-stat-val { font-size: 16px; font-weight: 700; color: var(--navy); }
+    .dh-stat-lbl { font-size: 10px; color: var(--muted); margin-top: 2px; }
+    .dh-stat.warn .dh-stat-val { color: #d97706; }
+
+    /* ── Entries list ── */
+    .entries-card {
+      background: #fff;
+      border-radius: var(--radius);
+      border: 0.5px solid var(--border);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .entries-header {
+      background: var(--bg);
+      padding: 10px 16px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      border-bottom: 0.5px solid var(--border);
+    }
+    .entries-title { font-size: 13px; font-weight: 600; color: var(--navy); }
+
+    .filter-chips { display: flex; gap: 6px; }
+    .chip {
+      padding: 4px 12px;
+      border-radius: 14px;
+      border: 0.5px solid var(--border);
+      background: #fff;
+      color: var(--muted);
+      font-size: 10px;
+      cursor: pointer;
+      transition: all var(--transition);
+      font-family: var(--font);
+    }
+    .chip.active { background: var(--navy); border-color: var(--navy); color: #fff; }
+
+    .entry-row {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding: 11px 16px;
+      border-bottom: 0.5px solid #f0f2f8;
+      transition: background var(--transition);
+      cursor: default;
+    }
+    .entry-row:last-child { border-bottom: none; }
+    .entry-row:hover { background: #f9fafb; }
+
+    .entry-icon {
+      width: 34px; height: 34px;
+      border-radius: 8px;
+      background: #eef2ff;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+      color: var(--blue);
+    }
+    .entry-icon.two-conductors { background: #fef3c7; color: #92400e; }
+
+    .entry-main { flex: 1; min-width: 0; }
+    .entry-conductors { font-size: 12px; font-weight: 600; color: var(--text); }
+    .entry-two-badge  { font-size: 9px; color: #92400e; margin-top: 1px; }
+    .entry-meta       { font-size: 11px; color: var(--muted); margin-top: 2px; }
+    .entry-dest       { font-size: 11px; color: var(--text); margin-top: 1px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+
+    .entry-right { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; flex-shrink: 0; }
+    .entry-km    { font-size: 11px; font-weight: 600; color: var(--navy); }
+    .entry-tags  { display: flex; gap: 4px; }
+    .tag-fuel    { background: var(--success-bg); color: var(--success-text); font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+    .tag-oil     { background: var(--warning-bg); color: var(--warning-text); font-size: 9px; font-weight: 700; padding: 1px 6px; border-radius: 4px; }
+
+    /* empty / loading dentro do painel */
+    .panel-empty {
+      padding: 48px 20px;
+      text-align: center;
+      color: var(--muted);
+      font-size: 13px;
+    }
+
+    /* ── Responsivo ── */
+    @media (max-width: 900px) {
+      .history-layout { grid-template-columns: 1fr; }
+      .vehicle-list-panel { display: none; }
+      .vehicle-list-panel.mobile-visible { display: flex; }
+      .dh-stats { grid-template-columns: repeat(2,1fr); }
+    }
+    @media (max-width: 480px) {
+      .filter-chips { flex-wrap: wrap; }
+    }
