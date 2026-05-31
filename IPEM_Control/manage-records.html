@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Edição de Registros</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/manage-records.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li><li><a href="./manage-records.html">Edição de registros</a></li><li><a href="./audit-log.html">Audit log</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <div class="page-top" style="margin-bottom:20px;">
+      <div>
+        <h1 class="page-title">Edição de registros</h1>
+        <p style="font-size:12px;color:var(--muted);margin-top:4px;">Todas as edições são registradas automaticamente no audit log.</p>
+      </div>
+    </div>
+
+    <div class="audit-notice">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="11" width="18" height="11" rx="2" ry="2"/><path d="M7 11V7a5 5 0 0 1 10 0v4"/></svg>
+      Área restrita ao administrador. Edições ficam registradas com data, hora e responsável no audit log imutável.
+    </div>
+
+    <div class="tab-bar">
+      <button class="tab active" data-pane="departures" type="button">Saídas</button>
+      <button class="tab" data-pane="fueling" type="button">Abastecimentos</button>
+      <button class="tab" data-pane="oil" type="button">Trocas de óleo</button>
+    </div>
+
+    <!-- Saídas -->
+    <div class="pane active" id="pane-departures">
+      <div class="toolbar" style="margin-bottom:14px;">
+        <div class="search-box" style="max-width:320px;"><input type="search" id="search-departures" placeholder="Buscar por prefixo ou condutor..."/><button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="16" height="16"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button></div>
+        <div class="filter-group">
+          <button class="filter-btn active" data-filter-dep="all" type="button">Todas</button>
+          <button class="filter-btn" data-filter-dep="in_progress" type="button">Em andamento</button>
+          <button class="filter-btn" data-filter-dep="completed" type="button">Encerradas</button>
+        </div>
+      </div>
+      <div id="departures-list"><div style="color:var(--muted);padding:20px 0;">Carregando...</div></div>
+    </div>
+
+    <!-- Abastecimentos -->
+    <div class="pane" id="pane-fueling">
+      <div id="fueling-list"><div style="color:var(--muted);padding:20px 0;">Carregando...</div></div>
+    </div>
+
+    <!-- Trocas de óleo -->
+    <div class="pane" id="pane-oil">
+      <div id="oil-list"><div style="color:var(--muted);padding:20px 0;">Carregando...</div></div>
+    </div>
+  </div>
+</main>
+
+<!-- Edit drawer -->
+<div class="edit-overlay" id="edit-overlay">
+  <div class="edit-drawer" id="edit-drawer">
+    <div class="drawer-handle"></div>
+    <div class="drawer-title"><span id="drawer-title">Editar registro</span><button class="drawer-close" onclick="closeDrawer()" type="button">×</button></div>
+    <div id="drawer-content"></div>
+    <div class="drawer-actions">
+      <button class="btn-drawer-cancel" onclick="closeDrawer()" type="button">Cancelar</button>
+      <button class="btn-drawer-save" id="drawer-save-btn" type="button">Salvar alterações</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/manage-records.js"></script>
+</body>
+</html>

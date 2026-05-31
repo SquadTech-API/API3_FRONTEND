@@ -1,0 +1,44 @@
+.tab-bar{display:flex;gap:0;border-bottom:2px solid var(--border);margin-bottom:18px;flex-wrap:wrap;}
+    .tab{padding:10px 20px;font-size:13px;font-weight:600;color:var(--muted);cursor:pointer;border:none;background:none;border-bottom:2.5px solid transparent;margin-bottom:-2px;font-family:var(--font);transition:color var(--transition);}
+    .tab.active{color:var(--navy);border-bottom-color:var(--navy);}
+    .tab:hover:not(.active){color:var(--blue);}
+    .pane{display:none;}.pane.active{display:block;}
+
+    .audit-notice{background:#fff7ed;border:.5px solid #fcd34d;border-radius:var(--radius-sm);padding:10px 14px;font-size:12px;color:#78350f;display:flex;align-items:center;gap:8px;margin-bottom:16px;}
+
+    .record-row{display:flex;align-items:center;gap:12px;padding:12px 16px;background:#fff;border-radius:var(--radius-sm);border:.5px solid var(--border);margin-bottom:8px;box-shadow:var(--shadow);transition:box-shadow var(--transition);}
+    .record-row:hover{box-shadow:var(--shadow-md);}
+    .rr-id{font-size:13px;font-weight:700;color:var(--navy);min-width:60px;}
+    .rr-info{flex:1;min-width:0;}
+    .rr-main{font-size:13px;font-weight:500;color:var(--text);}
+    .rr-meta{font-size:11px;color:var(--muted);margin-top:2px;}
+    .rr-right{display:flex;flex-direction:column;align-items:flex-end;gap:5px;flex-shrink:0;}
+    .rr-status{font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;}
+    .rr-status.in-progress{background:var(--warning-bg);color:var(--warning-text);}
+    .rr-status.completed  {background:var(--success-bg);color:var(--success-text);}
+    .rr-edit-btn{background:#eef2ff;color:var(--blue);border:none;border-radius:var(--radius-sm);padding:5px 12px;font-size:11px;font-weight:600;cursor:pointer;font-family:var(--font);}
+    .rr-edit-btn:hover{background:var(--blue);color:#fff;}
+
+    /* Edit drawer */
+    .edit-overlay{display:none;position:fixed;inset:0;background:rgba(10,20,60,.55);backdrop-filter:blur(4px);z-index:9000;align-items:flex-end;justify-content:center;padding:0;}
+    .edit-overlay.active{display:flex;}
+    .edit-drawer{background:#fff;border-radius:20px 20px 0 0;width:100%;max-width:600px;padding:24px 24px 28px;box-shadow:0 -8px 40px rgba(14,35,101,.2);max-height:90vh;overflow-y:auto;}
+    .drawer-handle{width:36px;height:4px;background:var(--border);border-radius:2px;margin:0 auto 16px;}
+    .drawer-title{font-size:16px;font-weight:600;color:var(--navy);margin-bottom:18px;display:flex;justify-content:space-between;align-items:center;}
+    .drawer-close{background:none;border:none;font-size:20px;color:var(--muted);cursor:pointer;}
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px;}
+    .form-row{display:flex;flex-direction:column;gap:5px;}
+    .form-row.full{grid-column:span 2;}
+    .form-label{font-size:11px;font-weight:600;color:var(--muted);}
+    .form-input,.form-select,.form-textarea{border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:9px 12px;font-size:13px;color:var(--text);font-family:var(--font);outline:none;background:#f7f9fc;width:100%;transition:border-color var(--transition);}
+    .form-input:focus,.form-select:focus,.form-textarea:focus{border-color:var(--blue);}
+    .form-textarea{resize:vertical;min-height:64px;}
+    .readonly-field{background:#eef1f8;color:var(--muted);cursor:default;}
+    .readonly-field:focus{border-color:var(--border);}
+    .drawer-actions{display:flex;gap:10px;margin-top:18px;}
+    .btn-drawer-cancel{flex:1;background:#e8ecf5;color:var(--navy);border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);}
+    .btn-drawer-save{flex:2;background:var(--navy);color:#fff;border:none;border-radius:8px;padding:11px;font-size:13px;font-weight:600;cursor:pointer;font-family:var(--font);}
+    .btn-drawer-save:disabled{opacity:.5;cursor:not-allowed;}
+
+    .sgi-badge{background:var(--info-bg);color:var(--info-text);font-size:10px;font-weight:700;padding:3px 9px;border-radius:10px;cursor:pointer;border:none;font-family:var(--font);}
+    .sgi-badge.done{background:var(--success-bg);color:var(--success-text);}
