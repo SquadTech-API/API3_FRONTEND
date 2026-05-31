@@ -1,0 +1,79 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Tipos de Combustível</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <link rel="stylesheet" href="./assets/styles/manage-fuel-types.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li><li><a href="./manage-service-types.html">Tipos de serviço</a></li><li><a href="./manage-fuel-types.html">Tipos de combustível</a></li><li><a href="./link-services.html">Vincular serviços</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <div class="container" style="max-width:1100px;">
+    <div class="page-top">
+      <h1 class="page-title">Tipos de combustível</h1>
+      <button class="btn-primary" onclick="openModal()" type="button">
+        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="12" y1="5" x2="12" y2="19"/><line x1="5" y1="12" x2="19" y2="12"/></svg>
+        Novo tipo
+      </button>
+    </div>
+    <div class="fuel-grid" id="fuel-grid">
+      <div style="color:var(--muted);padding:20px 0;grid-column:1/-1;">Carregando...</div>
+    </div>
+  </div>
+</main>
+
+<!-- Modal -->
+<div class="modal-overlay" id="modal-overlay">
+  <div class="modal-box">
+    <div class="modal-title">
+      <span id="modal-title-text">Novo combustível</span>
+      <button class="modal-close" onclick="closeModal()" type="button">×</button>
+    </div>
+    <input type="hidden" id="modal-fuel-id"/>
+    <div class="form-grid">
+      <div class="form-row"><label class="form-label">Nome *</label><input class="form-input" id="modal-name" type="text" placeholder="Ex: Gasolina Comum"/></div>
+      <div class="form-row"><label class="form-label">Sigla *</label><input class="form-input" id="modal-abbr" type="text" placeholder="Ex: G" maxlength="10"/></div>
+      <div class="form-row"><label class="form-label">Categoria</label>
+        <select class="form-select" id="modal-category">
+          <option value="">Selecione</option>
+          <option>Gasolina</option><option>Álcool</option><option>Diesel</option>
+          <option>Flex</option><option>Gás</option><option>Elétrico</option><option>Híbrido</option>
+        </select>
+      </div>
+      <div class="form-row"><label class="form-label">Preço por litro (R$)</label><input class="form-input" id="modal-price" type="number" placeholder="0,00" min="0" step="0.01"/></div>
+      <div class="toggle-row">
+        <span style="font-size:13px;color:var(--text);">Ativo</span>
+        <label class="toggle-switch"><input type="checkbox" id="modal-active" checked/><span class="toggle-slider"></span></label>
+      </div>
+    </div>
+    <div class="modal-actions">
+      <button class="btn-cancel" onclick="closeModal()" type="button">Cancelar</button>
+      <button class="btn-save" id="modal-save-btn" type="button">Salvar</button>
+    </div>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/manage-fuel-types.js"></script>
+</body>
+</html>
