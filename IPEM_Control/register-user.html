@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Novo Usuário</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/register-user.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<div class="cad-container">
+  <div class="cad-top">
+    <h1 class="cad-title">Cadastrar usuário</h1>
+    <button class="cad-back" onclick="window.location.href='./manage-users.html'" type="button">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><polyline points="15 18 9 12 15 6"/></svg>
+      Voltar
+    </button>
+  </div>
+
+  <div class="cad-card">
+    <div class="cad-card-header">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 00-4-4H8a4 4 0 00-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+      Dados do usuário
+    </div>
+    <div class="cad-form">
+      <div class="cad-row"><label class="cad-label">Nome completo <span>*</span></label><input class="cad-input" id="input-name" type="text" placeholder="Nome completo"/></div>
+      <div class="cad-row"><label class="cad-label">Data de nascimento <span>*</span></label><input class="cad-input" id="input-birth" type="date"/></div>
+      <div class="cad-row"><label class="cad-label">CPF <span>*</span></label><input class="cad-input" id="input-cpf" type="text" placeholder="Somente números (11 dígitos)" maxlength="14"/></div>
+      <div class="cad-row"><label class="cad-label">E-mail <span>*</span></label><input class="cad-input" id="input-email" type="email" placeholder="email@ipem.sp.gov.br"/></div>
+      <div class="cad-row"><label class="cad-label">Cargo</label><input class="cad-input" id="input-role" type="text" placeholder="Ex: Técnico de Metrologia I"/></div>
+      <div class="cad-row"><label class="cad-label">Tipo de acesso <span>*</span></label>
+        <select class="cad-select" id="select-user-type"><option value="technician">Técnico</option><option value="admin">Administrador</option></select>
+      </div>
+      <div class="cad-row"><label class="cad-label">Categoria de habilitação</label>
+        <select class="cad-select" id="select-license"><option value="">Sem habilitação</option><option>A</option><option>B</option><option>AB</option><option>C</option><option>AC</option><option>D</option><option>AD</option><option>E</option><option>AE</option></select>
+      </div>
+      <div class="cad-row"><label class="cad-label">Nº da habilitação</label><input class="cad-input" id="input-license-number" type="text" placeholder="Opcional"/></div>
+      <div class="cad-row"><label class="cad-label">Senha <span>*</span></label><input class="cad-input" id="input-password" type="password" placeholder="Mínimo 6 caracteres" autocomplete="new-password"/></div>
+      <div class="cad-row"><label class="cad-label">Confirmar senha <span>*</span></label><input class="cad-input" id="input-confirm-password" type="password" placeholder="Repita a senha" autocomplete="new-password"/></div>
+    </div>
+  </div>
+
+  <div class="cad-actions">
+    <button class="btn-cancel-cad" onclick="window.location.href='./manage-users.html'" type="button">Cancelar</button>
+    <button class="btn-save-cad" id="btn-save" type="button">Cadastrar usuário</button>
+  </div>
+</div>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div><span>Cadastrando usuário...</span></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/register-user.js"></script>
+</body>
+</html>
