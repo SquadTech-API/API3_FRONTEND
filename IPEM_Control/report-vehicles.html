@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8"/>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>IPEM Control — Relatório de Viaturas</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com"/>
+  <link href="https://fonts.googleapis.com/css2?family=Rajdhani:wght@600;700&family=Roboto:wght@400;500;600&display=swap" rel="stylesheet"/>
+  <link rel="stylesheet" href="./assets/styles/global.css"/>
+  <link rel="stylesheet" href="./assets/styles/desktop-layout.css"/>
+  <script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/4.4.1/chart.umd.min.js"></script>
+  <link rel="stylesheet" href="./assets/styles/report-vehicles.css"/>
+</head>
+<body>
+<header>
+  <div class="header-inner">
+    <div style="display:flex;align-items:center;gap:4px;">
+      <div class="logo"><img src="./assets/logo.png" alt="IPEM" onerror="this.style.display='none';this.nextElementSibling.style.display='flex'"/><span style="display:none;color:#fff;font-family:var(--font-display);font-size:13px;font-weight:700;">IPEM SP</span></div>
+      <nav class="nav"><ul class="menu">
+        <li class="dropdown"><button class="dropdown-btn" type="button">Registros <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./vehicles.html">Selecionar viatura</a></li><li><a href="./vehicle-history.html">Histórico</a></li></ul></li>
+        <li class="dropdown"><button class="dropdown-btn" type="button">Gerenciamento <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./manage-vehicles.html">Viaturas</a></li><li><a href="./manage-users.html">Usuários</a></li><li><a href="./manage-records.html">Edição de registros</a></li></ul></li>
+        <li class="dropdown"><button class="dropdown-btn" type="button">Relatórios <span class="arrow">▾</span></button><ul class="submenu"><li><a href="./report-vehicles.html">Viaturas</a></li><li><a href="./report-technicians.html">Técnicos</a></li><li><a href="./report-fueling.html">Abastecimentos</a></li></ul></li>
+      </ul></nav>
+    </div>
+    <div class="nav-actions"><button class="user-chip" onclick="window.location.href='./profile.html'" type="button"><div class="user-avatar" id="header-avatar">AD</div><span id="header-user-name"></span></button></div>
+    <button class="hamburger" id="hamburger" type="button" aria-label="Menu"><span></span><span></span><span></span></button>
+  </div>
+</header>
+
+<main>
+  <div class="container">
+    <!-- Header -->
+    <div class="report-header">
+      <div>
+        <div class="rh-title">Relatório de Viaturas</div>
+        <div class="rh-sub" id="report-period">Carregando período...</div>
+      </div>
+      <div class="rh-actions">
+        <button class="export-btn" onclick="exportCSV()" type="button">⬇ CSV</button>
+        <button class="export-btn" onclick="exportExcel()" type="button">⬇ Excel</button>
+        <button class="export-btn" onclick="window.print()" type="button">🖨 Imprimir</button>
+      </div>
+    </div>
+
+    <!-- Filtros -->
+    <div class="filter-card">
+      <div class="fg"><label>Mês</label><input type="month" id="filter-month"/></div>
+      <div class="fg"><label>Viatura</label><input type="text" id="filter-prefix" placeholder="Prefixo..."/></div>
+      <div class="fg"><label>Status</label>
+        <select id="filter-status"><option value="">Todas</option><option value="available">Disponível</option><option value="in_use">Em uso</option></select>
+      </div>
+      <button class="btn-apply" id="btn-apply" type="button">Aplicar filtros</button>
+    </div>
+
+    <!-- Métricas -->
+    <div class="metrics-grid">
+      <div class="metric-card info"><div class="metric-icon info"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="3" width="15" height="13" rx="2"/><path d="M16 8h4l3 3v5h-7V8z"/><circle cx="5.5" cy="18.5" r="2.5"/><circle cx="18.5" cy="18.5" r="2.5"/></svg></div><div class="metric-value" id="m-total">—</div><div class="metric-label">Total de viaturas</div></div>
+      <div class="metric-card ok">  <div class="metric-icon ok"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="22 12 18 12 15 21 9 3 6 12 2 12"/></svg></div><div class="metric-value" id="m-saidas">—</div><div class="metric-label">Saídas no período</div></div>
+      <div class="metric-card warn"><div class="metric-icon warn"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></div><div class="metric-value" id="m-km">—</div><div class="metric-label">KM total rodados</div></div>
+      <div class="metric-card navy"><div class="metric-icon navy"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2v20M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg></div><div class="metric-value" id="m-custo">—</div><div class="metric-label">Custo total (abast.)</div></div>
+    </div>
+
+    <!-- Gráficos -->
+    <div class="charts-row">
+      <div class="chart-card">
+        <div class="chart-title">KM rodados por viatura</div>
+        <div class="chart-wrap"><canvas id="chart-km"></canvas></div>
+      </div>
+      <div class="chart-card">
+        <div class="chart-title">Distribuição de saídas</div>
+        <div class="chart-wrap"><canvas id="chart-pie"></canvas></div>
+      </div>
+    </div>
+
+    <!-- Tabela -->
+    <div class="table-card">
+      <div class="table-header">
+        <span class="table-title">Detalhamento por viatura</span>
+        <div class="search-box" style="max-width:240px;"><input type="search" id="search-table" placeholder="Buscar viatura..."/><button type="button"><svg viewBox="0 0 24 24" fill="none" stroke="#fff" stroke-width="2.5" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg></button></div>
+      </div>
+      <div style="overflow-x:auto;">
+        <table class="report-table">
+          <thead>
+            <tr>
+              <th>#</th><th>Viatura</th><th>Modelo</th><th>Saídas</th><th>KM rodados</th>
+              <th>Abastecimentos</th><th>Custo abast.</th><th>Trocas óleo</th><th>SGI</th>
+            </tr>
+          </thead>
+          <tbody id="report-tbody">
+            <tr><td colspan="9" style="text-align:center;padding:24px;color:var(--muted);">Carregando...</td></tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </div>
+</main>
+
+<div class="loading-overlay" id="loading-overlay"><div class="spinner"></div><span>Gerando relatório...</span></div>
+
+<script src="./assets/scripts/config.js"></script>
+<script src="./assets/scripts/global.js"></script>
+<script src="./assets/scripts/report-vehicles.js"></script>
+</body>
+</html>
